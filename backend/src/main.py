@@ -1,14 +1,9 @@
 from fastapi import FastAPI
 
-
-app = FastAPI()
-
-
-@app.get("/")
-async def get_smartphones():
-    pass
+from src.smartphone.router import router as router_smartphone
 
 
-@app.get("/smartphone")
-async def get_smartphone():
-    pass
+app = FastAPI(title="Mobile Guru")
+
+
+app.include_router(router_smartphone,)
