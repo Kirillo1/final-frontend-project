@@ -6,6 +6,9 @@
 
 # Running backend server
 - Run uvicorn src.main:app --port 8080 --reload for server running
+- Make init migration alembic init migrations
+- Make revision migration alembic revision --autogenerate -m "Database creation"
+- Make upgrade migration alembic upgrade "hash revision"
 - Open page http://127.0.0.1:8080/docs in browser
 
 # Running frontend server
