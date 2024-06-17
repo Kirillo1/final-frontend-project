@@ -14,6 +14,12 @@ class SmartphoneCreate(SmartphoneBase):
     pass
 
 
+class SmartphoneUpdate(BaseModel):
+    name: Optional[str] = None
+    model_phone: Optional[str] = None
+    price: Optional[int] = None
+
+
 class Smartphone(SmartphoneBase):
     id: int
     created_at: datetime
