@@ -1,12 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from sqlalchemy import update, delete
+from sqlalchemy import delete
 
 from src.database import get_async_session
 
 from src.smartphone.models import Smartphone as SmartphoneModel
-from src.smartphone.schemas import SmartphoneCreate, ResponseModel, SingleSmartphoneResponseModel, SmartphoneUpdate
+from src.smartphone.schemas import (SmartphoneCreate, ResponseModel,
+                                    SingleSmartphoneResponseModel, SmartphoneUpdate)
 
 router = APIRouter(
     prefix="/smartphones",
