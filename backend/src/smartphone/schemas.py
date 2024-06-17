@@ -1,6 +1,8 @@
 from datetime import datetime
 from pydantic import BaseModel
 
+from typing import List, Optional
+
 
 class SmartphoneBase(BaseModel):
     name: str
@@ -18,3 +20,15 @@ class Smartphone(SmartphoneBase):
 
     class Config:
         orm_mode = True
+
+
+class ResponseModel(BaseModel):
+    status: str
+    data: List[Smartphone]
+    details: Optional[str]
+
+
+class SingleSmartphoneResponseModel(BaseModel):
+    status: str
+    data: Smartphone
+    details: Optional[str]
