@@ -163,5 +163,6 @@ cython_debug/
 dump_data.json
 Makefile
 *node_modules/*
+package-lock.json
 
 .vscode/settings.json
