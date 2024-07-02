@@ -2,6 +2,7 @@ from fastapi import FastAPI
 
 from src.users.base_config import auth_backend, fastapi_users
 from src.users.schemas import UserRead, UserCreate
+from src.users import roles
 
 from src.smartphone.router import router as router_smartphone
 
@@ -20,6 +21,12 @@ app.include_router(
     fastapi_users.get_register_router(UserRead, UserCreate),
     prefix="/auth",
     tags=["Auth"],
+)
+
+app.include_router(
+    roles.router, 
+    prefix="/roles", 
+    tags=["roles"]
 )
 
 
