@@ -1,6 +1,5 @@
 from datetime import datetime
 from pydantic import BaseModel
-
 from typing import List, Optional
 
 
@@ -38,3 +37,6 @@ class SingleSmartphoneResponseModel(BaseModel):
     status: str
     data: Smartphone
     details: Optional[str]
+    
+    class Config:
+        orm_mode = True

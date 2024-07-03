@@ -1,4 +1,6 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
 
 from src.users.base_config import auth_backend, fastapi_users
 from src.users.schemas import UserRead, UserCreate
@@ -8,6 +10,18 @@ from src.smartphone.router import router as router_smartphone
 
 
 app = FastAPI(title="Mobile Guru")
+
+origins = [
+    "http://localhost:5173",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "OPTIONS", "DELETE", "PATCH", "PUT"],
+    allow_headers=["*"],
+)
 
 
 app.include_router(
@@ -29,5 +43,8 @@ app.include_router(
     tags=["roles"]
 )
 
-
-app.include_router(router_smartphone,)
+app.include_router(
+    router_smartphone,
+    prefix="/smartphones",
+    tags=["smartphones"]
+    )
