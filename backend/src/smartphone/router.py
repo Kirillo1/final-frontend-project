@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy import delete
@@ -14,13 +15,13 @@ router = APIRouter()
 
 
 @router.get("/", response_model=ResponseModel)
-async def read_roles(skip: int = 0, limit: int = 10, db: AsyncSession = Depends(get_async_session)):
+async def read_smartphones(skip: int = 0, limit: int = 10, db: AsyncSession = Depends(get_async_session)):
     try:
         result = await db.execute(select(SmartphoneModel).offset(skip).limit(limit))
-        roles = result.scalars().all()
+        smartphones = result.scalars().all()
         return {
             "status": "success",
-            "data": roles,
+            "data": smartphones,
             "details": None
         }
     except Exception as e:
@@ -32,16 +33,22 @@ async def read_roles(skip: int = 0, limit: int = 10, db: AsyncSession = Depends(
 
 
 @router.post("/add", response_model=SingleSmartphoneResponseModel, status_code=status.HTTP_201_CREATED)
-async def create_role(role: SmartphoneCreate, db: AsyncSession = Depends(get_async_session)):
+async def create_smartphone(smartphone: SmartphoneCreate, db: AsyncSession = Depends(get_async_session)):
     try:
-        db_role = SmartphoneModel(
-            name=role.name, model_phone=role.model_phone, price=role.price)
-        db.add(db_role)
+        db_smartphone = SmartphoneModel(
+            name=smartphone.name, model_phone=smartphone.model_phone,
+            color=smartphone.color, processor=smartphone.processor,
+            ram_capacity=smartphone.ram_capacity, memory_capacity=smartphone.memory_capacity,
+            battery_capacity=smartphone.battery_capacity, release_year=smartphone.release_year,
+            guarantee=smartphone.guarantee, manufacturer_country=smartphone.manufacturer_country,
+            quantity=smartphone.quantity, price=smartphone.price, images=smartphone.images
+        )
+        db.add(db_smartphone)
         await db.commit()
-        await db.refresh(db_role)
+        await db.refresh(db_smartphone)
         return {
             "status": "success",
-            "data": db_role,
+            "data": db_smartphone,
             "details": None
         }
     except Exception as e:
