@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Table, Column, Integer, String, TIMESTAMP, MetaData, CheckConstraint, ARRAY
+from sqlalchemy import Table, Column, Integer, String, TIMESTAMP, MetaData, ARRAY
 from sqlalchemy.dialects.postgresql import ARRAY
 
 from src.database import Base

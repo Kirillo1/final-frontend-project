@@ -7,6 +7,8 @@ from src.users.schemas import UserRead, UserCreate
 from src.users import roles
 
 from src.smartphone.router import router as router_smartphone
+from src.accessory.router import router as router_accessory
+
 
 
 app = FastAPI(title="Mobile Guru")
@@ -48,3 +50,9 @@ app.include_router(
     prefix="/smartphones",
     tags=["smartphones"]
     )
+
+app.include_router(
+    router_accessory,
+    prefix="/accessories",
+    tags=["accessories"]
+)

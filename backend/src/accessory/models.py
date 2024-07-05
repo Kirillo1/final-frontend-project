@@ -1,14 +1,38 @@
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, TIMESTAMP
-from src.database import declarative_base
+from sqlalchemy import Table, Column, Integer, String, TIMESTAMP, MetaData, ARRAY
+from sqlalchemy.dialects.postgresql import ARRAY
 
-Base = declarative_base()
+from src.database import Base
+
+metadata = MetaData()
+
+accessories = Table(
+    "accessory",
+    metadata,
+    Column("id", Integer, primary_key=True),
+    Column("name", String, nullable=False),
+    Column("model_phone", String, nullable=False),
+    Column("description", String, nullable=False),
+    Column("color", String, nullable=False),
+    Column("guarantee", String, nullable=False),
+    Column("manufacturer_country", String, nullable=False),
+    Column("quantity", Integer, nullable=False),
+    Column("price", Integer, nullable=False),
+    Column("images", ARRAY(String), nullable=False),
+    Column("created_at", TIMESTAMP, default=datetime.utcnow),
+)
 
 
 class Accessory(Base):
-    __tablename__ = "accessories"
+    __tablename__ = "accessory"
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)
     model_phone = Column(String, nullable=False)
+    description = Column(String, nullable=False)
+    color = Column(String, nullable=False)
+    guarantee = Column(String, nullable=False)
+    manufacturer_country = Column(String, nullable=False)
+    quantity = Column(Integer, nullable=False)
     price = Column(Integer, nullable=False)
+    images = Column(ARRAY(String), nullable=False)
     created_at = Column(TIMESTAMP, default=datetime.utcnow)
