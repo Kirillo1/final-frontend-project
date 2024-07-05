@@ -1,4 +1,5 @@
-from typing import Optional
+from pydantic import BaseModel
+from typing import Optional, List
 
 from fastapi_users import schemas
 
@@ -24,3 +25,17 @@ class UserCreate(schemas.BaseUserCreate):
     is_active: Optional[bool] = True
     is_superuser: Optional[bool] = False
     is_verified: Optional[bool] = False
+    
+
+class RoleCreate(BaseModel):
+    name: str
+    permissions: Optional[List[str]] = []
+
+
+class RoleRead(BaseModel):
+    id: int
+    name: str
+    permissions: List[str]
+
+    class Config:
+        orm_mode = True

@@ -3,15 +3,11 @@ from pydantic import BaseModel, conint, constr
 from typing import List, Optional
 
 
-class SmartphoneBase(BaseModel):
+class AccessoryBase(BaseModel):
     name: str
     model_phone: str
+    description: str
     color: str
-    processor: str
-    ram_capacity: conint(ge=1, le=128)
-    memory_capacity: conint(ge=1, le=1024)
-    battery_capacity: conint(ge=1000, le=10000)
-    release_year: conint(ge=2000, le=2100)
     guarantee: str
     manufacturer_country: str
     quantity: conint(ge=0)
@@ -19,19 +15,15 @@ class SmartphoneBase(BaseModel):
     images: List[str]
 
 
-class SmartphoneCreate(SmartphoneBase):
+class AccessoryCreate(AccessoryBase):
     pass
 
 
-class SmartphoneUpdate(BaseModel):
+class AccessoryUpdate(BaseModel):
     name: Optional[str] = None
     model_phone: Optional[str] = None
+    description: Optional[str] = None
     color: Optional[str] = None
-    processor: Optional[str] = None
-    ram_capacity: Optional[int] = None
-    memory_capacity: Optional[int] = None
-    battery_capacity: Optional[int] = None
-    release_year: Optional[int] = None
     guarantee: Optional[str] = None
     manufacturer_country: Optional[str] = None
     quantity: Optional[int] = None
@@ -39,7 +31,7 @@ class SmartphoneUpdate(BaseModel):
     images: Optional[List[str]] = None
 
 
-class Smartphone(SmartphoneBase):
+class Accessory(AccessoryBase):
     id: int
     created_at: datetime
 
@@ -49,13 +41,13 @@ class Smartphone(SmartphoneBase):
 
 class ResponseModel(BaseModel):
     status: str
-    data: List[Smartphone]
+    data: List[Accessory]
     details: Optional[str]
 
 
-class SingleSmartphoneResponseModel(BaseModel):
+class SingleAccessoryResponseModel(BaseModel):
     status: str
-    data: Smartphone
+    data: Accessory
     details: Optional[str]
 
     class Config:

@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
+
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy import delete
@@ -9,20 +10,18 @@ from src.smartphone.models import Smartphone as SmartphoneModel
 from src.smartphone.schemas import (SmartphoneCreate, ResponseModel,
                                     SingleSmartphoneResponseModel, SmartphoneUpdate)
 
-router = APIRouter(
-    prefix="/smartphones",
-    tags=["Smartphone"]
-)
+
+router = APIRouter()
 
 
 @router.get("/", response_model=ResponseModel)
-async def get_smartphones(session: AsyncSession = Depends(get_async_session)):
+async def read_smartphones(skip: int = 0, limit: int = 10, db: AsyncSession = Depends(get_async_session)):
     try:
-        query = await session.execute(select(SmartphoneModel))
-        all_smartphones = query.scalars().all()
+        result = await db.execute(select(SmartphoneModel).offset(skip).limit(limit))
+        smartphones = result.scalars().all()
         return {
             "status": "success",
-            "data": all_smartphones,
+            "data": smartphones,
             "details": None
         }
     except Exception as e:
@@ -33,16 +32,23 @@ async def get_smartphones(session: AsyncSession = Depends(get_async_session)):
         })
 
 
-@router.post("/add", response_model=SingleSmartphoneResponseModel)
-async def add_smartphone(new_smartphone: SmartphoneCreate, session: AsyncSession = Depends(get_async_session)):
+@router.post("/add", response_model=SingleSmartphoneResponseModel, status_code=status.HTTP_201_CREATED)
+async def create_smartphone(smartphone: SmartphoneCreate, db: AsyncSession = Depends(get_async_session)):
     try:
-        new_smartphone_obj = SmartphoneModel(**new_smartphone.dict())
-        session.add(new_smartphone_obj)
-        await session.commit()
-        await session.refresh(new_smartphone_obj)
+        db_smartphone = SmartphoneModel(
+            name=smartphone.name, model_phone=smartphone.model_phone,
+            color=smartphone.color, processor=smartphone.processor,
+            ram_capacity=smartphone.ram_capacity, memory_capacity=smartphone.memory_capacity,
+            battery_capacity=smartphone.battery_capacity, release_year=smartphone.release_year,
+            guarantee=smartphone.guarantee, manufacturer_country=smartphone.manufacturer_country,
+            quantity=smartphone.quantity, price=smartphone.price, images=smartphone.images
+        )
+        db.add(db_smartphone)
+        await db.commit()
+        await db.refresh(db_smartphone)
         return {
             "status": "success",
-            "data": new_smartphone_obj,
+            "data": db_smartphone,
             "details": None
         }
     except Exception as e:
