@@ -2,8 +2,8 @@ import { NavLink, useLocation } from "react-router-dom";
 
 /** Массив пунктов меню */
 const navItems = [
-    { name: "Home", path: "/" },
-    { name: "Cards", path: "/cards" },
+    { name: "Главная", path: "/" },
+    { name: "Смартфоны", path: "/cards" },
 ];
 
 /**

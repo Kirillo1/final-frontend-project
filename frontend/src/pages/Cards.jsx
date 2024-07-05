@@ -1,33 +1,30 @@
 import { useEffect, useState } from "react";
 import { Card } from "../components/ui/Card/Card";
-import useProductsStore from "../store/useProductsStore";
+import useSmartphonesStore from "../store/useSmartphonesStore";
 import { useNavigate } from "react-router-dom";
 
 const Cards = () => {
     const navigate = useNavigate(); // хук для роутинга
-    // Стор для работы с продуктами
-    const { products, getProducts } = useProductsStore();
-
-    console.log(products)
+    // Стор для работы с смартфонами
+    const { smartphones, getSmartphones } = useSmartphonesStore();
 
     useEffect(() => {
-        getProducts();
-    }, [getProducts]);
-
+        getSmartphones();
+    }, [getSmartphones]);
 
     return (
         <>
             <section className="products">
                 <div className="max-w-7xl mx-auto px-2">
                     <h2 className="mb-4 text-4xl font-bold text-zinc-800">
-                        Products Page
+                        Смартфоны
                     </h2>
                     <div className="flex flex-wrap gap-9">
-                        {!!products &&
-                            products.map((product) => (
+                        {!!smartphones &&
+                            smartphones.map((smartphone) => (
                                 <Card
-                                    key={product?.id}
-                                    details={product}
+                                    key={smartphone?.id}
+                                    details={smartphone}
                                 />
                             ))}
                     </div>
