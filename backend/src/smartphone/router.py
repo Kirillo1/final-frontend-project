@@ -41,7 +41,8 @@ async def create_smartphone(smartphone: SmartphoneCreate, db: AsyncSession = Dep
             ram_capacity=smartphone.ram_capacity, memory_capacity=smartphone.memory_capacity,
             battery_capacity=smartphone.battery_capacity, release_year=smartphone.release_year,
             guarantee=smartphone.guarantee, manufacturer_country=smartphone.manufacturer_country,
-            quantity=smartphone.quantity, price=smartphone.price, images=smartphone.images
+            description=smartphone.description, quantity=smartphone.quantity, 
+            price=smartphone.price, images=smartphone.images
         )
         db.add(db_smartphone)
         await db.commit()

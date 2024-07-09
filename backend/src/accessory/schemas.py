@@ -4,14 +4,15 @@ from typing import List, Optional
 
 
 class AccessoryBase(BaseModel):
-    name: str
-    model_phone: str
-    description: str
-    color: str
-    guarantee: str
-    manufacturer_country: str
+    name: constr(max_length=200)
+    model_phone: constr(max_length=200)
+    description: constr(max_length=500)
+    color: constr(max_length=100)
+    guarantee: constr(max_length=100)
+    manufacturer_country: constr(max_length=100)
     quantity: conint(ge=0)
     price: conint(ge=0)
+    is_verified: bool
     images: List[str]
 
 
@@ -28,6 +29,7 @@ class AccessoryUpdate(BaseModel):
     manufacturer_country: Optional[str] = None
     quantity: Optional[int] = None
     price: Optional[int] = None
+    is_verified: Optional[bool] = None
     images: Optional[List[str]] = None
 
 

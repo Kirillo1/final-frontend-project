@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Table, Column, Integer, String, TIMESTAMP, MetaData, ARRAY
+from sqlalchemy import Table, Column, Integer, String, TIMESTAMP, MetaData, ARRAY, Boolean
 from sqlalchemy.dialects.postgresql import ARRAY
 
 from src.database import Base
@@ -20,9 +20,11 @@ smartphone = Table(
     Column("release_year", Integer, nullable=False),
     Column("guarantee", String, nullable=False),
     Column("manufacturer_country", String, nullable=False),
+    Column("description", String, nullable=False),
     Column("quantity", Integer, nullable=False),
     Column("price", Integer, nullable=False),
     Column("images", ARRAY(String), nullable=False),
+    Column("is_verified", Boolean, default=False),
     Column("created_at", TIMESTAMP, default=datetime.utcnow),
 )
 
@@ -40,7 +42,9 @@ class Smartphone(Base):
     release_year = Column(Integer, nullable=False)
     guarantee = Column(String, nullable=False)
     manufacturer_country = Column(String, nullable=False)
+    description = Column(String, nullable=False)
     quantity = Column(Integer, nullable=False)
     images = Column(ARRAY(String), nullable=False)
     price = Column(Integer, nullable=False)
+    is_verified = Column(Boolean, default=False)
     created_at = Column(TIMESTAMP, default=datetime.utcnow)
