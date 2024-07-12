@@ -123,8 +123,21 @@ async def update_smartphone(smartphone_id: int, updated_smartphone: SmartphoneUp
         if smartphone is None:
             raise HTTPException(status_code=404, detail="Smartphone not found")
 
-        for key, value in updated_smartphone.dict(exclude_unset=True).items():
-            setattr(smartphone, key, value)
+        updated_data = updated_smartphone.dict(exclude_unset=True)
+
+        invalid_fields = {key: value for key, value in updated_data.items() if value in [
+            None, "", 0]}
+
+        if invalid_fields:
+            invalid_fields_list = ', '.join(invalid_fields.keys())
+            raise HTTPException(
+                status_code=400,
+                detail=f"The following fields cannot be empty or zero: {invalid_fields_list}"
+            )
+
+        for key, value in updated_data.items():
+            if value not in [None, "", 0]:
+                setattr(smartphone, key, value)
 
         await session.commit()
         await session.refresh(smartphone)
@@ -134,6 +147,8 @@ async def update_smartphone(smartphone_id: int, updated_smartphone: SmartphoneUp
             "data": smartphone,
             "details": None
         }
+    except HTTPException as http_exc:
+        raise http_exc
     except Exception as e:
         raise HTTPException(status_code=500, detail={
             "status": "error",

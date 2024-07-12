@@ -26,21 +26,21 @@ class SmartphoneCreate(SmartphoneBase):
 
 
 class SmartphoneUpdate(BaseModel):
-    name: Optional[str] = None
-    model_phone: Optional[str] = None
-    color: Optional[str] = None
-    processor: Optional[str] = None
-    ram_capacity: Optional[int] = None
-    memory_capacity: Optional[int] = None
-    battery_capacity: Optional[int] = None
-    release_year: Optional[int] = None
-    guarantee: Optional[str] = None
-    manufacturer_country: Optional[str] = None
-    description: Optional[str] = None
-    quantity: Optional[int] = None
-    price: Optional[int] = None
-    is_verified: Optional[bool] = None
-    images: Optional[List[str]] = None
+    name: str
+    model_phone: str
+    color: str
+    processor: str
+    ram_capacity: int
+    memory_capacity: int
+    battery_capacity: int
+    release_year: int
+    guarantee: str
+    manufacturer_country: str
+    description: str
+    quantity: int
+    price: int
+    is_verified: bool
+    images: List[str]
 
 
 class Smartphone(SmartphoneBase):
