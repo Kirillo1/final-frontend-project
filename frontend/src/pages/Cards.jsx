@@ -21,7 +21,7 @@ const Cards = () => {
         <>
             <section className="products">
                 <div className="max-w-7xl mx-auto px-2">
-                    <h2 className="mb-4 text-4xl font-bold text-zinc-800">
+                    <h2 className="mb-4 text-4xl font-bold text-zinc-100">
                         Смартфоны
                     </h2>
                     <div className="flex flex-wrap gap-9">

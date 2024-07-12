@@ -21,11 +21,11 @@ const Home = () => {
     return (
         <section className="new-products">
             <div className="max-w-7xl mx-auto px-2 relative">
-                <h1 className="mb-4 text-4xl font-bold">Новинки 2024 года!</h1>
+                <h1 className="mb-4 text-4xl font-bold text-zinc-100">Новинки 2024 года!</h1>
 
                 <section className="smartphones">
                     <div className="max-w-7xl mx-auto px-2">
-                        <h2 className="mb-4 text-4xl font-bold text-zinc-800">
+                        <h2 className="mb-4 text-4xl font-bold text-zinc-100">
                             Смартфоны
                         </h2>
                         <div className="flex flex-wrap gap-9">
@@ -43,7 +43,7 @@ const Home = () => {
 
                 <section className="accessories">
                     <div className="max-w-7xl mx-auto px-2">
-                        <h2 className="mb-4 text-4xl font-bold text-zinc-800">
+                        <h2 className="mb-4 text-4xl font-bold text-zinc-100">
                             Аксессуары
                         </h2>
                         <div className="flex flex-wrap gap-9">
