@@ -32,6 +32,31 @@ async def read_smartphones(skip: int = 0, limit: int = 10, db: AsyncSession = De
         })
 
 
+@router.get("/{smartphone_id}", response_model=ResponseModel)
+async def get_smartphone(smartphone_id: int, db: AsyncSession = Depends(get_async_session)):
+    try:
+        query = select(SmartphoneModel).where(
+            SmartphoneModel.id == smartphone_id)
+        result = await db.execute(query)
+        smartphone = result.scalar_one_or_none()
+
+        if smartphone is None:
+            raise HTTPException(status_code=404, detail="Smartphone not found")
+
+        return {
+            "status": "success",
+            "data": [smartphone],
+            "details": None
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail={
+            "status": "error",
+            "data": None,
+            "details": str(e)
+        })
+
+
 @router.post("/add", response_model=SingleSmartphoneResponseModel, status_code=status.HTTP_201_CREATED)
 async def create_smartphone(smartphone: SmartphoneCreate, db: AsyncSession = Depends(get_async_session)):
     try:
@@ -41,7 +66,7 @@ async def create_smartphone(smartphone: SmartphoneCreate, db: AsyncSession = Dep
             ram_capacity=smartphone.ram_capacity, memory_capacity=smartphone.memory_capacity,
             battery_capacity=smartphone.battery_capacity, release_year=smartphone.release_year,
             guarantee=smartphone.guarantee, manufacturer_country=smartphone.manufacturer_country,
-            description=smartphone.description, quantity=smartphone.quantity, 
+            description=smartphone.description, quantity=smartphone.quantity,
             price=smartphone.price, images=smartphone.images
         )
         db.add(db_smartphone)
