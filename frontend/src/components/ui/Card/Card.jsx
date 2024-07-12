@@ -40,18 +40,18 @@ export const Card = (props) => {
     return (
         <div
             onClick={handleCardClick}
-            className="max-w-72 rounded-md overflow-hidden shadow-md hover:shadow-lg mb-1 cursor-pointer"
+            className="bg-gray-500 max-w-72 rounded-md overflow-hidden shadow-xl hover:shadow-violet-600 mb-1 cursor-pointer"
         >
             <div className="relative">
                 <Image
-                    className="w-full max-h-44"
+                    className="w-full max-h-60"
                     isCritical={true}
                     src={`../assets/smartphones/${images[0]}`}
                     alt={name}
                 />
-                <div className="absolute top-0 left-0 w-full h-full bg-black opacity-30 transition-opacity duration-300 hover:opacity-50"></div>
+                <div className="absolute top-0 left-0 w-full h-full bg-black opacity-30 transition-opacity duration-300 hover:opacity-40"></div>
                 {price && (
-                    <div className="absolute top-0 right-0 bg-indigo-500 text-white px-2 py-1 m-2 rounded-md text-sm font-normal">
+                    <div className="absolute top-0 right-0 bg-violet-600 text-white px-2 py-1 m-2 rounded-md text-sm font-normal">
                         SALE
                     </div>
                 )}
@@ -71,11 +71,11 @@ export const Card = (props) => {
                 </button>
             </div>
             <div className="p-4">
-                <h3 className="text-lg font-medium mb-2 text-zinc-800">{name}</h3>
+                <h3 className="text-lg font-bold mb-2 text-zinc-200">{name}</h3>
                 {model_phone && (
-                    <p className="text-gray-600 text-sm mb-4">{model_phone}</p>
+                    <p className="text-zinc-200 text-semibold mb-4">{model_phone}</p>
                 )}
-                {color && <p className="text-gray-600 text-sm mb-4">{color}</p>}
+                {color && <p className="text-zinc-200 text-semibold mb-4">{color}</p>}
                 {/* {rating && (
                     <div className="text-yellow-500 mb-4">
                         {"★".repeat(Math.floor(rating)) +
@@ -83,7 +83,7 @@ export const Card = (props) => {
                     </div>
                 )} */}
                 <div className="flex items-center justify-between">
-                    <span className="font-bold text-md text-zinc-800">{price.toLocaleString('ru-RU')} ₽</span>
+                    <span className="font-extrabold text-md text-zinc-200">{price.toLocaleString('ru-RU')} ₽</span>
                 </div>
             </div>
         </div>
