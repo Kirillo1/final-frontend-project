@@ -1,30 +1,26 @@
-// import Image from "../Image/Image";
+import Image from "../Image/Image";
 
 /**
  * Компонент карточка.
  * @param {object} props - Свойства компонента.
- * @param {object} props.details - Детали карточки.
+ * @param {object} props.details - Детали карточки смартфона.
  * @param {string} props.details.id - Идентификатор карточки.
- * @param {string} props.details.name - Название карточки.
- * @param {string} props.details.category - Категория карточки (необязательно).
- * @param {string} props.details.description - Описание карточки (необязательно).
- * @param {string} [props.details.price] - Цена карточки (необязательно).
- * @param {number} [props.details.rating] - Рейтинг карточки (необязательно).
- * @param {string} props.details.imgSrc - Путь к изображению.
+ * @param {string} props.details.name - Название смартфона.
+ * @param {string} props.details.model_phone - Модель смартфона.
+ * @param {string} props.details.description - Описание смартфона.
+ * @param {string} [props.details.price] - Цена смартфона.
+ * @param {array} [props.details.imgSrc] - Массив с путями изображений.
  * @param {function} props.onClick - Обработчик клика по карточке (необязательно).
- * @param {boolean} props.isFavorite - Карточка добавлена в сохраненки или нет (необязательно).
  * @returns {JSX.Element} Элемент JSX.
  */
 export const Card = (props) => {
     const {
         id,
         name,
-        category,
-        description,
+        model_phone,
         price,
-        rating,
-        imgSrc,
-        isFavorite,
+        color,
+        images,
     } = props.details;
 
     const { onCardClick, onHeartClick } = props;
@@ -38,31 +34,32 @@ export const Card = (props) => {
 
     // Обработчик клика по карточке
     const handleCardClick = () => {
-        onCardClick && onCardClick(id);
+        onCardClick && onCardClick(name, id);
     };
 
     return (
         <div
             onClick={handleCardClick}
-            className="max-w-72 rounded-md overflow-hidden shadow-md hover:shadow-lg mb-1 cursor-pointer"
+            className="bg-gray-500 max-w-72 rounded-md overflow-hidden shadow-xl hover:shadow-violet-600 mb-1 cursor-pointer"
         >
             <div className="relative">
-                {/* <Image
-                    className="w-full max-h-44"
+                <Image
+                    className="w-full max-h-60"
                     isCritical={true}
-                    src={imgSrc}
+                    src={`../assets/smartphones/${images[0]}`}
                     alt={name}
-                /> */}
-                <div className="absolute top-0 left-0 w-full h-full bg-black opacity-30 transition-opacity duration-300 hover:opacity-50"></div>
+                />
+                <div className="absolute top-0 left-0 w-full h-full bg-black opacity-30 transition-opacity duration-300 hover:opacity-40"></div>
                 {price && (
-                    <div className="absolute top-0 right-0 bg-indigo-500 text-white px-2 py-1 m-2 rounded-md text-sm font-normal">
+                    <div className="absolute top-0 right-0 bg-violet-600 text-white px-2 py-1 m-2 rounded-md text-sm font-normal">
                         SALE
                     </div>
                 )}
                 <button
                     onClick={handleFavorite}
-                    className={`absolute top-0 left-0 m-2 p-2 rounded-full z-0 ${isFavorite ? "text-indigo-500" : "text-white"
-                        }`}
+                    // className={`absolute top-0 left-0 m-2 p-2 rounded-full z-0 ${isFavorite ? "text-indigo-500" : "text-white"
+                    //     }`}
+                    className="absolute top-0 left-0 m-2 p-2 rounded-full z-0  text-white"
                 >
                     <svg
                         className="w-6 h-6 fill-current"
@@ -74,19 +71,19 @@ export const Card = (props) => {
                 </button>
             </div>
             <div className="p-4">
-                <h3 className="text-lg font-medium mb-2 text-zinc-800">{name}</h3>
-                {description && (
-                    <p className="text-gray-600 text-sm mb-4">{description}</p>
+                <h3 className="text-lg font-bold mb-2 text-zinc-200">{name}</h3>
+                {model_phone && (
+                    <p className="text-zinc-200 text-semibold mb-4">{model_phone}</p>
                 )}
-                {category && <p className="text-gray-600 text-sm mb-4">{category}</p>}
-                {rating && (
+                {color && <p className="text-zinc-200 text-semibold mb-4">{color}</p>}
+                {/* {rating && (
                     <div className="text-yellow-500 mb-4">
                         {"★".repeat(Math.floor(rating)) +
                             "☆".repeat(5 - Math.floor(rating))}
                     </div>
-                )}
+                )} */}
                 <div className="flex items-center justify-between">
-                    <span className="font-bold text-md text-zinc-800">{price}$</span>
+                    <span className="font-extrabold text-md text-zinc-200">{price.toLocaleString('ru-RU')} ₽</span>
                 </div>
             </div>
         </div>

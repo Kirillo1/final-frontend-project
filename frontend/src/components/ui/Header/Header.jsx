@@ -3,7 +3,7 @@ import { NavLink, useLocation } from "react-router-dom";
 /** Массив пунктов меню */
 const navItems = [
     { name: "Главная", path: "/" },
-    { name: "Смартфоны", path: "/cards" },
+    { name: "Смартфоны", path: "/smartphones" },
 ];
 
 /**
@@ -26,30 +26,26 @@ const Header = () => {
     };
 
     return (
-        <header className="bg-white shadow fixed top-0 left-0 right-0 z-10">
+        <header className="bg-black fixed top-0 left-0 right-0 z-10 shadow-md shadow-violet-700">
             <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
                 <div className="relative flex justify-between h-16">
                     <nav className="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
-                        <NavLink to="/" className="flex-shrink-0 flex items-center">
+                        <NavLink to="/" className="text-white text-xl flex-shrink-0 flex items-center">
                             <img
                                 className="block lg:hidden h-8 w-auto"
                                 src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
                                 alt="Workflow"
                             />
-                            <img
-                                className="hidden lg:block h-8 w-auto"
-                                src="https://tailwindui.com/img/logos/workflow-logo-indigo-600-mark-gray-800-text.svg"
-                                alt="Workflow"
-                            />
+                            MobileGuru
                         </NavLink>
                         <div className="hidden sm:ml-8 sm:flex sm:space-x-8">
                             {navItems?.map((item) => (
                                 <NavLink
                                     to={item?.path}
                                     key={item?.path}
-                                    className={`text-gray-600 inline-flex items-center px-1 pt-1 text-sm ${isActiveLink(item?.path)
-                                        ? "text-indigo-500 border-b-2 border-indigo-500"
-                                        : "hover:text-indigo-500"
+                                    className={`text-white inline-flex items-center px-1 pt-1 text-sm ${isActiveLink(item?.path)
+                                        ? "text-violet-500"
+                                        : "hover:text-violet-500"
                                         }`}
                                 >
                                     {item?.name}

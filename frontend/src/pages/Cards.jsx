@@ -12,23 +12,28 @@ const Cards = () => {
         getSmartphones();
     }, [getSmartphones]);
 
+    // Обработчик клика по карточке
+    const handleCardClick = (name, id) => {
+        navigate(`/smartphone/${name}/${id}/`)
+    }
+
     return (
         <>
             <section className="products">
-                <div className="max-w-7xl mx-auto px-2">
-                    <h2 className="mb-4 text-4xl font-bold text-zinc-800">
+                <div className="max-w-7xl mx-auto px-2 mt-4">
+                    <h2 className="mb-5 text-4xl font-bold text-zinc-100">
                         Смартфоны
                     </h2>
-                    <div className="flex flex-wrap gap-9">
+                    <div className="flex flex-wrap gap-9 py-10">
                         {!!smartphones &&
                             smartphones.map((smartphone) => (
                                 <Card
                                     key={smartphone?.id}
                                     details={smartphone}
+                                    onCardClick={handleCardClick}
                                 />
                             ))}
                     </div>
-                    <div></div>
                 </div>
             </section>
         </>
