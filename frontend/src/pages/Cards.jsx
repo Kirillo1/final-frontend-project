@@ -12,6 +12,11 @@ const Cards = () => {
         getSmartphones();
     }, [getSmartphones]);
 
+    // Обработчик клика по карточке
+    const handleCardClick = (name, id) => {
+        navigate(`/smartphone/${name}/${id}/`)
+    }
+
     return (
         <>
             <section className="products">
@@ -25,6 +30,7 @@ const Cards = () => {
                                 <Card
                                     key={smartphone?.id}
                                     details={smartphone}
+                                    onCardClick={handleCardClick}
                                 />
                             ))}
                     </div>
