@@ -3,12 +3,14 @@ import MainLayout from "../../layouts/MainLayout.jsx";
 import Home from "../../pages/Home.jsx";
 import Cards from "../../pages/Cards.jsx";
 import CardDetail from "../../pages/CardDetail.jsx";
+import Admin from "../../pages/Admin.jsx";
 
 /** Массив роутов приложения */
 const routes = [
     { path: "/", element: <Home /> },
     { path: "smartphones", element: <Cards /> },
-    { path: "smartphone/:name/:id/", element: <CardDetail /> }
+    { path: "smartphone/:name/:id/", element: <CardDetail /> },
+    { path: "admin_panel/", element: <Admin /> }
 ];
 
 /**
