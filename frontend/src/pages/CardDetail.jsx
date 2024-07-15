@@ -95,7 +95,8 @@ const CardDetail = () => {
                     </div>
                 </div>
             </div>
-        </section>    )
+        </section>    
+    )
 }; 
 
 export default CardDetail;

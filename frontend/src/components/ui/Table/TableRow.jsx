@@ -1,4 +1,5 @@
 import TextCell from "./TextCell";
+import Switch from '@mui/material/Switch';
 
 /**
  * Компонент строка таблицы.
@@ -35,6 +36,10 @@ const TableRow = ({ rowData, onButtonClick }) => {
         return `${day}.${month}.${year} ${hours}:${minutes}`;
     };
 
+    const handleChange = (event) => {
+        console.log(event)
+    }
+
     const transformedData = rowKeys.map(key => {
         let value = rowData[key];
         if (key === "is_verified") {
@@ -45,9 +50,6 @@ const TableRow = ({ rowData, onButtonClick }) => {
         }
         return { key, value };
     });
-    const handleButtonClick = () => {
-        console.log(rowData.id);
-    };
 
     return (
         <div className="flex flex-row">
@@ -55,9 +57,12 @@ const TableRow = ({ rowData, onButtonClick }) => {
                 <TextCell key={key} value={value} />
             ))}
             <div className="flex justify-center border text-zinc-100 border-violet-700 flex-grow w-2">
-                <button onClick={() => onButtonClick(rowData.id)} className="px-4 py-2 text-white">
+                <button onClick={() => onButtonClick(rowData)} className="px-4 py-2 text-white">
                     ...
                 </button>
+            </div>
+            <div className="flex justify-center border text-zinc-100 border-violet-700 flex-grow w-2">
+                <Switch defaultChecked onChange={handleChange} />
             </div>
         </div>
     );
