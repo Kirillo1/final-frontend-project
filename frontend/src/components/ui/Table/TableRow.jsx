@@ -6,7 +6,7 @@ import TextCell from "./TextCell";
  * @param {object} props.rowData - Объект с характеристиками передаваемой сущности.
  * @returns {JSX.Element} Элемент JSX.
  */
-const TableRow = ({ rowData }) => {
+const TableRow = ({ rowData, onButtonClick }) => {
 
     const exclusionKeys = [
         "id",
@@ -55,7 +55,7 @@ const TableRow = ({ rowData }) => {
                 <TextCell key={key} value={value} />
             ))}
             <div className="flex justify-center border text-zinc-100 border-violet-700 flex-grow w-2">
-                <button onClick={handleButtonClick} className="px-4 py-2  text-white">
+                <button onClick={() => onButtonClick(rowData.id)} className="px-4 py-2 text-white">
                     ...
                 </button>
             </div>

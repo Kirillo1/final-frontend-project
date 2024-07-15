@@ -7,7 +7,7 @@ import TableRow from "./TableRow";
  * @param {Array} props.data - Массив объектов (содержимое таблицы).
  * @returns {JSX.Element} Элемент JSX.
  */
-const Table = ({ data, headers }) => (
+const Table = ({ data, headers, onButtonClick }) => (
     <div className="w-full">
         <div className="flex flex-row">
             {headers.map((header) => (
@@ -23,7 +23,7 @@ const Table = ({ data, headers }) => (
             </div>
         </div>
         {data?.length > 0 ? (
-            data?.map((item) => <TableRow key={crypto.randomUUID()} rowData={item} />)
+            data?.map((item) => <TableRow key={crypto.randomUUID()} rowData={item} onButtonClick={onButtonClick} />)
         ) : (
             <div className="flex flex-row py-2 px-4 border">
                 Данные в таблице отсутствуют.
