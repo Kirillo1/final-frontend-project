@@ -3,11 +3,13 @@ import TableRow from "./TableRow";
 /**
  * Компонент таблицы.
  * @param {object} props - Свойства компонента.
- * @param {Array} props.headers - Массив объектов (названия столбцов в шапке таблицы).
  * @param {Array} props.data - Массив объектов (содержимое таблицы).
+ * @param {Array} props.headers - Массив объектов (названия столбцов в шапке таблицы).
+ * @param {Function} props.onButtonClick - Функция обработки клика на кнопку доп информации смартфона
+ * @param {Function} props.handleChange - Функция обработки свича изменения статуса смартфона
  * @returns {JSX.Element} Элемент JSX.
  */
-const Table = ({ data, headers, onButtonClick }) => (
+const Table = ({ data, headers, onButtonClick, handleChange }) => (
     <div className="w-full">
         <div className="flex flex-row">
             {headers.map((header) => (
@@ -26,7 +28,14 @@ const Table = ({ data, headers, onButtonClick }) => (
             </div>
         </div>
         {data?.length > 0 ? (
-            data?.map((item) => <TableRow key={crypto.randomUUID()} rowData={item} onButtonClick={onButtonClick} />)
+            data?.map((item) => (
+                <TableRow
+                    key={crypto.randomUUID()}
+                    rowData={item}
+                    onButtonClick={onButtonClick}
+                    handleChange={handleChange}
+                />
+            ))
         ) : (
             <div className="flex flex-row py-2 px-4 border">
                 Данные в таблице отсутствуют.

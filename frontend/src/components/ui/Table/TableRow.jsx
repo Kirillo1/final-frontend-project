@@ -5,9 +5,11 @@ import Switch from '@mui/material/Switch';
  * Компонент строка таблицы.
  * @param {object} props - Свойства компонента.
  * @param {object} props.rowData - Объект с характеристиками передаваемой сущности.
+ * @param {Function} props.onButtonClick - Функция обработки клика на кнопку доп информации смартфона
+ * @param {Function} props.handleChange - Функция обработки свича изменения статуса смартфона
  * @returns {JSX.Element} Элемент JSX.
  */
-const TableRow = ({ rowData, onButtonClick }) => {
+const TableRow = ({ rowData, onButtonClick, handleChange }) => {
 
     const exclusionKeys = [
         "id",
@@ -36,10 +38,6 @@ const TableRow = ({ rowData, onButtonClick }) => {
         return `${day}.${month}.${year} ${hours}:${minutes}`;
     };
 
-    const handleChange = (event) => {
-        console.log(event)
-    }
-
     const transformedData = rowKeys.map(key => {
         let value = rowData[key];
         if (key === "is_verified") {
@@ -62,7 +60,11 @@ const TableRow = ({ rowData, onButtonClick }) => {
                 </button>
             </div>
             <div className="flex justify-center border text-zinc-100 border-violet-700 flex-grow w-2">
-                <Switch defaultChecked onChange={handleChange} />
+                <Switch 
+                    defaultChecked={rowData?.is_verified ? true : undefined}
+                    onChange={() => handleChange(rowData)}
+                    color="secondary"
+                />
             </div>
         </div>
     );

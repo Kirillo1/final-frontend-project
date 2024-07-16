@@ -4,8 +4,6 @@ import useSmartphonesStore from "../store/useSmartphonesStore";
 import Table from "../components/ui/Table/Table";
 import Image from "../components/ui/Image/Image";
 
-
-
 const Admin = () => {
     // Стор для работы с смартфонами
     const { smartphones, getSmartphones } = useSmartphonesStore();
@@ -26,6 +24,10 @@ const Admin = () => {
         setDrawerOpen(true);
     };
 
+    const handleChange = (smartphone) => {
+        console.log(smartphone);
+    };
+
     return (
         <section className="admin">
             <div className="max-w-7xl mx-auto px-2">
@@ -43,6 +45,7 @@ const Admin = () => {
                     ]}
                     data={smartphones}
                     onButtonClick={handleButtonClick}
+                    handleChange={handleChange}
                 />
                 {isDrawerOpen && (
                     <Drawer
@@ -101,7 +104,7 @@ const Admin = () => {
                                             </div>
                                         </div>
                                     </div>
-                                </section>    
+                                </section>
                             )}
                         </div>
                     </Drawer>
