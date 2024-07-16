@@ -1,6 +1,6 @@
 import { useEffect, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
-// import { LiaTimesSolid } from "react-icons/lia";
+import CloseIcon from '@mui/icons-material/Close';
 
 /**
  * Компонент выдвигающейся панели.
@@ -79,16 +79,16 @@ export const Drawer = ({
             <div className="absolute z-20 top-0 left-0 right-0 bottom-0 bg-opacity-50 bg-violet-300">
                 <aside
                     ref={drawerRef}
-                    className={`fixed top-0 bottom-0 ${align === "right" ? "right-0" : "left-0"
+                    className={` overflow-auto fixed top-0 bottom-0 ${align === "right" ? "right-0" : "left-0"
                         } right-0 z-20 w-2/6 p-8 bg-black transition-transform duration-300 ease-in-out`}
                 >
                     <header className="flex justify-between mb-4">
                         {title && <h2 className="text-3xl font-bold mb-8">{title}</h2>}
                         <button
                             onClick={closeDrawer}
-                            className="text-gray-600 hover:text-gray-800 w-10 h-10 inline-flex justify-center items-center absolute top-0 right-0 text-xl"
+                            className="text-zinc-100 hover:text-zinc-500 w-10 h-10 inline-flex justify-center items-center absolute top-0 right-5 text-xl"
                         >
-                            {/* <LiaTimesSolid /> */}
+                            <CloseIcon />
                         </button>
                     </header>
                     <main className="pt-0 pb-0">{children}</main>

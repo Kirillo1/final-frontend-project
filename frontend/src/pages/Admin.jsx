@@ -3,6 +3,17 @@ import { Drawer } from "../components/ui/Drawer/Drawer";
 import useSmartphonesStore from "../store/useSmartphonesStore";
 import Table from "../components/ui/Table/Table";
 import Image from "../components/ui/Image/Image";
+import Box from '@mui/material/Box';
+import ImageList from '@mui/material/ImageList';
+import ImageListItem from '@mui/material/ImageListItem';
+import BatteryStdTwoToneIcon from '@mui/icons-material/BatteryStdTwoTone';
+import MemoryTwoToneIcon from '@mui/icons-material/MemoryTwoTone';
+import PublicTwoToneIcon from '@mui/icons-material/PublicTwoTone';
+import ProductionQuantityLimitsTwoToneIcon from '@mui/icons-material/ProductionQuantityLimitsTwoTone';
+import ColorLensTwoToneIcon from '@mui/icons-material/ColorLensTwoTone';
+import EventAvailableTwoToneIcon from '@mui/icons-material/EventAvailableTwoTone';
+import StorageTwoToneIcon from '@mui/icons-material/StorageTwoTone';
+import CurrencyRubleTwoToneIcon from '@mui/icons-material/CurrencyRubleTwoTone';
 
 const Admin = () => {
     // Стор для работы с смартфонами
@@ -52,55 +63,47 @@ const Admin = () => {
                         isOpen={isDrawerOpen}
                         onClose={() => setDrawerOpen(false)}
                     >
-                        <div className="w-full max-w-xs">
+                        <div className="w-full">
                             {selectedSmartphone && (
                                 <section className="card-details">
                                     <div className="max-w-7xl mx-auto px-2">
-                                        <h3 className="mb-4 text-4xl font-bold text-zinc-800">
+                                        <h3 className="mb-4 text-4xl font-bold text-zinc-300">
                                             {selectedSmartphone?.name} {selectedSmartphone?.model_phone}
                                         </h3>
                                         <div className="max-w-md rounded shadow-lg relative">
                                             <div className="relative">
                                                 <div className="absolute inset-0 bg-black opacity-30 rounded"></div>
-                                                <Image
-                                                    className="w-full max-h-44"
-                                                    isCritical={true}
-                                                    src={`/assets/smartphones/${selectedSmartphone.images[0]}`}
-                                                    alt={selectedSmartphone.name}
-                                                />
                                             </div>
-
-                                            <button
-                                                className="absolute top-0 left-0 m-2 p-2 rounded-full text-white"
-                                            >
-                                                <svg
-                                                    className="w-6 h-6 fill-current"
-                                                    viewBox="0 0 32 32"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                >
-                                                    <path d="m16 28c7-4.733 14-10 14-17 0-1.792-.683-3.583-2.05-4.95-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05l-2.051 2.051-2.05-2.051c-1.367-1.366-3.158-2.05-4.95-2.05-1.791 0-3.583.684-4.949 2.05-1.367 1.367-2.051 3.158-2.051 4.95 0 7 7 12.267 14 17z"></path>
-                                                </svg>
-                                            </button>
-                                            <div className="px-6 py-4">
-                                                <p className="text-gray-600 text-sm mb-2">{selectedSmartphone?.description}</p>
-                                                <p className="text-gray-600 text-sm mb-2">{selectedSmartphone?.color}</p>
-                                                <p className="text-gray-600 text-sm mb-2">{selectedSmartphone?.processor}</p>
-                                                <p className="text-gray-600 text-sm mb-2">{selectedSmartphone?.ram_capacity}</p>
-                                                <p className="text-gray-600 text-sm mb-2">{selectedSmartphone?.memory_capacity}</p>
-                                                <p className="text-gray-600 text-sm mb-2">{selectedSmartphone?.battery_capacity}</p>
-                                                <p className="text-gray-600 text-sm mb-2">{selectedSmartphone?.release_year}</p>
-                                                <p className="text-gray-600 text-sm mb-2">{selectedSmartphone?.quantity}</p>
-                                                <p className="text-gray-600 text-sm mb-2">{selectedSmartphone?.manufacturer_country}</p>
+                                            <Box sx={{ width: 450, height: 300, overflowY: 'scroll', display: 'flex' }}>
+                                                <ImageList variant="masonry" cols={3} gap={8}>
+                                                    {selectedSmartphone.images.map((image) => (
+                                                        <ImageListItem key={image}>
+                                                            <img
+                                                                srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                                                                src={`/assets/smartphones/${image}`}
+                                                                loading="lazy"
+                                                            />
+                                                        </ImageListItem>
+                                                    ))}
+                                                </ImageList>
+                                            </Box>
+                                            <div className="px-1 py-4">
+                                                <p className="text-zinc-300 text-sm mb-2">{selectedSmartphone?.description}</p>
+                                                <p className="text-zinc-500 text-sm mb-2"><ColorLensTwoToneIcon /> <span className="text-zinc-300">{selectedSmartphone?.color}</span></p>
+                                                <p className="text-zinc-500 text-sm mb-2"><MemoryTwoToneIcon /> <span className="text-zinc-300">{selectedSmartphone?.processor}</span></p>
+                                                <p className="text-zinc-500 text-sm mb-2"><StorageTwoToneIcon /> <span className="text-zinc-300">{selectedSmartphone?.ram_capacity} Гб (ОП)</span></p>
+                                                <p className="text-zinc-500 text-sm mb-2"><StorageTwoToneIcon /> <span className="text-zinc-300">{selectedSmartphone?.memory_capacity} Гб (ВП)</span></p>
+                                                <p className="text-zinc-500 text-sm mb-2"><BatteryStdTwoToneIcon /> <span className="text-zinc-300">{selectedSmartphone?.battery_capacity} мА*ч</span></p>
+                                                <p className="text-zinc-500 text-sm mb-2"><EventAvailableTwoToneIcon /> <span className="text-zinc-300">{selectedSmartphone?.release_year} год</span></p>
+                                                <p className="text-zinc-500 text-sm mb-2"><ProductionQuantityLimitsTwoToneIcon /> <span className="text-zinc-300">{selectedSmartphone?.quantity} месяцев</span></p>
+                                                <p className="text-zinc-500 text-sm mb-2"><PublicTwoToneIcon /> <span className="text-zinc-300">{selectedSmartphone?.manufacturer_country}</span></p>
+                                                <p className="text-zinc-500 text-sm mb-2"><CurrencyRubleTwoToneIcon /> <span className="text-zinc-300">{selectedSmartphone?.price}</span></p>
                                                 {selectedSmartphone?.rating && (
                                                     <div className="text-yellow-500 mb-2">
                                                         {"★".repeat(Math.floor(selectedSmartphone?.rating)) +
                                                             "☆".repeat(5 - Math.floor(selectedSmartphone?.rating))}
                                                     </div>
                                                 )}
-                                                <div className="text-lg font-bold mb-2">{selectedSmartphone?.price}$</div>
-                                                <button className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded">
-                                                    Add to Cart
-                                                </button>
                                             </div>
                                         </div>
                                     </div>
