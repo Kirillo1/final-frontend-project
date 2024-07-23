@@ -21,17 +21,17 @@ class AccessoryCreate(AccessoryBase):
 
 
 class AccessoryUpdate(BaseModel):
-    name: Optional[str] = None
-    model_phone: Optional[str] = None
-    description: Optional[str] = None
-    color: Optional[str] = None
-    guarantee: Optional[str] = None
-    manufacturer_country: Optional[str] = None
-    quantity: Optional[int] = None
-    price: Optional[int] = None
-    is_verified: Optional[bool] = None
-    images: Optional[List[str]] = None
-
+    name: str
+    model_phone: str
+    description: str
+    color: str
+    guarantee: str
+    manufacturer_country: str
+    quantity: int
+    price: int
+    is_verified: bool
+    images: List[str]
+    
 
 class Accessory(AccessoryBase):
     id: int
