@@ -28,7 +28,7 @@ const Home = () => {
 
     // Обработчик клика по карточке аксессуара
     const handleAccessorCardClick = (name, id) => {
-        navigate(`/accessories/${name}/${id}/`)
+        navigate(`/accessory/${name}/${id}/`)
     }
 
     return (
@@ -61,10 +61,10 @@ const Home = () => {
                         </h3>
                         <div className="flex flex-wrap gap-9">
                             {!!accessories &&
-                                accessories.map((accessor) => (
+                                accessories.map((accessory) => (
                                     <Card
-                                        key={accessor?.id}
-                                        details={accessor}
+                                        key={accessory?.id}
+                                        details={accessory}
                                         onCardClick={handleAccessorCardClick}
                                     />
                                 ))}
