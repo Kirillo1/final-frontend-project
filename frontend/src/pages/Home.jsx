@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Card } from "../components/ui/Card/Card";
 import useSmartphonesStore from "../store/useSmartphonesStore";
+import useAccessoriesStore from "../store/useAccessoriesStore";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
@@ -9,13 +10,25 @@ const Home = () => {
     // Стор для работы с смартфонами
     const { smartphones, getSmartphones } = useSmartphonesStore();
 
+    // Стор для работы с аксессуарами
+    const { accessories, getAccessories } = useAccessoriesStore();
+
     useEffect(() => {
         getSmartphones();
     }, [getSmartphones]);
 
-    // Обработчик клика по карточке
-    const handleCardClick = (name, id) => {
+    useEffect(() => {
+        getAccessories();
+    }, [getAccessories]);
+
+    // Обработчик клика по карточке смартфона
+    const handleSmartphoneCardClick = (name, id) => {
         navigate(`/smartphone/${name}/${id}/`)
+    }
+
+    // Обработчик клика по карточке аксессуара
+    const handleAccessorCardClick = (name, id) => {
+        navigate(`/accessories/${name}/${id}/`)
     }
 
     return (
@@ -25,16 +38,16 @@ const Home = () => {
 
                 <section className="smartphones">
                     <div className="max-w-7xl mx-auto px-2">
-                        <h2 className="mb-4 text-4xl font-bold text-zinc-100">
+                        <h3 className="mb-4 text-4xl font-bold text-zinc-100">
                             Смартфоны
-                        </h2>
+                        </h3>
                         <div className="flex flex-wrap gap-9">
                             {!!smartphones &&
                                 smartphones.map((smartphone) => (
                                     <Card
                                         key={smartphone?.id}
                                         details={smartphone}
-                                        onCardClick={handleCardClick}
+                                        onCardClick={handleSmartphoneCardClick}
                                     />
                                 ))}
                         </div>
@@ -43,16 +56,16 @@ const Home = () => {
 
                 <section className="accessories">
                     <div className="max-w-7xl mx-auto px-2">
-                        <h2 className="mb-4 text-4xl font-bold text-zinc-100">
+                        <h3 className="mb-4 text-4xl font-bold text-zinc-100">
                             Аксессуары
-                        </h2>
+                        </h3>
                         <div className="flex flex-wrap gap-9">
-                            {!!smartphones &&
-                                smartphones.map((smartphone) => (
+                            {!!accessories &&
+                                accessories.map((accessor) => (
                                     <Card
-                                        key={smartphone?.id}
-                                        details={smartphone}
-                                        onCardClick={handleCardClick}
+                                        key={accessor?.id}
+                                        details={accessor}
+                                        onCardClick={handleAccessorCardClick}
                                     />
                                 ))}
                         </div>

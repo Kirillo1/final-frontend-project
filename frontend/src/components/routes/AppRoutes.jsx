@@ -10,6 +10,7 @@ const routes = [
     { path: "/", element: <Home /> },
     { path: "smartphones", element: <Cards /> },
     { path: "smartphone/:name/:id/", element: <CardDetail /> },
+    { path: "accessories/:name/:id/", element: <CardDetail /> },
     { path: "admin_panel/", element: <Admin /> }
 ];
 
