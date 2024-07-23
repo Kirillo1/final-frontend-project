@@ -7,9 +7,10 @@ import TableRow from "./TableRow";
  * @param {Array} props.headers - Массив объектов (названия столбцов в шапке таблицы).
  * @param {Function} props.onButtonClick - Функция обработки клика на кнопку доп информации смартфона
  * @param {Function} props.handleChange - Функция обработки свича изменения статуса смартфона
+ * @param {Function} props.onDeleteButtonClick - Функция обработки клика на кнопку удаления товара
  * @returns {JSX.Element} Элемент JSX.
  */
-const Table = ({ data, headers, onButtonClick, handleChange }) => (
+const Table = ({ data, headers, onButtonClick, handleChange, onDeleteButtonClick }) => (
     <div className="w-full">
         <div className="flex flex-row">
             {headers.map((header) => (
@@ -26,6 +27,9 @@ const Table = ({ data, headers, onButtonClick, handleChange }) => (
             <div className="py-2 px-4 justify-center text-zinc-100 font-semibold bg-violet-700 flex items-center border border-gray-800 flex-grow w-2">
                 Статус
             </div>
+            <div className="py-2 px-4 justify-center text-zinc-100 font-semibold bg-violet-700 flex items-center border border-gray-800 flex-grow w-2">
+                Удалить
+            </div>
         </div>
         {data?.length > 0 ? (
             data?.map((item) => (
@@ -34,6 +38,7 @@ const Table = ({ data, headers, onButtonClick, handleChange }) => (
                     rowData={item}
                     onButtonClick={onButtonClick}
                     handleChange={handleChange}
+                    onDeleteButtonClick={onDeleteButtonClick}
                 />
             ))
         ) : (

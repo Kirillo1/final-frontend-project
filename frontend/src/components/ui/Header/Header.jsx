@@ -4,7 +4,9 @@ import { NavLink, useLocation } from "react-router-dom";
 const navItems = [
     { name: "Главная", path: "/" },
     { name: "Смартфоны", path: "/smartphones" },
-    {name : "Панель администратора", path: "/admin_panel"}
+    { name : "Панель администратора", path: "/admin_panel" },
+    { name: "Добавить смартфон", path: "/add_smartphone" },
+    { name: "Добавить аксессуар", path: "/add_accessory" }
 ];
 
 /**

@@ -1,5 +1,6 @@
 import TextCell from "./TextCell";
 import Switch from '@mui/material/Switch';
+import DeleteForeverTwoToneIcon from '@mui/icons-material/DeleteForeverTwoTone';
 
 /**
  * Компонент строка таблицы.
@@ -7,9 +8,10 @@ import Switch from '@mui/material/Switch';
  * @param {object} props.rowData - Объект с характеристиками передаваемой сущности.
  * @param {Function} props.onButtonClick - Функция обработки клика на кнопку доп информации смартфона
  * @param {Function} props.handleChange - Функция обработки свича изменения статуса смартфона
+ * @param {Function} props.onDeleteButtonClick - Функция обработки клика на кнопку удаления товара
  * @returns {JSX.Element} Элемент JSX.
  */
-const TableRow = ({ rowData, onButtonClick, handleChange }) => {
+const TableRow = ({ rowData, onButtonClick, handleChange, onDeleteButtonClick }) => {
 
     const exclusionKeys = [
         "id",
@@ -65,6 +67,11 @@ const TableRow = ({ rowData, onButtonClick, handleChange }) => {
                     onChange={() => handleChange(rowData)}
                     color="secondary"
                 />
+            </div>
+            <div className="flex justify-center border text-zinc-100 border-violet-700 flex-grow w-2">
+                <button onClick={() => onDeleteButtonClick(rowData.id)} className="px-4 py-2 text-red">
+                    <DeleteForeverTwoToneIcon sx={{ color: "#c1121f" }} />
+                </button>            
             </div>
         </div>
     );
