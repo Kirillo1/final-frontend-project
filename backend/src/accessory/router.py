@@ -8,7 +8,7 @@ from src.database import get_async_session
 
 from src.accessory.models import Accessory as AccessoryModel
 from src.accessory.schemas import (AccessoryCreate, ResponseModel,
-                                    SingleAccessoryResponseModel, AccessoryUpdate)
+                                   SingleAccessoryResponseModel, AccessoryUpdate)
 
 
 router = APIRouter()
@@ -24,6 +24,31 @@ async def read_accessories(skip: int = 0, limit: int = 10, db: AsyncSession = De
             "data": accessories,
             "details": None
         }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail={
+            "status": "error",
+            "data": None,
+            "details": str(e)
+        })
+
+
+@router.get("/{accessory_id}", response_model=ResponseModel)
+async def get_accessory(accessory_id: int, db: AsyncSession = Depends(get_async_session)):
+    try:
+        query = select(AccessoryModel).where(
+            AccessoryModel.id == accessory_id)
+        result = await db.execute(query)
+        accessory = result.scalar_one_or_none()
+
+        if accessory is None:
+            raise HTTPException(status_code=404, detail="Accessory not found")
+
+        return {
+            "status": "success",
+            "data": [accessory],
+            "details": None
+        }
+
     except Exception as e:
         raise HTTPException(status_code=500, detail={
             "status": "error",
