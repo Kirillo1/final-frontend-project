@@ -8,7 +8,7 @@ from src.database import get_async_session
 
 from src.accessory.models import Accessory as AccessoryModel
 from src.accessory.schemas import (AccessoryCreate, ResponseModel,
-                                    SingleAccessoryResponseModel, AccessoryUpdate)
+                                   SingleAccessoryResponseModel, AccessoryUpdate)
 
 
 router = APIRouter()
@@ -24,6 +24,31 @@ async def read_accessories(skip: int = 0, limit: int = 10, db: AsyncSession = De
             "data": accessories,
             "details": None
         }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail={
+            "status": "error",
+            "data": None,
+            "details": str(e)
+        })
+
+
+@router.get("/{accessory_id}", response_model=ResponseModel)
+async def get_accessory(accessory_id: int, db: AsyncSession = Depends(get_async_session)):
+    try:
+        query = select(AccessoryModel).where(
+            AccessoryModel.id == accessory_id)
+        result = await db.execute(query)
+        accessory = result.scalar_one_or_none()
+
+        if accessory is None:
+            raise HTTPException(status_code=404, detail="Accessory not found")
+
+        return {
+            "status": "success",
+            "data": [accessory],
+            "details": None
+        }
+
     except Exception as e:
         raise HTTPException(status_code=500, detail={
             "status": "error",
@@ -95,8 +120,21 @@ async def update_accessory(accessory_id: int, updated_accessory: AccessoryUpdate
         if accessory is None:
             raise HTTPException(status_code=404, detail="Accessory not found")
 
-        for key, value in updated_accessory.dict(exclude_unset=True).items():
-            setattr(accessory, key, value)
+        updated_data = updated_accessory.dict(exclude_unset=True)
+
+        invalid_fields = {key: value for key, value in updated_data.items() if value in [
+            None, "", 0]}
+
+        if invalid_fields:
+            invalid_fields_list = ', '.join(invalid_fields.keys())
+            raise HTTPException(
+                status_code=400,
+                detail=f"The following fields cannot be empty or zero: {invalid_fields_list}"
+            )
+
+        for key, value in updated_data.items():
+            if value not in [None, "", 0]:
+                setattr(accessory, key, value)
 
         await session.commit()
         await session.refresh(accessory)
@@ -106,6 +144,8 @@ async def update_accessory(accessory_id: int, updated_accessory: AccessoryUpdate
             "data": accessory,
             "details": None
         }
+    except HTTPException as http_exc:
+        raise http_exc
     except Exception as e:
         raise HTTPException(status_code=500, detail={
             "status": "error",

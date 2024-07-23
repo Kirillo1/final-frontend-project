@@ -2,13 +2,17 @@ import { Routes, Route } from "react-router-dom";
 import MainLayout from "../../layouts/MainLayout.jsx";
 import Home from "../../pages/Home.jsx";
 import Cards from "../../pages/Cards.jsx";
-import CardDetail from "../../pages/CardDetail.jsx";
+import SmartphoneCardDetail from "../../pages/SmartphoneCardDetail.jsx";
+import AccessoryCardDetail from "../../pages/AccessoryCardDetail.jsx";
+import Admin from "../../pages/Admin.jsx";
 
 /** Массив роутов приложения */
 const routes = [
     { path: "/", element: <Home /> },
     { path: "smartphones", element: <Cards /> },
-    { path: "smartphone/:name/:id/", element: <CardDetail /> }
+    { path: "smartphone/:name/:id/", element: <SmartphoneCardDetail /> },
+    { path: "accessory/:name/:id/", element: <AccessoryCardDetail /> },
+    { path: "admin_panel/", element: <Admin /> }
 ];
 
 /**
