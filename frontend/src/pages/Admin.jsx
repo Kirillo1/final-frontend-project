@@ -25,29 +25,29 @@ const Admin = () => {
     // Стейт для скрытия/показа компонента Drawer
     const [isDrawerOpen, setDrawerOpen] = useState(false);
 
-    // Состояние для хранения ID выбранного смартфона
-    const [selectedSmartphone, setSelectedSmartphone] = useState(null);
-
-    // Состояние для хранения ID выбранного аксессуара
-    const [selectedAccessory, setSelectedAccessory] = useState(null);
+    // Состояние для хранения выбранного элемента
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [itemType, setItemType] = useState(null);
 
     useEffect(() => {
         getSmartphones();
-    }, [getSmartphones])
+    }, [getSmartphones]);
 
     useEffect(() => {
         getAccessories();
-    }, [getAccessories])
+    }, [getAccessories]);
 
     // Функция для обработки клика на кнопку просмотра смартфона
     const handleButtonSmartphoneClick = (smartphone) => {
-        setSelectedSmartphone(smartphone);
+        setSelectedItem(smartphone);
+        setItemType('smartphone');
         setDrawerOpen(true);
     };
 
     // Функция для обработки клика на кнопку просмотра аксессуара
     const handleButtonAccessoryClick = (accessory) => {
-        setSelectedAccessory(accessory);
+        setSelectedItem(accessory);
+        setItemType('accessory');
         setDrawerOpen(true);
     };
 
@@ -63,9 +63,15 @@ const Admin = () => {
         console.log(smartphoneID);
     };
 
-
     const onDeleteAccessoryButtonClick = (accessoryID) => {
         console.log(accessoryID);
+    };
+
+    // Функция для обработки закрытия Drawer и сбрасывания selectedItem и itemType
+    const handleCloseDrawer = () => {
+        setDrawerOpen(false);
+        setSelectedItem(null);
+        setItemType(null);
     };
 
     return (
@@ -89,7 +95,6 @@ const Admin = () => {
                         onButtonClick={handleButtonSmartphoneClick}
                         handleChange={handleSmartphoneChange}
                         onDeleteButtonClick={onDeleteSmartphoneButtonClick}
-
                     />
                 </div>
 
@@ -108,21 +113,20 @@ const Admin = () => {
                         onButtonClick={handleButtonAccessoryClick}
                         handleChange={handleAccessoryChange}
                         onDeleteButtonClick={onDeleteAccessoryButtonClick}
-
                     />
                 </div>
 
                 {isDrawerOpen && (
                     <Drawer
                         isOpen={isDrawerOpen}
-                        onClose={() => setDrawerOpen(false)}
+                        onClose={handleCloseDrawer}
                     >
                         <div className="w-full">
-                            {selectedSmartphone && (
+                            {selectedItem && itemType === 'smartphone' && (
                                 <section className="card-details">
                                     <div className="max-w-7xl mx-auto px-2">
                                         <h3 className="mb-4 text-4xl font-bold text-zinc-300">
-                                            {selectedSmartphone?.name} {selectedSmartphone?.model_phone}
+                                            {selectedItem?.name} {selectedItem?.model_phone}
                                         </h3>
                                         <div className="max-w-md rounded shadow-lg relative">
                                             <div className="relative">
@@ -130,7 +134,7 @@ const Admin = () => {
                                             </div>
                                             <Box sx={{ width: 450, height: 300, overflowY: 'scroll', display: 'flex' }}>
                                                 <ImageList variant="masonry" cols={3} gap={8}>
-                                                    {selectedSmartphone.images.map((image) => (
+                                                    {selectedItem.images.map((image) => (
                                                         <ImageListItem key={image}>
                                                             <img
                                                                 srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
@@ -142,20 +146,20 @@ const Admin = () => {
                                                 </ImageList>
                                             </Box>
                                             <div className="px-1 py-4">
-                                                <p className="text-zinc-300 text-sm mb-2">{selectedSmartphone?.description}</p>
-                                                <p className="text-zinc-500 text-sm mb-2"><ColorLensTwoToneIcon /> <span className="text-zinc-300">{selectedSmartphone?.color}</span></p>
-                                                <p className="text-zinc-500 text-sm mb-2"><MemoryTwoToneIcon /> <span className="text-zinc-300">{selectedSmartphone?.processor}</span></p>
-                                                <p className="text-zinc-500 text-sm mb-2"><StorageTwoToneIcon /> <span className="text-zinc-300">{selectedSmartphone?.ram_capacity} Гб (ОП)</span></p>
-                                                <p className="text-zinc-500 text-sm mb-2"><StorageTwoToneIcon /> <span className="text-zinc-300">{selectedSmartphone?.memory_capacity} Гб (ВП)</span></p>
-                                                <p className="text-zinc-500 text-sm mb-2"><BatteryStdTwoToneIcon /> <span className="text-zinc-300">{selectedSmartphone?.battery_capacity} мА*ч</span></p>
-                                                <p className="text-zinc-500 text-sm mb-2"><EventAvailableTwoToneIcon /> <span className="text-zinc-300">{selectedSmartphone?.release_year} год</span></p>
-                                                <p className="text-zinc-500 text-sm mb-2"><ProductionQuantityLimitsTwoToneIcon /> <span className="text-zinc-300">{selectedSmartphone?.quantity} месяцев</span></p>
-                                                <p className="text-zinc-500 text-sm mb-2"><PublicTwoToneIcon /> <span className="text-zinc-300">{selectedSmartphone?.manufacturer_country}</span></p>
-                                                <p className="text-zinc-500 text-sm mb-2"><CurrencyRubleTwoToneIcon /> <span className="text-zinc-300">{selectedSmartphone?.price}</span></p>
-                                                {selectedSmartphone?.rating && (
+                                                <p className="text-zinc-300 text-sm mb-2">{selectedItem?.description}</p>
+                                                <p className="text-zinc-500 text-sm mb-2"><ColorLensTwoToneIcon /> <span className="text-zinc-300">{selectedItem?.color}</span></p>
+                                                <p className="text-zinc-500 text-sm mb-2"><MemoryTwoToneIcon /> <span className="text-zinc-300">{selectedItem?.processor}</span></p>
+                                                <p className="text-zinc-500 text-sm mb-2"><StorageTwoToneIcon /> <span className="text-zinc-300">{selectedItem?.ram_capacity} Гб (ОП)</span></p>
+                                                <p className="text-zinc-500 text-sm mb-2"><StorageTwoToneIcon /> <span className="text-zinc-300">{selectedItem?.memory_capacity} Гб (ВП)</span></p>
+                                                <p className="text-zinc-500 text-sm mb-2"><BatteryStdTwoToneIcon /> <span className="text-zinc-300">{selectedItem?.battery_capacity} мА*ч</span></p>
+                                                <p className="text-zinc-500 text-sm mb-2"><EventAvailableTwoToneIcon /> <span className="text-zinc-300">{selectedItem?.release_year} год</span></p>
+                                                <p className="text-zinc-500 text-sm mb-2"><ProductionQuantityLimitsTwoToneIcon /> <span className="text-zinc-300">{selectedItem?.quantity} месяцев</span></p>
+                                                <p className="text-zinc-500 text-sm mb-2"><PublicTwoToneIcon /> <span className="text-zinc-300">{selectedItem?.manufacturer_country}</span></p>
+                                                <p className="text-zinc-500 text-sm mb-2"><CurrencyRubleTwoToneIcon /> <span className="text-zinc-300">{selectedItem?.price}</span></p>
+                                                {selectedItem?.rating && (
                                                     <div className="text-yellow-500 mb-2">
-                                                        {"★".repeat(Math.floor(selectedSmartphone?.rating)) +
-                                                            "☆".repeat(5 - Math.floor(selectedSmartphone?.rating))}
+                                                        {"★".repeat(Math.floor(selectedItem?.rating)) +
+                                                            "☆".repeat(5 - Math.floor(selectedItem?.rating))}
                                                     </div>
                                                 )}
                                             </div>
@@ -163,21 +167,11 @@ const Admin = () => {
                                     </div>
                                 </section>
                             )}
-                        </div>
-                    </Drawer>
-                )}
-
-                {isDrawerOpen && (
-                    <Drawer
-                        isOpen={isDrawerOpen}
-                        onClose={() => setDrawerOpen(false)}
-                    >
-                        <div className="w-full">
-                            {selectedAccessory && (
+                            {selectedItem && itemType === 'accessory' && (
                                 <section className="card-details">
                                     <div className="max-w-7xl mx-auto px-2">
                                         <h3 className="mb-4 text-4xl font-bold text-zinc-300">
-                                            {selectedAccessory?.name} {selectedAccessory?.model_phone}
+                                            {selectedItem?.name} {selectedItem?.model_phone}
                                         </h3>
                                         <div className="max-w-md rounded shadow-lg relative">
                                             <div className="relative">
@@ -185,7 +179,7 @@ const Admin = () => {
                                             </div>
                                             <Box sx={{ width: 450, height: 300, overflowY: 'scroll', display: 'flex' }}>
                                                 <ImageList variant="masonry" cols={3} gap={8}>
-                                                    {selectedAccessory.images.map((image) => (
+                                                    {selectedItem.images.map((image) => (
                                                         <ImageListItem key={image}>
                                                             <img
                                                                 srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
@@ -197,16 +191,16 @@ const Admin = () => {
                                                 </ImageList>
                                             </Box>
                                             <div className="px-1 py-4">
-                                                <p className="text-zinc-300 text-sm mb-2">{selectedAccessory?.description}</p>
-                                                <p className="text-zinc-500 text-sm mb-2"><ColorLensTwoToneIcon /> <span className="text-zinc-300">{selectedAccessory?.color}</span></p>
-                                                <p className="text-zinc-500 text-sm mb-2"><EventAvailableTwoToneIcon /> <span className="text-zinc-300">{selectedAccessory?.release_year} год</span></p>
-                                                <p className="text-zinc-500 text-sm mb-2"><ProductionQuantityLimitsTwoToneIcon /> <span className="text-zinc-300">{selectedAccessory?.quantity} месяцев</span></p>
-                                                <p className="text-zinc-500 text-sm mb-2"><PublicTwoToneIcon /> <span className="text-zinc-300">{selectedAccessory?.manufacturer_country}</span></p>
-                                                <p className="text-zinc-500 text-sm mb-2"><CurrencyRubleTwoToneIcon /> <span className="text-zinc-300">{selectedAccessory?.price}</span></p>
-                                                {selectedAccessory?.rating && (
+                                                <p className="text-zinc-300 text-sm mb-2">{selectedItem?.description}</p>
+                                                <p className="text-zinc-500 text-sm mb-2"><ColorLensTwoToneIcon /> <span className="text-zinc-300">{selectedItem?.color}</span></p>
+                                                <p className="text-zinc-500 text-sm mb-2"><EventAvailableTwoToneIcon /> <span className="text-zinc-300">{selectedItem?.release_year} год</span></p>
+                                                <p className="text-zinc-500 text-sm mb-2"><ProductionQuantityLimitsTwoToneIcon /> <span className="text-zinc-300">{selectedItem?.quantity} месяцев</span></p>
+                                                <p className="text-zinc-500 text-sm mb-2"><PublicTwoToneIcon /> <span className="text-zinc-300">{selectedItem?.manufacturer_country}</span></p>
+                                                <p className="text-zinc-500 text-sm mb-2"><CurrencyRubleTwoToneIcon /> <span className="text-zinc-300">{selectedItem?.price}</span></p>
+                                                {selectedItem?.rating && (
                                                     <div className="text-yellow-500 mb-2">
-                                                        {"★".repeat(Math.floor(selectedAccessory?.rating)) +
-                                                            "☆".repeat(5 - Math.floor(selectedAccessory?.rating))}
+                                                        {"★".repeat(Math.floor(selectedItem?.rating)) +
+                                                            "☆".repeat(5 - Math.floor(selectedItem?.rating))}
                                                     </div>
                                                 )}
                                             </div>
