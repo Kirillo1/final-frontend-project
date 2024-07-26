@@ -5,6 +5,7 @@ import Cards from "../../pages/Cards.jsx";
 import SmartphoneCardDetail from "../../pages/SmartphoneCardDetail.jsx";
 import AccessoryCardDetail from "../../pages/AccessoryCardDetail.jsx";
 import Admin from "../../pages/Admin.jsx";
+import AddNewProduct from "../../pages/AddProduct.jsx";
 
 /** Массив роутов приложения */
 const routes = [
@@ -12,7 +13,8 @@ const routes = [
     { path: "smartphones", element: <Cards /> },
     { path: "smartphone/:name/:id/", element: <SmartphoneCardDetail /> },
     { path: "accessory/:name/:id/", element: <AccessoryCardDetail /> },
-    { path: "admin_panel/", element: <Admin /> }
+    { path: "admin_panel/", element: <Admin /> },
+    { path: "add_new_product/", element: <AddNewProduct /> }
 ];
 
 /**
