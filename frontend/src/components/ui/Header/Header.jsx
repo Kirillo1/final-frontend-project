@@ -5,6 +5,7 @@ import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import SmartphoneRoundedIcon from '@mui/icons-material/SmartphoneRounded';
 import HeadphonesBatteryRoundedIcon from '@mui/icons-material/HeadphonesBatteryRounded';
+import ExitToAppRoundedIcon from '@mui/icons-material/ExitToAppRounded';
 import {
     Dialog,
     DialogPanel,
@@ -22,7 +23,7 @@ const products = [
     { 
         name: 'Смартфон', 
         description: 'Добавить смартфон', 
-        href: '#', icon: SmartphoneRoundedIcon 
+        href: 'add_new_product', icon: SmartphoneRoundedIcon 
     },
     { 
         name: 'Аксессуар', 
@@ -44,7 +45,7 @@ const navItems = [
  */
 const Header = () => {
     const location = useLocation();
-
+    console.log(location)
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
     /**
@@ -60,7 +61,7 @@ const Header = () => {
     };
 
     return (
-        <header className="bg-black">
+        <header className="bg-black shadow-lg shadow-violet-700">
             <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
                 <NavLink to="/" className="text-white text-xl flex-shrink-0 flex items-center">
                     <img
@@ -74,7 +75,7 @@ const Header = () => {
                     <button
                         type="button"
                         onClick={() => setMobileMenuOpen(true)}
-                        className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
+                        className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-wite"
                     >
                         <span className="sr-only">Открыть главное меню</span>
                         <MenuRoundedIcon aria-hidden="true" className="h-6 w-6" />
@@ -87,7 +88,7 @@ const Header = () => {
                                 to={item?.path}
                                 key={item?.path}
                                 className={`text-white inline-flex items-center px-1 pt-1 text-sm ${isActiveLink(item?.path)
-                                    ? "text-violet-500"
+                                    ? "text-violet-700"
                                     : "hover:text-violet-500"
                                     }`}
                             >
@@ -95,30 +96,29 @@ const Header = () => {
                             </NavLink>
                         ))}
                         <Popover className="relative">
-                            <PopoverButton className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-white">
+                            <PopoverButton className="text-white after:border-0 before:border-0 inline-flex items-center text-sm hover:text-violet-500">
                                 Добавить
                                 <KeyboardArrowDownRoundedIcon />
                             </PopoverButton>
 
                             <PopoverPanel
                                 transition
-                                className="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5 transition data-[closed]:translate-y-1 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150 data-[enter]:ease-out data-[leave]:ease-in"
+                                className="absolute border-solid border-2 border-violet-700 -left-8 top-full z-10 mt-6 w-screen max-w-md overflow-hidden rounded-3xl bg-black shadow-lg shadow-violet-700 transition data-[closed]:translate-y-1 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150 data-[enter]:ease-out data-[leave]:ease-in"
                             >
-                                <div className="p-4">
+                                <div className="p-4 ">
                                     {products.map((item) => (
                                         <div
                                             key={item.name}
-                                            className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50"
+                                            className="group relative flex items-center gap-x-6 rounded-lg text-white border-violet-500 border-b-2 hover:border-b-4 p-4 text-sm leading-6"
                                         >
-                                            <div className="flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white">
-                                                <item.icon aria-hidden="true" className="h-6 w-6 text-gray-600 group-hover:text-indigo-600" />
+                                            <div className="flex h-11 w-11 flex-none items-center justify-center rounded-lg">
+                                                <item.icon aria-hidden="true" className="h-6 w-6 group-hover:text-violet-500" />
                                             </div>
                                             <div className="flex-auto">
-                                                <a href={item.href} className="block font-semibold text-gray-900">
+                                                <a href={item.href} className="block font-semibold text-white hover:text-violet-500">
                                                     {item.name}
                                                     <span className="absolute inset-0" />
                                                 </a>
-                                                <p className="mt-1 text-gray-600">{item.description}</p>
                                             </div>
                                         </div>
                                     ))}
@@ -128,8 +128,11 @@ const Header = () => {
                     </div>
                 </PopoverGroup>
                 <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-                    <a href="#" className="text-sm font-semibold leading-6 text-white">
+                    <a href="#" className="text-white inline-flex items-center px-1 pt-1 text-sm hover:text-violet-500e">
                         Войти<span aria-hidden="true">&rarr;</span>
+                    </a>
+                    <a href="#" className="text-white inline-flex items-center px-1 pt-1 text-sm hover:text-violet-500e">
+                        Выйти<ExitToAppRoundedIcon />
                     </a>
                 </div>
             </nav>
