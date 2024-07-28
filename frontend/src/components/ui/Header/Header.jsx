@@ -45,7 +45,7 @@ const navItems = [
  */
 const Header = () => {
     const location = useLocation();
-    console.log(location)
+
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
     /**

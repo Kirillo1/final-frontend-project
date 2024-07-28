@@ -40,7 +40,7 @@ const Input = ({
     className,
 }) => {
     const inputClasses = classNames(
-        "max-w-96 w-full border border-gray-300 p-2 rounded-md focus:outline-none mb-1",
+        "max-w-96 w-full outline-none border-4 border-violet-800 p-2 rounded-md focus:border-violet-500 mb-1",
         disabled ? "opacity-50 cursor-not-allowed" : "",
         required && error ? "border-rose-500" : "",
         className || ""

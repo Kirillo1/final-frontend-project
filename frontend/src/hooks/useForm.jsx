@@ -38,6 +38,27 @@ export function useForm(initialValues) {
         setFormErrors(validationErrors);
     };
 
+    /**
+     * Обработчик изменения значения файлов.
+     *
+     * @param {Object} e - Событие изменения.
+     */
+    const handleFileChange = (e) => {
+        const { name, files } = e.target;
+
+        // Обновляем состояние формы для текущего поля
+        const updatedFormState = { ...formValues, [name]: files };
+        setFormValues(updatedFormState);
+
+        // Обновляем состояние ошибок, если нужно
+        // const validationErrors = {
+        //     ...formErrors,
+        //     [name]: validateForm({ files })[type] || null,
+        // };
+
+        // setFormErrors(validationErrors);
+    };
+
     // Функция для сброса состояния формы и состояния ошибок
     const resetForm = () => {
         setFormValues(initialValues);
@@ -48,6 +69,7 @@ export function useForm(initialValues) {
         formValues,
         formErrors,
         handleInput,
+        handleFileChange,
         resetForm,
     };
 }
