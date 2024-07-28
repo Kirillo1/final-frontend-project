@@ -1,11 +1,20 @@
 import { useState } from 'react'
 import { NavLink, useLocation } from "react-router-dom";
+import useForm from "../../../hooks/useForm";
+import { Modal } from "../Modal/Modal";
+import Input from "../Input/Input";
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import SmartphoneRoundedIcon from '@mui/icons-material/SmartphoneRounded';
 import HeadphonesBatteryRoundedIcon from '@mui/icons-material/HeadphonesBatteryRounded';
 import ExitToAppRoundedIcon from '@mui/icons-material/ExitToAppRounded';
+import PersonAddRoundedIcon from '@mui/icons-material/PersonAddRounded';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
 import {
     Dialog,
     DialogPanel,
@@ -17,6 +26,7 @@ import {
     PopoverGroup,
     PopoverPanel,
 } from '@headlessui/react'
+
 
 /** Массив подпунктов меню добавления */
 const products = [
@@ -44,6 +54,21 @@ const navItems = [
  * @returns {JSX.Element} Элемент header.
  */
 const Header = () => {
+    // Стейт для показа/скрытия модального окна (для регистрации).
+    const [showRegisterModal, setShowRegisterModal] = useState(false);
+
+    // Стейт для показа/скрытия модального окна (для входа).
+    const [showLoginModal, setShowLoginModal] = useState(false);
+
+    // Использование кастомного хука для обработки данных
+    const { formValues, formErrors, handleInput, resetForm } = useForm({
+        login: "",
+        password: "",
+    });
+
+    // const { user, onRegister, onLogin, onLogout } = useAuth();
+    const user = false
+
     const location = useLocation();
 
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -58,6 +83,40 @@ const Header = () => {
             location?.pathname === path ||
             (path === "/cards" && location?.pathname?.startsWith("/cards"))
         );
+    };
+
+    // Обработка формы при регистрации
+    const handleRegisterForm = (event) => {
+        event.preventDefault();
+
+        // onRegister(formValues);
+
+        setShowRegisterModal(false); // Закрываем Modal
+
+        resetForm(); // Сбрасываем форму
+    };
+
+    // Обработка формы при входе в систему
+    const handleLoginForm = () => {
+        event.preventDefault();
+
+        // onLogin(formValues);
+
+        setShowLoginModal(false); // Закрываем Modal
+
+        resetForm(); // Сбрасываем форму
+    };
+
+    // Обработчик закрытия модального окна (регистрация)
+    const closeRegisterModalAndResetForm = () => {
+        setShowRegisterModal(false);
+        resetForm(); // Сбрасываем форму
+    };
+
+    // Обработчик закрытия модального окна (логин)
+    const closeLoginModalAndResetForm = () => {
+        setShowLoginModal(false);
+        resetForm(); // Сбрасываем форму
     };
 
     return (
@@ -81,6 +140,134 @@ const Header = () => {
                         <MenuRoundedIcon aria-hidden="true" className="h-6 w-6" />
                     </button>
                 </div>
+                {showRegisterModal && (
+                    <Modal
+                        title="Регистрация"
+                        isOpen={showRegisterModal}
+                        onClose={closeRegisterModalAndResetForm}
+                    >
+                        <form onSubmit={handleRegisterForm}>
+                            <Input
+                                label="Имя пользователя"
+                                name="login"
+                                type="text"
+                                value={formValues?.login}
+                                onInput={handleInput}
+                                placeholder="Введите имя учетной записи"
+                                error={formErrors?.login}
+                                required
+                            />
+                            <Input
+                                label="Пароль"
+                                type="password"
+                                name="password"
+                                value={formValues?.password}
+                                onInput={handleInput}
+                                placeholder="Введите пароль"
+                                error={formErrors?.password}
+                                required
+                            />
+                            <Input
+                                label="Почта"
+                                name="email"
+                                type="email"
+                                value={formValues?.login}
+                                onInput={handleInput}
+                                placeholder="Введите вашу почту"
+                                error={formErrors?.login}
+                                required
+                            />
+
+                            <div className='flex justify-center'>
+                                <FormControl>
+                                    <FormLabel
+                                        id="radioGroupLabel"
+                                        sx={{
+                                            color: "white"
+                                        }}
+                                    >
+                                        Являетесь ли вы продавцом?
+                                    </FormLabel>
+                                    <RadioGroup
+                                        row
+                                        aria-labelledby="radioGroupLabel"
+                                        name="row-radio-buttons-group"
+                                        className='flex justify-center'
+                                    >
+                                        <FormControlLabel value="female" control={<Radio 
+                                            sx={{
+                                                color: "#551eaa",
+                                                '&.Mui-checked': {
+                                                    color: "#551eaa",
+                                                },
+                                            }}
+                                        />}
+                                            sx={{
+                                                color: "white"
+                                            }}
+                                        label="Да" />
+                                        <FormControlLabel value="male" control={<Radio
+                                            sx={{
+                                                color: "#551eaa",
+                                                '&.Mui-checked': {
+                                                    color: "#551eaa",
+                                                },
+                                            }}
+                                        />}
+                                            sx={{
+                                                color: "white"
+                                            }}
+                                        label="Нет" />
+                                    </RadioGroup>
+                                </FormControl>
+                            </div>
+
+                            <button
+                                className="bg-violet-500 text-white font-medium py-2 px-4 rounded"
+                                type="submit"
+                            >
+                                Зарегистрироваться
+                            </button>
+                        </form>
+                    </Modal>
+                )}
+                {showLoginModal && (
+                    <Modal
+                        title="Войти"
+                        isOpen={showLoginModal}
+                        onClose={closeLoginModalAndResetForm}
+                    >
+                        <form onSubmit={handleLoginForm}>
+                            <Input
+                                label="Имя пользователя"
+                                name="login"
+                                type="text"
+                                value={formValues?.login}
+                                onInput={handleInput}
+                                placeholder="Введите ваше имя учетной записи"
+                                error={formErrors?.login}
+                                required
+                            />
+                            <Input
+                                label="Пароль"
+                                type="password"
+                                name="password"
+                                value={formValues?.password}
+                                onInput={handleInput}
+                                placeholder="Введите ваш пароль"
+                                error={formErrors?.password}
+                                required
+                            />
+
+                            <button
+                                className="bg-violet-500 text-white font-medium py-2 px-4 rounded"
+                                type="submit"
+                            >
+                                Войти
+                            </button>
+                        </form>
+                    </Modal>
+                )}
                 <PopoverGroup className="hidden lg:flex lg:gap-x-12">
                     <div className="hidden sm:ml-8 sm:flex sm:space-x-8">
                         {navItems?.map((item) => (
@@ -128,12 +315,33 @@ const Header = () => {
                     </div>
                 </PopoverGroup>
                 <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-                    <a href="#" className="text-white inline-flex items-center px-1 pt-1 text-sm hover:text-violet-500e">
-                        Войти<span aria-hidden="true">&rarr;</span>
-                    </a>
-                    <a href="#" className="text-white inline-flex items-center px-1 pt-1 text-sm hover:text-violet-500e">
-                        Выйти<ExitToAppRoundedIcon />
-                    </a>
+                    {!user ? (
+                        <>
+                            <button 
+                                type='button'
+                                onClick={() => setShowLoginModal(true)}
+                                className="text-white inline-flex items-center px-2 pt-1 text-sm hover:text-violet-500e"
+                            >
+                                Войти <span className='ms-1' aria-hidden="true">&rarr;</span>
+                            </button>
+        
+                            <button
+                                type="button"
+                                onClick={() => setShowRegisterModal(true)}
+                                className="text-white inline-flex items-center px-2 pt-1 text-sm hover:text-violet-500e"
+                            >
+                                Регистрация <span className='ms-1'><PersonAddRoundedIcon sx={{ fontSize: 23 }} /></span>
+                            </button>
+                        </>
+
+                    ) : (
+                        <button 
+                            type='button' 
+                            className="text-white inline-flex items-center px-1 pt-1 text-sm hover:text-violet-500e"
+                        >
+                            Выйти <ExitToAppRoundedIcon />
+                        </button>
+                    )}
                 </div>
             </nav>
             <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
