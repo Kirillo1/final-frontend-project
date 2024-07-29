@@ -126,7 +126,7 @@ const Admin = () => {
                                 <section className="card-details">
                                     <div className="max-w-7xl mx-auto px-2">
                                         <h3 className="mb-4 text-4xl font-bold text-zinc-300">
-                                            {selectedItem?.name} {selectedItem?.model_phone}
+                                            {selectedItem?.name} {selectedItem?.phone_model}
                                         </h3>
                                         <div className="max-w-md rounded shadow-lg relative">
                                             <div className="relative">
@@ -171,7 +171,7 @@ const Admin = () => {
                                 <section className="card-details">
                                     <div className="max-w-7xl mx-auto px-2">
                                         <h3 className="mb-4 text-4xl font-bold text-zinc-300">
-                                            {selectedItem?.name} {selectedItem?.model_phone}
+                                            {selectedItem?.name} {selectedItem?.phone_model}
                                         </h3>
                                         <div className="max-w-md rounded shadow-lg relative">
                                             <div className="relative">

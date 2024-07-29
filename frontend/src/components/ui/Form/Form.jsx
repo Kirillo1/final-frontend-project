@@ -5,7 +5,7 @@ import Input from "../Input/Input";
 const Form = () => {
     const { formValues, formErrors, handleInput, handleFileChange } = useForm({
         name: '',
-        model_phone: '',
+        phone_model: '',
         color: '',
         processor: '',
         ram_capacity: '',
@@ -66,11 +66,11 @@ const Form = () => {
                     />
                     <Input
                         label="Модель"
-                        name="model_phone"
+                        name="phone_model"
                         type="text"
-                        value={formValues.model_phone}
+                        value={formValues.phone_model}
                         onInput={handleInput}
-                        error={formErrors.model_phone}
+                        error={formErrors.phone_model}
                         required
                         className="w-80"
                     />

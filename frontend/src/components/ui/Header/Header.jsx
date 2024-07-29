@@ -3,6 +3,7 @@ import { NavLink, useLocation } from "react-router-dom";
 import useForm from "../../../hooks/useForm";
 import { Modal } from "../Modal/Modal";
 import Input from "../Input/Input";
+import { useAuth } from '../../../hooks/useAuth';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
@@ -66,8 +67,8 @@ const Header = () => {
         password: "",
     });
 
-    // const { user, onRegister, onLogin, onLogout } = useAuth();
-    const user = false
+    const { user, onLogin, onLogout } = useAuth();
+    console.log(user)
 
     const location = useLocation();
 
@@ -100,7 +101,7 @@ const Header = () => {
     const handleLoginForm = () => {
         event.preventDefault();
 
-        // onLogin(formValues);
+        onLogin(formValues);
 
         setShowLoginModal(false); // Закрываем Modal
 
@@ -245,7 +246,7 @@ const Header = () => {
                                 value={formValues?.login}
                                 onInput={handleInput}
                                 placeholder="Введите ваше имя учетной записи"
-                                error={formErrors?.login}
+                                // error={formErrors?.login}
                                 required
                             />
                             <Input
@@ -337,6 +338,7 @@ const Header = () => {
                     ) : (
                         <button 
                             type='button' 
+                            onClick={onLogout}
                             className="text-white inline-flex items-center px-1 pt-1 text-sm hover:text-violet-500e"
                         >
                             Выйти <ExitToAppRoundedIcon />
