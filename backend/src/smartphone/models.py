@@ -11,7 +11,7 @@ smartphone = Table(
     metadata,
     Column("id", Integer, primary_key=True),
     Column("name", String, nullable=False),
-    Column("model_phone", String, nullable=False),
+    Column("phone_model", String, nullable=False),
     Column("color", String, nullable=False),
     Column("processor", String, nullable=False),
     Column("ram_capacity", Integer, nullable=False),
@@ -33,7 +33,7 @@ class Smartphone(Base):
     __tablename__ = "smartphone"
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)
-    model_phone = Column(String, nullable=False)
+    phone_model = Column(String, nullable=False)
     color = Column(String, nullable=False)
     processor = Column(String, nullable=False)
     ram_capacity = Column(Integer, nullable=False)

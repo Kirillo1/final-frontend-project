@@ -5,7 +5,7 @@ from typing import List, Optional
 
 class SmartphoneBase(BaseModel):
     name: constr(max_length=200)
-    model_phone: constr(max_length=200)
+    phone_model: constr(max_length=200)
     color: constr(max_length=100)
     processor: constr(max_length=200)
     ram_capacity: conint(ge=1, le=128)
@@ -27,7 +27,7 @@ class SmartphoneCreate(SmartphoneBase):
 
 class SmartphoneUpdate(BaseModel):
     name: str
-    model_phone: str
+    phone_model: str
     color: str
     processor: str
     ram_capacity: int
@@ -48,7 +48,7 @@ class Smartphone(SmartphoneBase):
     created_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class ResponseModel(BaseModel):
@@ -63,4 +63,4 @@ class SingleSmartphoneResponseModel(BaseModel):
     details: Optional[str]
 
     class Config:
-        orm_mode = True
+        from_attributes = True

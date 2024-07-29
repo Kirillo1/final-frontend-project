@@ -5,7 +5,7 @@ from typing import List, Optional
 
 class AccessoryBase(BaseModel):
     name: constr(max_length=200)
-    model_phone: constr(max_length=200)
+    phone_model: constr(max_length=200)
     description: constr(max_length=500)
     color: constr(max_length=100)
     guarantee: constr(max_length=100)
@@ -22,7 +22,7 @@ class AccessoryCreate(AccessoryBase):
 
 class AccessoryUpdate(BaseModel):
     name: str
-    model_phone: str
+    phone_model: str
     description: str
     color: str
     guarantee: str
@@ -38,7 +38,7 @@ class Accessory(AccessoryBase):
     created_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class ResponseModel(BaseModel):
@@ -53,4 +53,4 @@ class SingleAccessoryResponseModel(BaseModel):
     details: Optional[str]
 
     class Config:
-        orm_mode = True
+        from_attributes = True

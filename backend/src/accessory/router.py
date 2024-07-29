@@ -61,7 +61,7 @@ async def get_accessory(accessory_id: int, db: AsyncSession = Depends(get_async_
 async def create_accessory(accessory: AccessoryCreate, db: AsyncSession = Depends(get_async_session)):
     try:
         db_accessory = AccessoryModel(
-            name=accessory.name, model_phone=accessory.model_phone,
+            name=accessory.name, phone_model=accessory.phone_model,
             color=accessory.color, description=accessory.description,
             guarantee=accessory.guarantee, manufacturer_country=accessory.manufacturer_country,
             quantity=accessory.quantity, price=accessory.price, images=accessory.images

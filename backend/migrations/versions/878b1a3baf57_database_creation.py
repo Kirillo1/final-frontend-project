@@ -1,8 +1,8 @@
 """Database creation
 
-Revision ID: a297cbc12b59
+Revision ID: 878b1a3baf57
 Revises: 
-Create Date: 2024-07-12 22:09:17.704918
+Create Date: 2024-07-28 18:38:20.439107
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = 'a297cbc12b59'
+revision: str = '878b1a3baf57'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -42,7 +42,7 @@ def upgrade() -> None:
     op.create_table('smartphone',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
-    sa.Column('model_phone', sa.String(), nullable=False),
+    sa.Column('phone_model', sa.String(), nullable=False),
     sa.Column('color', sa.String(), nullable=False),
     sa.Column('processor', sa.String(), nullable=False),
     sa.Column('ram_capacity', sa.Integer(), nullable=False),
@@ -62,7 +62,7 @@ def upgrade() -> None:
     op.create_table('accessory',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
-    sa.Column('model_phone', sa.String(), nullable=False),
+    sa.Column('phone_model', sa.String(), nullable=False),
     sa.Column('description', sa.String(), nullable=False),
     sa.Column('color', sa.String(), nullable=False),
     sa.Column('guarantee', sa.String(), nullable=False),

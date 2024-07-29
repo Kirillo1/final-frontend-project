@@ -11,7 +11,7 @@ accessories = Table(
     metadata,
     Column("id", Integer, primary_key=True),
     Column("name", String, nullable=False),
-    Column("model_phone", String, nullable=False),
+    Column("phone_model", String, nullable=False),
     Column("description", String, nullable=False),
     Column("color", String, nullable=False),
     Column("guarantee", String, nullable=False),
@@ -28,7 +28,7 @@ class Accessory(Base):
     __tablename__ = "accessory"
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)
-    model_phone = Column(String, nullable=False)
+    phone_model = Column(String, nullable=False)
     description = Column(String, nullable=False)
     color = Column(String, nullable=False)
     guarantee = Column(String, nullable=False)
