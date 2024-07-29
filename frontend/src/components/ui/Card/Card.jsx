@@ -6,7 +6,7 @@ import Image from "../Image/Image";
  * @param {object} props.details - Детали карточки смартфона.
  * @param {string} props.details.id - Идентификатор карточки.
  * @param {string} props.details.name - Название смартфона.
- * @param {string} props.details.model_phone - Модель смартфона.
+ * @param {string} props.details.phone_model - Модель смартфона.
  * @param {string} props.details.description - Описание смартфона.
  * @param {string} [props.details.price] - Цена смартфона.
  * @param {array} [props.details.imgSrc] - Массив с путями изображений.
@@ -17,7 +17,7 @@ export const Card = (props) => {
     const {
         id,
         name,
-        model_phone,
+        phone_model,
         price,
         color,
         images,
@@ -72,8 +72,8 @@ export const Card = (props) => {
             </div>
             <div className="p-4">
                 <h3 className="text-lg font-bold mb-2 text-zinc-200">{name}</h3>
-                {model_phone && (
-                    <p className="text-zinc-200 text-semibold mb-4">{model_phone}</p>
+                {phone_model && (
+                    <p className="text-zinc-200 text-semibold mb-4">{phone_model}</p>
                 )}
                 {color && <p className="text-zinc-200 text-semibold mb-4">{color}</p>}
                 {/* {rating && (

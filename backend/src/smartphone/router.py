@@ -61,7 +61,7 @@ async def get_smartphone(smartphone_id: int, db: AsyncSession = Depends(get_asyn
 async def create_smartphone(smartphone: SmartphoneCreate, db: AsyncSession = Depends(get_async_session)):
     try:
         db_smartphone = SmartphoneModel(
-            name=smartphone.name, model_phone=smartphone.model_phone,
+            name=smartphone.name, phone_model=smartphone.phone_model,
             color=smartphone.color, processor=smartphone.processor,
             ram_capacity=smartphone.ram_capacity, memory_capacity=smartphone.memory_capacity,
             battery_capacity=smartphone.battery_capacity, release_year=smartphone.release_year,

@@ -14,7 +14,7 @@ class UserRead(schemas.BaseUser[int]):
     is_verified: bool = False
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class UserCreate(schemas.BaseUserCreate):
@@ -25,7 +25,11 @@ class UserCreate(schemas.BaseUserCreate):
     is_active: Optional[bool] = True
     is_superuser: Optional[bool] = False
     is_verified: Optional[bool] = False
-    
+
+
+class UserUpdate(schemas.BaseUserUpdate):
+    pass
+
 
 class RoleCreate(BaseModel):
     name: str
@@ -38,4 +42,4 @@ class RoleRead(BaseModel):
     permissions: List[str]
 
     class Config:
-        orm_mode = True
+        from_attributes = True

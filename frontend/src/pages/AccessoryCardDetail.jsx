@@ -45,7 +45,7 @@ const AccessoryCardDetail = () => {
                     Назад
                 </Link>
                 <h2 className="mb-4 text-4xl font-bold text-zinc-800">
-                    {accessory?.name} {accessory?.model_phone}
+                    {accessory?.name} {accessory?.phone_model}
                 </h2>
                 <div className="max-w-md rounded shadow-lg relative">
                     <div className="relative">
