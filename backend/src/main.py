@@ -1,21 +1,16 @@
+# main.py
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
-
-from src.users.base_config import auth_backend, fastapi_users
-from src.users.schemas import UserRead, UserCreate
+from src.users.base_config import fastapi_users, auth_backend
+from src.users.schemas import UserRead, UserCreate, UserUpdate
 from src.users import roles
-
 from src.smartphone.router import router as router_smartphone
 from src.accessory.router import router as router_accessory
 
-
-
 app = FastAPI(title="Mobile Guru")
 
-origins = [
-    "http://localhost:5173",
-]
+# Настройка CORS
+origins = ["http://localhost:5173"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -25,13 +20,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
+# Аутентификация и регистрация
 app.include_router(
     fastapi_users.get_auth_router(auth_backend),
     prefix="/auth",
     tags=["Auth"],
 )
-
 
 app.include_router(
     fastapi_users.get_register_router(UserRead, UserCreate),
@@ -39,9 +33,17 @@ app.include_router(
     tags=["Auth"],
 )
 
+# Пользователи
 app.include_router(
-    roles.router, 
-    prefix="/roles", 
+    fastapi_users.get_users_router(UserRead, UserUpdate),
+    prefix="/users",
+    tags=["Users"]
+)
+
+# Другие маршруты
+app.include_router(
+    roles.router,
+    prefix="/roles",
     tags=["roles"]
 )
 
@@ -49,7 +51,7 @@ app.include_router(
     router_smartphone,
     prefix="/smartphones",
     tags=["smartphones"]
-    )
+)
 
 app.include_router(
     router_accessory,
