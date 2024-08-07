@@ -12,10 +12,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 @router.get("/me", response_model=UserRead)
 async def read_me(user: User = Depends(fastapi_users.current_user())):
-    print(user)
     return user
-
-
 
 
 @router.post("/auth/logout")

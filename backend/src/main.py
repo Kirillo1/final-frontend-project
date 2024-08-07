@@ -3,7 +3,6 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from src.users.base_config import fastapi_users, auth_backend
 from src.users.schemas import UserRead, UserCreate, UserUpdate
-from src.users import roles
 from src.smartphone.router import router as router_smartphone
 from src.accessory.router import router as router_accessory
 
@@ -38,13 +37,6 @@ app.include_router(
     fastapi_users.get_users_router(UserRead, UserUpdate),
     prefix="/users",
     tags=["Users"]
-)
-
-# Другие маршруты
-app.include_router(
-    roles.router,
-    prefix="/roles",
-    tags=["roles"]
 )
 
 app.include_router(
