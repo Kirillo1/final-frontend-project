@@ -44,6 +44,7 @@ const navItems = [
     { name: "Главная", path: "/" },
     { name: "Смартфоны", path: "/smartphones" },
     { name : "Панель администратора", path: "/admin_panel" },
+    { name: "Мои товары", path: "/company_products" }
 ];
 
 /**
@@ -265,6 +266,11 @@ const Header = () => {
                                     (!user || user?.role !== "admin")
                                     ) {
                                     return null;
+                                } else if (
+                                    item?.path === "/company_product" &&
+                                    (!user || user?.role !== "company")
+                                ) {
+
                                 }
 
                                 return (

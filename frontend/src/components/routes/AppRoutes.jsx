@@ -7,6 +7,7 @@ import AccessoryCardDetail from "../../pages/AccessoryCardDetail.jsx";
 import Admin from "../../pages/Admin.jsx";
 import PrivateRoute from "./PrivateRoute";
 import AddNewProduct from "../../pages/AddProduct.jsx";
+import CompanyProduct from "../../pages/CompanyProducts.jsx";
 
 /** Массив роутов приложения */
 const routes = [
@@ -15,7 +16,8 @@ const routes = [
     { path: "smartphone/:name/:id/", element: <SmartphoneCardDetail /> },
     { path: "accessory/:name/:id/", element: <AccessoryCardDetail /> },
     { path: "admin_panel/", element: <PrivateRoute element={<Admin />} requiredRole="admin" /> },
-    { path: "add_new_product/", element: <PrivateRoute element={<AddNewProduct />} requiredRole="company" /> }
+    { path: "add_new_product/", element: <PrivateRoute element={<AddNewProduct />} requiredRole="company" /> },
+    { path: "company_products/", element: <PrivateRoute element={<CompanyProduct />} requiredRole="company" /> }
 ];
 
 /**
