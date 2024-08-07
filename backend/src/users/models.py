@@ -7,22 +7,17 @@ from src.database import Base
 
 metadata = MetaData()
 
-role = Table(
-    "role",
-    metadata,
-    Column("id", Integer, primary_key=True),
-    Column("name", String, nullable=False),
-    Column("permissions", JSON),
-)
-
 user = Table(
     "user",
     metadata,
     Column("id", Integer, primary_key=True),
     Column("email", String, nullable=False),
-    Column("username", String, nullable=False),
+    Column("phone_number", String, nullable=False),
+    Column("first_name", String, nullable=False),
+    Column("last_name", String, nullable=False),
+    Column("company_name", String, nullable=False),
+    Column("role", String, nullable=False),
     Column("registered_at", TIMESTAMP, default=datetime.utcnow),
-    Column("role_id", Integer, ForeignKey(role.c.id)),
     Column("hashed_password", String, nullable=False),
     Column("is_active", Boolean, default=True, nullable=False),
     Column("is_superuser", Boolean, default=False, nullable=False),
@@ -33,18 +28,15 @@ user = Table(
 class User(SQLAlchemyBaseUserTable[int], Base):
     id = Column(Integer, primary_key=True)
     email = Column(String, nullable=False)
-    username = Column(String, nullable=False)
+    phone_number = Column(String, nullable=False)
+    first_name = Column(String, nullable=False)
+    last_name = Column(String, nullable=False)
+    company_name = Column(String, nullable=False)
+    role = Column(String, nullable=False)
     registered_at = Column(TIMESTAMP, default=datetime.utcnow)
-    role_id = Column(Integer, ForeignKey(role.c.id))
     hashed_password: str = Column(String(length=1024), nullable=False)
     is_active: bool = Column(Boolean, default=True, nullable=False)
     is_superuser: bool = Column(Boolean, default=False, nullable=False)
     is_verified: bool = Column(Boolean, default=False, nullable=False)
 
 
-class Role(Base):
-    __tablename__ = "role"
-
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    name = Column(String, nullable=False)
-    permissions = Column(JSON)

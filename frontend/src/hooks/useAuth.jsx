@@ -13,6 +13,54 @@ export const AuthProvider = ({ children }) => {
         }
     }, []);
 
+    const onRegister = async (userRegistrationData) => {
+        try {
+            const {
+                login,
+                password,
+                first_name,
+                last_name,
+                phone_number,
+                company_name
+            } = userRegistrationData;
+
+            // Обработайте данные регистрации
+            console.log(userRegistrationData);
+            const response = await fetch('http://localhost:8080/auth/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    grant_type: 'password',
+                    email: login,
+                    password: password,
+                    first_name: first_name,
+                    last_name: last_name,
+                    phone_number: phone_number,
+                    company_name: company_name,
+                    is_active: true,
+                    is_superuser: false,
+                    is_verified: true,
+                    role: "company"
+                }),
+            });
+
+            if (response.ok) {
+                onLogin({
+                    login: userRegistrationData.login,
+                    password: userRegistrationData.password,
+                });
+
+            } else {
+                console.error("Registration failed:", await response.text());
+            }
+        } catch (error) {
+            console.error("Error during registration:", error);
+        }
+    };
+
+
     const onLogin = async (userData) => {
         try {
             const { login, password } = userData;
@@ -76,7 +124,7 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const contextValue = { user, onLogin, onLogout };
+    const contextValue = { user, onRegister, onLogin, onLogout };
 
     return (
         <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>

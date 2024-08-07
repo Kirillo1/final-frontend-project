@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { NavLink, useLocation } from "react-router-dom";
 import useForm from "../../../hooks/useForm";
+import useRegistrationForm from '../../../hooks/userRegistrationForm';
 import { Modal } from "../Modal/Modal";
 import Input from "../Input/Input";
 import { useAuth } from '../../../hooks/useAuth';
@@ -11,11 +12,6 @@ import SmartphoneRoundedIcon from '@mui/icons-material/SmartphoneRounded';
 import HeadphonesBatteryRoundedIcon from '@mui/icons-material/HeadphonesBatteryRounded';
 import ExitToAppRoundedIcon from '@mui/icons-material/ExitToAppRounded';
 import PersonAddRoundedIcon from '@mui/icons-material/PersonAddRounded';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
 import {
     Dialog,
     DialogPanel,
@@ -48,6 +44,7 @@ const navItems = [
     { name: "Главная", path: "/" },
     { name: "Смартфоны", path: "/smartphones" },
     { name : "Панель администратора", path: "/admin_panel" },
+    { name: "Мои товары", path: "/company_products" }
 ];
 
 /**
@@ -61,14 +58,23 @@ const Header = () => {
     // Стейт для показа/скрытия модального окна (для входа).
     const [showLoginModal, setShowLoginModal] = useState(false);
 
-    // Использование кастомного хука для обработки данных
+    // Использование кастомного хука для обработки данных входа
     const { formValues, formErrors, handleInput, resetForm } = useForm({
         login: "",
         password: "",
     });
 
-    const { user, onLogin, onLogout } = useAuth();
-    console.log(user)
+    // Использование кастомного хука для обработки данных регистрации
+    const { registrationFormValues, registrationHandleInput, registrationResetForm } = useRegistrationForm({
+        login: "",
+        password: "",
+        first_name: "",
+        last_name: "",
+        phone_number:"",
+        company_name: ""
+    });
+
+    const { user, onRegister, onLogin, onLogout } = useAuth();
 
     const location = useLocation();
 
@@ -90,21 +96,17 @@ const Header = () => {
     const handleRegisterForm = (event) => {
         event.preventDefault();
 
-        // onRegister(formValues);
-
+        onRegister(registrationFormValues);
         setShowRegisterModal(false); // Закрываем Modal
-
-        resetForm(); // Сбрасываем форму
+        registrationResetForm(); // Сбрасываем форму
     };
 
     // Обработка формы при входе в систему
-    const handleLoginForm = () => {
+    const handleLoginForm = (event) => {
         event.preventDefault();
 
         onLogin(formValues);
-
         setShowLoginModal(false); // Закрываем Modal
-
         resetForm(); // Сбрасываем форму
     };
 
@@ -149,79 +151,65 @@ const Header = () => {
                     >
                         <form onSubmit={handleRegisterForm}>
                             <Input
-                                label="Имя пользователя"
-                                name="login"
+                                label="Ваше имя"
+                                name="first_name"
                                 type="text"
-                                value={formValues?.login}
-                                onInput={handleInput}
-                                placeholder="Введите имя учетной записи"
-                                error={formErrors?.login}
+                                value={registrationFormValues?.first_name}
+                                onInput={registrationHandleInput}
+                                placeholder="Введите ваше имя"
+                                // error={formErrors?.login}
+                                required
+                            />
+                            <Input
+                                label="Ваша фамилия"
+                                name="last_name"
+                                type="text"
+                                value={registrationFormValues?.last_name}
+                                onInput={registrationHandleInput}
+                                placeholder="Введите вашу фамилию"
+                                // error={formErrors?.login}
                                 required
                             />
                             <Input
                                 label="Пароль"
                                 type="password"
                                 name="password"
-                                value={formValues?.password}
-                                onInput={handleInput}
+                                value={registrationFormValues?.password}
+                                onInput={registrationHandleInput}
                                 placeholder="Введите пароль"
-                                error={formErrors?.password}
+                                // error={formErrors?.password}
                                 required
                             />
                             <Input
                                 label="Почта"
-                                name="email"
+                                name="login"
                                 type="email"
-                                value={formValues?.login}
-                                onInput={handleInput}
+                                value={registrationFormValues?.email}
+                                onInput={registrationHandleInput}
                                 placeholder="Введите вашу почту"
-                                error={formErrors?.login}
+                                // error={formErrors?.login}
                                 required
                             />
-
-                            <div className='flex justify-center'>
-                                <FormControl>
-                                    <FormLabel
-                                        id="radioGroupLabel"
-                                        sx={{
-                                            color: "white"
-                                        }}
-                                    >
-                                        Являетесь ли вы продавцом?
-                                    </FormLabel>
-                                    <RadioGroup
-                                        row
-                                        aria-labelledby="radioGroupLabel"
-                                        name="row-radio-buttons-group"
-                                        className='flex justify-center'
-                                    >
-                                        <FormControlLabel value="female" control={<Radio 
-                                            sx={{
-                                                color: "#551eaa",
-                                                '&.Mui-checked': {
-                                                    color: "#551eaa",
-                                                },
-                                            }}
-                                        />}
-                                            sx={{
-                                                color: "white"
-                                            }}
-                                        label="Да" />
-                                        <FormControlLabel value="male" control={<Radio
-                                            sx={{
-                                                color: "#551eaa",
-                                                '&.Mui-checked': {
-                                                    color: "#551eaa",
-                                                },
-                                            }}
-                                        />}
-                                            sx={{
-                                                color: "white"
-                                            }}
-                                        label="Нет" />
-                                    </RadioGroup>
-                                </FormControl>
-                            </div>
+                            <Input
+                                label="Название магазина"
+                                name="company_name"
+                                type="text"
+                                value={registrationFormValues?.company_name}
+                                onInput={registrationHandleInput}
+                                placeholder="Введите ваше имя"
+                                // error={formErrors?.login}
+                                required
+                            />
+                            <Input
+                                label="Номер телефона"
+                                name="phone_number"
+                                type="text"
+                                value={registrationFormValues?.phone_number}
+                                onInput={registrationHandleInput}
+                                placeholder="Введите ваше имя"
+                                // error={formErrors?.login}
+                                required
+                            />
 
                             <button
                                 className="bg-violet-500 text-white font-medium py-2 px-4 rounded"
@@ -240,12 +228,12 @@ const Header = () => {
                     >
                         <form onSubmit={handleLoginForm}>
                             <Input
-                                label="Имя пользователя"
+                                label="Ваша почта"
                                 name="login"
-                                type="text"
-                                value={formValues?.login}
+                                type="email"
+                                value={formValues?.email}
                                 onInput={handleInput}
-                                placeholder="Введите ваше имя учетной записи"
+                                placeholder="Введите вашу почту"
                                 // error={formErrors?.login}
                                 required
                             />
@@ -271,7 +259,21 @@ const Header = () => {
                 )}
                 <PopoverGroup className="hidden lg:flex lg:gap-x-12">
                     <div className="hidden sm:ml-8 sm:flex sm:space-x-8">
-                        {navItems?.map((item) => (
+                        {navItems?.map((item) => {
+                                // Скрыть пункт меню "Admin" если пользователь не администратор
+                                if (
+                                    item?.path === "/admin_panel" &&
+                                    (!user || user?.role !== "admin")
+                                    ) {
+                                    return null;
+                                } else if (
+                                    item?.path === "/company_product" &&
+                                    (!user || user?.role !== "company")
+                                ) {
+
+                                }
+
+                                return (
                             <NavLink
                                 to={item?.path}
                                 key={item?.path}
@@ -282,7 +284,10 @@ const Header = () => {
                             >
                                 {item?.name}
                             </NavLink>
-                        ))}
+
+                                )
+                        })}
+                        {user?.role === "company" && (
                         <Popover className="relative">
                             <PopoverButton className="text-white after:border-0 before:border-0 inline-flex items-center text-sm hover:text-violet-500">
                                 Добавить
@@ -313,6 +318,7 @@ const Header = () => {
                                 </div>
                             </PopoverPanel>
                         </Popover>
+                        )}
                     </div>
                 </PopoverGroup>
                 <div className="hidden lg:flex lg:flex-1 lg:justify-end">

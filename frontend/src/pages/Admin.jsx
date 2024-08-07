@@ -17,10 +17,10 @@ import CurrencyRubleTwoToneIcon from '@mui/icons-material/CurrencyRubleTwoTone';
 
 const Admin = () => {
     // Стор для работы с смартфонами
-    const { smartphones, getSmartphones } = useSmartphonesStore();
+    const { smartphones, getSmartphones, deleteSmartphoneById } = useSmartphonesStore();
 
     // Стор для работы с аксессуарами
-    const { accessories, getAccessories } = useAccessoriesStore();
+    const { accessories, getAccessories, deleteAccessoryById } = useAccessoriesStore();
 
     // Стейт для скрытия/показа компонента Drawer
     const [isDrawerOpen, setDrawerOpen] = useState(false);
@@ -60,11 +60,11 @@ const Admin = () => {
     };
 
     const onDeleteSmartphoneButtonClick = (smartphoneID) => {
-        console.log(smartphoneID);
+        deleteSmartphoneById(smartphoneID);
     };
 
     const onDeleteAccessoryButtonClick = (accessoryID) => {
-        console.log(accessoryID);
+        deleteAccessoryById(accessoryID);
     };
 
     // Функция для обработки закрытия Drawer и сбрасывания selectedItem и itemType
