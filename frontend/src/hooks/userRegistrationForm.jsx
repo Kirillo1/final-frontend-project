@@ -9,9 +9,10 @@ import { useState } from "react";
  * @returns {handleInputChange} - Функция обработчик при смене данных в инпуте.
  * @returns {resetForm} - Функция сброса состояния формы.
  */
-export function useForm(initialValues) {
-    // Состояние формы, хранит значения полей логина
-    const [formValues, setFormValues] = useState(initialValues);
+export function useRegistrationForm(initialValues) {
+
+    // Состояние формы, хранит значения полей регистрации
+    const [registrationFormValues, setRegistrationFormValues] = useState(initialValues);
 
     // Состояние для отслеживания ошибок валидации
     const [formErrors, setFormErrors] = useState({});
@@ -21,22 +22,22 @@ export function useForm(initialValues) {
      *
      * @param {Object} e - Событие изменения.
      */
-    const handleInput = (e) => {
+    const registrationHandleInput = (e) => {
         const { name, value, type } = e.target;
-
+        
         // Обновляем состояние формы для текущего поля
-        const updatedFormState = { ...formValues, [name]: value };
-        setFormValues(updatedFormState);
+        const updatedFormState = { ...registrationFormValues, [name]: value };
+        setRegistrationFormValues(updatedFormState);
 
         // Валидируем текущее поле по атрибуту type
-        const validationErrors = {
-            ...formErrors,
-            [name]: validateForm({ [type]: value })[type] || null,
-        };
+        // const validationErrors = {
+        //     ...formErrors,
+        //     [name]: validateForm({ [type]: value })[type] || null,
+        // };
 
         // Обновляем состояние ошибок
-        setFormErrors(validationErrors);
-    };
+        // setFormErrors(validationErrors);
+    }
 
     /**
      * Обработчик изменения значения файлов.
@@ -60,18 +61,18 @@ export function useForm(initialValues) {
     };
 
     // Функция для сброса состояния формы и состояния ошибок
-    const resetForm = () => {
-        setFormValues(initialValues);
+    const registrationResetForm = () => {
+        setRegistrationFormValues(initialValues);
         setFormErrors({});
     };
 
     return {
-        formValues,
+        registrationFormValues,
         formErrors,
-        handleInput,
+        registrationHandleInput,
         handleFileChange,
-        resetForm,
+        registrationResetForm
     };
 }
 
-export default useForm;
+export default useRegistrationForm;
