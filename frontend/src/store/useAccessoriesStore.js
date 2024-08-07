@@ -55,6 +55,24 @@ const useAccessoriesStore = create((set, get) => ({
         }
     },
 
+    fetchAccessoryDetail: async (id) => {
+        set({ loading: true, error: null }); // Начать загрузку и сбросить ошибки
+        try {
+            const response = await fetch(`http://localhost:8080/accessories/${id}`);
+            if (!response.ok) {
+                throw new Error("Failed to fetch accessory detail");
+            }
+            const result = await response.json();
+            set({ accessoryDetail: result.data[0] });
+        } catch (error) {
+            set({ error: error.message });
+        } finally {
+            set({ loading: false });
+        }
+    },
+
+    clearAccessoryDetail: () => set({ accessoryDetail: null }),
+
 }));
 
 export default useAccessoriesStore;

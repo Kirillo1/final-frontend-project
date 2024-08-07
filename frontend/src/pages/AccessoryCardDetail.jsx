@@ -1,31 +1,27 @@
 import { useParams, Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import useAccessoriesStore from "../store/useAccessoriesStore";
 import Image from "../components/ui/Image/Image";
 
 const AccessoryCardDetail = () => {
-    const { name, id } = useParams();
-    const [accessory, setAccessor] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const { id } = useParams();
+    const { accessoryDetail, loading, error, fetchAccessoryDetail, clearAccessoryDetail } = useAccessoriesStore(state => ({
+        accessoryDetail: state.accessoryDetail,
+        loading: state.loading,
+        error: state.error,
+        fetchAccessoryDetail: state.fetchAccessoryDetail,
+        clearAccessoryDetail: state.clearAccessoryDetail
+    }));
 
     useEffect(() => {
-        const fetchAccessor = async () => {
-            try {
-                const response = await fetch(`http://localhost:8080/accessories/${id}`);
-                if (!response.ok) {
-                    throw new Error("Failed to fetch smartphone");
-                }
-                const result = await response.json();
-                setAccessor(result.data[0]);
-            } catch (error) {
-                setError(error.message);
-            } finally {
-                setLoading(false);
-            }
+        fetchAccessoryDetail(id)
+
+        // Очистка состояния при размонтировании компонента
+        return () => {
+            clearAccessoryDetail();
         };
 
-        fetchAccessor();
-    }, [id]);
+    }, [id, fetchAccessoryDetail, clearAccessoryDetail]);
 
     if (loading) {
         return <div>Loading...</div>;
@@ -45,7 +41,7 @@ const AccessoryCardDetail = () => {
                     Назад
                 </Link>
                 <h2 className="mb-4 text-4xl font-bold text-zinc-800">
-                    {accessory?.name} {accessory?.phone_model}
+                    {accessoryDetail?.name} {accessoryDetail?.phone_model}
                 </h2>
                 <div className="max-w-md rounded shadow-lg relative">
                     <div className="relative">
@@ -53,8 +49,8 @@ const AccessoryCardDetail = () => {
                         <Image
                             className="w-full max-h-44"
                             isCritical={true}
-                            src={`/assets/smartphones/${accessory.images[0]}`}
-                            alt={accessory.name}
+                            src={`/assets/smartphones/${accessoryDetail?.images[0]}`}
+                            alt={accessoryDetail?.name}
                         />
                     </div>
 
@@ -73,18 +69,18 @@ const AccessoryCardDetail = () => {
                         </svg>
                     </button>
                     <div className="px-6 py-4">
-                        <p className="text-gray-600 text-sm mb-2">{accessory?.description}</p>
-                        <p className="text-gray-600 text-sm mb-2">{accessory?.color}</p>
-                        <p className="text-gray-600 text-sm mb-2">{accessory?.quantity}</p>
-                        <p className="text-gray-600 text-sm mb-2">{accessory?.manufacturer_country}</p>
+                        <p className="text-gray-600 text-sm mb-2">{accessoryDetail?.description}</p>
+                        <p className="text-gray-600 text-sm mb-2">{accessoryDetail?.color}</p>
+                        <p className="text-gray-600 text-sm mb-2">{accessoryDetail?.quantity}</p>
+                        <p className="text-gray-600 text-sm mb-2">{accessoryDetail?.manufacturer_country}</p>
 
-                        {accessory?.rating && (
+                        {accessoryDetail?.rating && (
                             <div className="text-yellow-500 mb-2">
-                                {"★".repeat(Math.floor(accessory?.rating)) +
-                                    "☆".repeat(5 - Math.floor(accessory?.rating))}
+                                {"★".repeat(Math.floor(accessoryDetail?.rating)) +
+                                    "☆".repeat(5 - Math.floor(accessoryDetail?.rating))}
                             </div>
                         )}
-                        <div className="text-lg font-bold mb-2">{accessory?.price}$</div>
+                        <div className="text-lg font-bold mb-2">{accessoryDetail?.price}$</div>
                         <button className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded">
                             Add to Cart
                         </button>

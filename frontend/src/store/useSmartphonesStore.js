@@ -55,6 +55,24 @@ const useSmartphonesStore = create((set, get) => ({
         }
     },
 
+    fetchSmartphoneDetail: async (id) => {
+        set({ loading: true, error: null }); // Начать загрузку и сбросить ошибки
+        try {
+            const response = await fetch(`http://localhost:8080/smartphones/${id}`);
+            if (!response.ok) {
+                throw new Error("Failed to fetch smartphone detail");
+            }
+            const result = await response.json();
+            set({ smartphoneDetail: result.data[0] });
+        } catch (error) {
+            set({ error: error.message });
+        } finally {
+            set({ loading: false });
+        }
+    },
+
+    clearSmartphoneDetail: () => set({ smartphoneDetail: null }),
+
 }));
 
 export default useSmartphonesStore;
