@@ -96,8 +96,8 @@ const Header = () => {
         event.preventDefault();
 
         onRegister(registrationFormValues);
-        // setShowRegisterModal(false); // Закрываем Modal
-        // registrationResetForm(); // Сбрасываем форму
+        setShowRegisterModal(false); // Закрываем Modal
+        registrationResetForm(); // Сбрасываем форму
     };
 
     // Обработка формы при входе в систему
@@ -258,7 +258,16 @@ const Header = () => {
                 )}
                 <PopoverGroup className="hidden lg:flex lg:gap-x-12">
                     <div className="hidden sm:ml-8 sm:flex sm:space-x-8">
-                        {navItems?.map((item) => (
+                        {navItems?.map((item) => {
+                                // Скрыть пункт меню "Admin" если пользователь не администратор
+                                if (
+                                    item?.path === "/admin_panel" &&
+                                    (!user || user?.role !== "admin")
+                                    ) {
+                                    return null;
+                                }
+
+                                return (
                             <NavLink
                                 to={item?.path}
                                 key={item?.path}
@@ -269,7 +278,10 @@ const Header = () => {
                             >
                                 {item?.name}
                             </NavLink>
-                        ))}
+
+                                )
+                        })}
+                        {user?.role === "company" && (
                         <Popover className="relative">
                             <PopoverButton className="text-white after:border-0 before:border-0 inline-flex items-center text-sm hover:text-violet-500">
                                 Добавить
@@ -300,6 +312,7 @@ const Header = () => {
                                 </div>
                             </PopoverPanel>
                         </Popover>
+                        )}
                     </div>
                 </PopoverGroup>
                 <div className="hidden lg:flex lg:flex-1 lg:justify-end">

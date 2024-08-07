@@ -63,7 +63,6 @@ export const AuthProvider = ({ children }) => {
 
     const onLogin = async (userData) => {
         try {
-            console.log(userData)
             const { login, password } = userData;
 
             const response = await fetch('http://localhost:8080/auth/login', {
