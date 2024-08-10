@@ -6,6 +6,7 @@ from sqlalchemy import delete
 
 from src.database import get_async_session
 
+from src.users.models import User
 from src.smartphone.models import Smartphone as SmartphoneModel
 from src.smartphone.schemas import (SmartphoneCreate, ResponseModel,
                                     SingleSmartphoneResponseModel, SmartphoneUpdate)
@@ -60,14 +61,28 @@ async def get_smartphone(smartphone_id: int, db: AsyncSession = Depends(get_asyn
 @router.post("/add", response_model=SingleSmartphoneResponseModel, status_code=status.HTTP_201_CREATED)
 async def create_smartphone(smartphone: SmartphoneCreate, db: AsyncSession = Depends(get_async_session)):
     try:
+        user = await db.execute(select(User).where(User.id == smartphone.user_id))
+        user = user.scalar_one_or_none()
+        print(smartphone.user_id)
+        if user is None:
+            raise HTTPException(status_code=404, detail="User not found")
+
         db_smartphone = SmartphoneModel(
-            name=smartphone.name, phone_model=smartphone.phone_model,
-            color=smartphone.color, processor=smartphone.processor,
-            ram_capacity=smartphone.ram_capacity, memory_capacity=smartphone.memory_capacity,
-            battery_capacity=smartphone.battery_capacity, release_year=smartphone.release_year,
-            guarantee=smartphone.guarantee, manufacturer_country=smartphone.manufacturer_country,
-            description=smartphone.description, quantity=smartphone.quantity,
-            price=smartphone.price, images=smartphone.images
+            name=smartphone.name,
+            phone_model=smartphone.phone_model,
+            color=smartphone.color,
+            processor=smartphone.processor,
+            ram_capacity=smartphone.ram_capacity,
+            memory_capacity=smartphone.memory_capacity,
+            battery_capacity=smartphone.battery_capacity,
+            release_year=smartphone.release_year,
+            guarantee=smartphone.guarantee,
+            manufacturer_country=smartphone.manufacturer_country,
+            description=smartphone.description,
+            quantity=smartphone.quantity,
+            price=smartphone.price,
+            images=smartphone.images,
+            user_id=smartphone.user_id
         )
         db.add(db_smartphone)
         await db.commit()

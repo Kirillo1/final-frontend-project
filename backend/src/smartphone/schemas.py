@@ -19,7 +19,7 @@ class SmartphoneBase(BaseModel):
     price: conint(ge=0)
     is_verified: bool
     images: List[str]
-
+    user_id: int
 
 class SmartphoneCreate(SmartphoneBase):
     pass
@@ -39,6 +39,7 @@ class SmartphoneUpdate(BaseModel):
     description: str
     quantity: int
     price: int
+    user_id: int
     is_verified: bool
     images: List[str]
 
