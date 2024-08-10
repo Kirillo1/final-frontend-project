@@ -3,6 +3,8 @@ import { Card } from "../components/ui/Card/Card";
 import useSmartphonesStore from "../store/useSmartphonesStore";
 import useAccessoriesStore from "../store/useAccessoriesStore";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from '../hooks/useAuth';
+
 
 const Home = () => {
 
@@ -20,6 +22,16 @@ const Home = () => {
     useEffect(() => {
         getAccessories();
     }, [getAccessories]);
+
+    const { user } = useAuth();
+
+    const companySmartphones = smartphones.filter(
+        (smartphone) => smartphone.user_id === user.id
+    );
+
+    const companyAccessories = accessories.filter(
+        (accessory) => accessory.user_id === user.id
+    );
 
     // Обработчик клика по карточке смартфона
     const handleSmartphoneCardClick = (name, id) => {
@@ -42,8 +54,8 @@ const Home = () => {
                             Смартфоны
                         </h3>
                         <div className="flex flex-wrap gap-9">
-                            {!!smartphones &&
-                                smartphones.map((smartphone) => (
+                            {!!companySmartphones &&
+                                companySmartphones.map((smartphone) => (
                                     <Card
                                         key={smartphone?.id}
                                         details={smartphone}
@@ -60,8 +72,8 @@ const Home = () => {
                             Аксессуары
                         </h3>
                         <div className="flex flex-wrap gap-9">
-                            {!!accessories &&
-                                accessories.map((accessory) => (
+                            {!!companyAccessories &&
+                                companyAccessories.map((accessory) => (
                                     <Card
                                         key={accessory?.id}
                                         details={accessory}

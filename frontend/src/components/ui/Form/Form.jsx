@@ -1,6 +1,7 @@
 import React from "react";
 import useForm from "../../../hooks/useForm";
 import Input from "../Input/Input";
+import { useAuth } from '../../../hooks/useAuth';
 
 const Form = () => {
     const { formValues, formErrors, handleInput, handleFileChange } = useForm({
@@ -20,6 +21,8 @@ const Form = () => {
         images: []
     });
 
+    const { user } = useAuth();
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         
@@ -29,7 +32,8 @@ const Form = () => {
         const payload = {
             ...formValues,
             is_verified: true,
-            images: filesName
+            images: filesName,
+            user_id: user?.id
         };
 
         try {
