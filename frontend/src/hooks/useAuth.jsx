@@ -4,16 +4,25 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        const userFromLocalStorage = localStorage.getItem("user");
+        const fetchUserFromLocalStorage = () => {
+            const userFromLocalStorage = localStorage.getItem("user");
+            if (userFromLocalStorage) {
+                setUser(JSON.parse(userFromLocalStorage));
+            }
+            setLoading(false);
+        };
 
-        if (userFromLocalStorage) {
-            setUser(JSON.parse(userFromLocalStorage));
-        }
+        fetchUserFromLocalStorage();
     }, []);
 
     const onRegister = async (userRegistrationData) => {
+        setLoading(true);
+        setError(null);
+
         try {
             const {
                 login,
@@ -24,8 +33,6 @@ export const AuthProvider = ({ children }) => {
                 company_name
             } = userRegistrationData;
 
-            // Обработайте данные регистрации
-            console.log(userRegistrationData);
             const response = await fetch('http://localhost:8080/auth/register', {
                 method: 'POST',
                 headers: {
@@ -47,21 +54,27 @@ export const AuthProvider = ({ children }) => {
             });
 
             if (response.ok) {
-                onLogin({
+                await onLogin({
                     login: userRegistrationData.login,
                     password: userRegistrationData.password,
                 });
-
             } else {
-                console.error("Registration failed:", await response.text());
+                const errorText = await response.text();
+                console.error("Registration failed:", errorText);
+                setError(errorText);
             }
         } catch (error) {
             console.error("Error during registration:", error);
+            setError(error.message);
+        } finally {
+            setLoading(false);
         }
     };
 
-
     const onLogin = async (userData) => {
+        setLoading(true);
+        setError(null);
+
         try {
             const { login, password } = userData;
 
@@ -90,22 +103,30 @@ export const AuthProvider = ({ children }) => {
                 if (userResponse.ok) {
                     const userData = await userResponse.json();
                     localStorage.setItem('user', JSON.stringify(userData));
-                    localStorage.setItem('token', token)
+                    localStorage.setItem('token', token);
                     setUser(userData);
                 } else {
                     console.error("Failed to fetch user data:", userResponse.statusText);
+                    setError(userResponse.statusText);
                 }
             } else {
-                console.error("Login failed:", await response.text());
+                const errorText = await response.text();
+                console.error("Login failed:", errorText);
+                setError(errorText);
             }
         } catch (error) {
             console.error("Error during login:", error);
+            setError(error.message);
+        } finally {
+            setLoading(false);
         }
     };
 
     const onLogout = async () => {
+        setLoading(true);
+        setError(null);
+
         try {
-            console.log(localStorage.getItem('token'))
             const response = await fetch('http://localhost:8080/auth/logout', {
                 method: 'POST',
                 headers: {
@@ -117,14 +138,19 @@ export const AuthProvider = ({ children }) => {
                 localStorage.removeItem("user");
                 setUser(null);
             } else {
-                console.error("Logout failed:", await response.text());
+                const errorText = await response.text();
+                console.error("Logout failed:", errorText);
+                setError(errorText);
             }
         } catch (error) {
             console.error("Error during logout:", error);
+            setError(error.message);
+        } finally {
+            setLoading(false);
         }
     };
 
-    const contextValue = { user, onRegister, onLogin, onLogout };
+    const contextValue = { user, loading, error, onRegister, onLogin, onLogout };
 
     return (
         <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>

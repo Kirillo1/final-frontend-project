@@ -264,13 +264,15 @@ const Header = () => {
                                 if (
                                     item?.path === "/admin_panel" &&
                                     (!user || user?.role !== "admin")
-                                    ) {
+                                ) {
                                     return null;
-                                } else if (
-                                    item?.path === "/company_product" &&
+                                } 
+
+                                if (
+                                    item?.path === "/company_products" &&
                                     (!user || user?.role !== "company")
                                 ) {
-
+                                    return null;
                                 }
 
                                 return (

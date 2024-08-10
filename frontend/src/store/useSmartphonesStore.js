@@ -17,7 +17,6 @@ const useSmartphonesStore = create((set, get) => ({
 
             // Асинхронная сериализация
             const result = await response.json();
-            console.log(result);
 
             // Проверка структуры данных
             if (result.status !== "success" || !Array.isArray(result.data)) {
