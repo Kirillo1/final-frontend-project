@@ -70,6 +70,36 @@ const useSmartphonesStore = create((set, get) => ({
         }
     },
 
+    changeSmartphoneStatus: async (id, isVerified) => {
+        try {
+            const response = await fetch(`http://localhost:8080/smartphones/${id}/verify`, {
+                method: "PUT", // Используйте PATCH для частичного обновления
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ is_verified: isVerified })
+
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to change smartphone status");
+            }
+
+            const updatedSmartphone = await response.json();
+
+            set({
+                smartphones: get().smartphones.map((smartphone) =>
+                    smartphone.id === id ? updatedSmartphone.data : smartphone
+                ),
+            });
+        } catch (error) {
+            console.error("Error changing smartphone status", error);
+            set({ error: error.message });
+        }
+    },
+
+
+
     clearSmartphoneDetail: () => set({ smartphoneDetail: null }),
 
 }));

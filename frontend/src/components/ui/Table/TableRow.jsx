@@ -24,7 +24,8 @@ const TableRow = ({ rowData, onButtonClick, handleChange, onDeleteButtonClick })
         "price",
         "manufacturer_country",
         "description",
-        "images"
+        "images",
+        "user_id"
     ];
 
     // Получает все ключи объекта rowData, кроме исключенных ключей

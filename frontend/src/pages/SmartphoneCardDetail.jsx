@@ -35,7 +35,6 @@ const SmartphoneCardDetail = () => {
     }));
 
     const { user } = useAuth();
-    console.log(user);
 
     useEffect(() => {
         fetchSmartphoneDetail(id);

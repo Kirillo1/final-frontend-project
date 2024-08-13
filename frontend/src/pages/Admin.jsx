@@ -17,7 +17,12 @@ import CurrencyRubleTwoToneIcon from '@mui/icons-material/CurrencyRubleTwoTone';
 
 const Admin = () => {
     // Стор для работы с смартфонами
-    const { smartphones, getSmartphones, deleteSmartphoneById } = useSmartphonesStore();
+    const {
+        smartphones,
+        getSmartphones,
+        deleteSmartphoneById,
+        changeSmartphoneStatus
+    } = useSmartphonesStore();
 
     // Стор для работы с аксессуарами
     const { accessories, getAccessories, deleteAccessoryById } = useAccessoriesStore();
@@ -52,7 +57,12 @@ const Admin = () => {
     };
 
     const handleSmartphoneChange = (smartphone) => {
-        console.log(smartphone);
+        if (!smartphone?.id) return; // Убедитесь, что у смартфона есть id
+
+        const isVerified = !smartphone.is_verified; // Переключите состояние
+
+        // Вызов функции для изменения статуса
+        changeSmartphoneStatus(smartphone.id, isVerified);
     };
 
     const handleAccessoryChange = (accessory) => {

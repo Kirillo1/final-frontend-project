@@ -141,6 +141,8 @@ export const AuthProvider = ({ children }) => {
                 const errorText = await response.text();
                 console.error("Logout failed:", errorText);
                 setError(errorText);
+                localStorage.removeItem("user");
+                setUser(null);
             }
         } catch (error) {
             console.error("Error during logout:", error);
