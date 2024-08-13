@@ -9,7 +9,8 @@ from src.database import get_async_session
 from src.users.models import User
 from src.smartphone.models import Smartphone as SmartphoneModel
 from src.smartphone.schemas import (SmartphoneCreate, ResponseModel,
-                                    SingleSmartphoneResponseModel, SmartphoneUpdate)
+                                    SingleSmartphoneResponseModel, SmartphoneUpdate,
+                                    SmartphoneVerifyStatusUpdate)
 
 
 router = APIRouter()
@@ -153,6 +154,42 @@ async def update_smartphone(smartphone_id: int, updated_smartphone: SmartphoneUp
         for key, value in updated_data.items():
             if value not in [None, "", 0]:
                 setattr(smartphone, key, value)
+
+        await session.commit()
+        await session.refresh(smartphone)
+
+        return {
+            "status": "success",
+            "data": smartphone,
+            "details": None
+        }
+    except HTTPException as http_exc:
+        raise http_exc
+    except Exception as e:
+        raise HTTPException(status_code=500, detail={
+            "status": "error",
+            "data": None,
+            "details": str(e)
+        })
+
+
+@router.put("/{smartphone_id}/verify", response_model=SingleSmartphoneResponseModel)
+async def update_smartphone_verification_status(
+    smartphone_id: int,
+    update_data: SmartphoneVerifyStatusUpdate,
+    session: AsyncSession = Depends(get_async_session)
+):
+    try:
+        query = select(SmartphoneModel).where(
+            SmartphoneModel.id == smartphone_id)
+        result = await session.execute(query)
+        smartphone = result.scalar_one_or_none()
+
+        if smartphone is None:
+            raise HTTPException(status_code=404, detail="Smartphone not found")
+
+        # Обновление только статуса is_verified
+        smartphone.is_verified = update_data.is_verified
 
         await session.commit()
         await session.refresh(smartphone)

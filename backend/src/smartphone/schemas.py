@@ -21,8 +21,13 @@ class SmartphoneBase(BaseModel):
     images: List[str]
     user_id: int
 
+
 class SmartphoneCreate(SmartphoneBase):
     pass
+
+
+class SmartphoneVerifyStatusUpdate(BaseModel):
+    is_verified: bool
 
 
 class SmartphoneUpdate(BaseModel):
