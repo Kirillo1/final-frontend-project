@@ -34,7 +34,7 @@ export const Card = (props) => {
 
     // Обработчик клика по карточке
     const handleCardClick = () => {
-        onCardClick && onCardClick(name, id);
+        onCardClick && onCardClick("smartphone", id);
     };
 
     return (

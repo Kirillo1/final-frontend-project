@@ -1,20 +1,27 @@
 import { useEffect, useState } from "react";
 import { Card } from "../components/ui/Card/Card";
-import useSmartphonesStore from "../store/useSmartphonesStore";
+import useProductsStore from "../store/useProductsStore";
 import { useNavigate } from "react-router-dom";
 
-const Cards = () => {
+const SmartphonesCards = () => {
     const navigate = useNavigate(); // хук для роутинга
     // Стор для работы с смартфонами
-    const { smartphones, getSmartphones } = useSmartphonesStore();
+    // const { smartphones, getSmartphones } = useSmartphonesStore();
+    const {
+        smartphones,
+        fetchData,
+    } = useProductsStore(state => ({
+        smartphones: state.smartphones,
+        fetchData: state.fetchData,
+    }));
 
     useEffect(() => {
-        getSmartphones();
-    }, [getSmartphones]);
+        fetchData("smartphones", "smartphones");
+    }, [fetchData]);
 
     // Обработчик клика по карточке
-    const handleCardClick = (name, id) => {
-        navigate(`/smartphone/${name}/${id}/`)
+    const handleCardClick = (endpoint, id) => {
+        navigate(`/product_detail/${endpoint}/${id}/`)
     }
 
     return (
@@ -40,4 +47,4 @@ const Cards = () => {
     );
 };
 
-export default Cards;
+export default SmartphonesCards;

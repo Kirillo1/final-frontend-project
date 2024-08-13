@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
+import useProductsStore from "../store/useProductsStore";
 import { Drawer } from "../components/ui/Drawer/Drawer";
-import useSmartphonesStore from "../store/useSmartphonesStore";
-import useAccessoriesStore from "../store/useAccessoriesStore";
 import Table from "../components/ui/Table/Table";
 import Box from '@mui/material/Box';
 import ImageList from '@mui/material/ImageList';
@@ -16,40 +15,35 @@ import StorageTwoToneIcon from '@mui/icons-material/StorageTwoTone';
 import CurrencyRubleTwoToneIcon from '@mui/icons-material/CurrencyRubleTwoTone';
 
 const Admin = () => {
-    // Стор для работы с смартфонами
     const {
         smartphones,
-        getSmartphones,
-        deleteSmartphoneById,
-        changeSmartphoneStatus
-    } = useSmartphonesStore();
+        accessories,
+        fetchData,
+        deleteDataById,
+        changeStatus,
+    } = useProductsStore(state => ({
+        smartphones: state.smartphones,
+        accessories: state.accessories,
+        fetchData: state.fetchData,
+        deleteDataById: state.deleteDataById,
+        changeStatus: state.changeStatus,
+    }));
 
-    // Стор для работы с аксессуарами
-    const { accessories, getAccessories, deleteAccessoryById } = useAccessoriesStore();
-
-    // Стейт для скрытия/показа компонента Drawer
     const [isDrawerOpen, setDrawerOpen] = useState(false);
-
-    // Состояние для хранения выбранного элемента
     const [selectedItem, setSelectedItem] = useState(null);
     const [itemType, setItemType] = useState(null);
 
     useEffect(() => {
-        getSmartphones();
-    }, [getSmartphones]);
+        fetchData("smartphones", "smartphones");
+        fetchData("accessories", "accessories");
+    }, [fetchData]);
 
-    useEffect(() => {
-        getAccessories();
-    }, [getAccessories]);
-
-    // Функция для обработки клика на кнопку просмотра смартфона
     const handleButtonSmartphoneClick = (smartphone) => {
         setSelectedItem(smartphone);
         setItemType('smartphone');
         setDrawerOpen(true);
     };
 
-    // Функция для обработки клика на кнопку просмотра аксессуара
     const handleButtonAccessoryClick = (accessory) => {
         setSelectedItem(accessory);
         setItemType('accessory');
@@ -57,27 +51,25 @@ const Admin = () => {
     };
 
     const handleSmartphoneChange = (smartphone) => {
-        if (!smartphone?.id) return; // Убедитесь, что у смартфона есть id
+        if (!smartphone?.id) return;
+        const isVerified = !smartphone.is_verified;
 
-        const isVerified = !smartphone.is_verified; // Переключите состояние
-
-        // Вызов функции для изменения статуса
-        changeSmartphoneStatus(smartphone.id, isVerified);
+        changeStatus(smartphone.id, "smartphones", isVerified);
     };
 
     const handleAccessoryChange = (accessory) => {
+        // Логика изменения аксессуара, если необходима
         console.log(accessory);
     };
 
     const onDeleteSmartphoneButtonClick = (smartphoneID) => {
-        deleteSmartphoneById(smartphoneID);
+        deleteDataById(smartphoneID, "smartphones", "smartphones");
     };
 
     const onDeleteAccessoryButtonClick = (accessoryID) => {
-        deleteAccessoryById(accessoryID);
+        deleteDataById(accessoryID, "accessories", "accessories");
     };
 
-    // Функция для обработки закрытия Drawer и сбрасывания selectedItem и itemType
     const handleCloseDrawer = () => {
         setDrawerOpen(false);
         setSelectedItem(null);

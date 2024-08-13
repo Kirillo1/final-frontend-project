@@ -1,25 +1,26 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Card } from "../components/ui/Card/Card";
-import useSmartphonesStore from "../store/useSmartphonesStore";
-import useAccessoriesStore from "../store/useAccessoriesStore";
+import useProductsStore from "../store/useProductsStore";
+
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
 
     const navigate = useNavigate(); // хук для роутинга
-    // Стор для работы с смартфонами
-    const { smartphones, getSmartphones } = useSmartphonesStore();
-
-    // Стор для работы с аксессуарами
-    const { accessories, getAccessories } = useAccessoriesStore();
+    const {
+        smartphones,
+        accessories,
+        fetchData,
+    } = useProductsStore(state => ({
+        smartphones: state.smartphones,
+        accessories: state.accessories,
+        fetchData: state.fetchData,
+    }));
 
     useEffect(() => {
-        getSmartphones();
-    }, [getSmartphones]);
-
-    useEffect(() => {
-        getAccessories();
-    }, [getAccessories]);
+        fetchData("smartphones", "smartphones");
+        fetchData("accessories", "accessories");
+    }, [fetchData]);
 
     // Обработчик клика по карточке смартфона
     const handleSmartphoneCardClick = (name, id) => {
