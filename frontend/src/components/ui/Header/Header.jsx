@@ -43,6 +43,7 @@ const products = [
 const navItems = [
     { name: "Главная", path: "/" },
     { name: "Смартфоны", path: "/smartphones" },
+    { name: "Аксессуары", path: "/accessories" },
     { name : "Панель администратора", path: "/admin_panel" },
     { name: "Мои товары", path: "/company_products" }
 ];

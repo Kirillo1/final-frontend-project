@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import MainLayout from "../../layouts/MainLayout.jsx";
 import Home from "../../pages/Home.jsx";
 import SmartphonesCards from "../../pages/SmartphonesCards.jsx";
+import AccessoriesCards from "../../pages/AccessoriesCards.jsx";
 import ProductCardDetail from "../../pages/ProductCardDetail.jsx";
 import Admin from "../../pages/Admin.jsx";
 import PrivateRoute from "./PrivateRoute";
@@ -12,6 +13,7 @@ import CompanyProduct from "../../pages/CompanyProducts.jsx";
 const routes = [
     { path: "/", element: <Home /> },
     { path: "smartphones", element: <SmartphonesCards /> },
+    { path: "accessories", element: <AccessoriesCards /> },
     { path: "product_detail/:endpoint/:id/", element: <ProductCardDetail /> },
     { path: "admin_panel/", element: <PrivateRoute element={<Admin />} requiredRole="admin" /> },
     { path: "add_new_product/", element: <PrivateRoute element={<AddNewProduct />} requiredRole="company" /> },
