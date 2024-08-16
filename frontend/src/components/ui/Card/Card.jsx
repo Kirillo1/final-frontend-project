@@ -2,19 +2,6 @@ import Image from "../Image/Image";
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import LocalMallRoundedIcon from '@mui/icons-material/LocalMallRounded';
 
-/**
- * Компонент карточка.
- * @param {object} props - Свойства компонента.
- * @param {object} props.details - Детали карточки смартфона.
- * @param {string} props.details.id - Идентификатор карточки.
- * @param {string} props.details.name - Название смартфона.
- * @param {string} props.details.phone_model - Модель смартфона.
- * @param {string} props.details.description - Описание смартфона.
- * @param {string} [props.details.price] - Цена смартфона.
- * @param {array} [props.details.imgSrc] - Массив с путями изображений.
- * @param {function} props.onClick - Обработчик клика по карточке (необязательно).
- * @returns {JSX.Element} Элемент JSX.
- */
 export const Card = (props) => {
     const {
         id,
@@ -23,15 +10,15 @@ export const Card = (props) => {
         price,
         color,
         images,
+        isFavorite // Добавлено
     } = props.details;
 
     const { onCardClick, onHeartClick } = props;
 
     // Обработчик клика на иконку сердечка
     const handleFavorite = (event) => {
-        event.stopPropagation(); // Предотвр. всплытие события
-        console.log(123)
-
+        event.stopPropagation(); // Предотвратить всплытие события
+        console.log(1)
         onHeartClick && onHeartClick(id);
     };
 
@@ -54,18 +41,13 @@ export const Card = (props) => {
                 />
                 <div className="absolute top-0 left-0 w-full h-full bg-black opacity-30 transition-opacity duration-300 hover:opacity-40"></div>
                 <button
-                    onClick={handleFavorite}
-                    // className={`absolute top-0 left-0 m-2 p-2 rounded-full z-0 ${isFavorite ? "text-indigo-500" : "text-white"
-                    //     }`}
                     className="absolute top-0 right-0 bg-violet-600 text-white px-2 py-1 m-2 rounded-md text-sm font-normal"
                 >
                     <LocalMallRoundedIcon />
                 </button>
                 <button
                     onClick={handleFavorite}
-                    // className={`absolute top-0 left-0 m-2 p-2 rounded-full z-0 ${isFavorite ? "text-indigo-500" : "text-white"
-                    //     }`}
-                    className="absolute top-0 left-0 m-2 p-2 rounded-full z-0  text-white"
+                    className={`absolute top-0 left-0 m-2 p-2 rounded-full z-0 ${isFavorite ? "text-indigo-500" : "text-white"}`}
                 >
                     <FavoriteRoundedIcon />
                 </button>

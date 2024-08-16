@@ -87,6 +87,24 @@ const useProductsStore = create((set, get) => ({
     },
 
     clearDetail: (detailType) => set({ [`${detailType}Detail`]: null }),
+
+    onToggleFavorite: (id) => {
+        const { smartphones } = get(); // или аксессуары, в зависимости от типа продукта
+        const updatedProducts = smartphones.map((product) => {
+            if (product.id === id) {
+                product.isFavorite = !product.isFavorite;
+            }
+            return product;
+        });
+
+        const updatedFavorites = updatedProducts
+            .filter((product) => product.isFavorite)
+            .map((product) => product.id);
+
+        localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+
+        set({ smartphones: updatedProducts }); // или аксессуары, если нужно
+    },
 }));
 
 export default useProductsStore;
