@@ -118,6 +118,25 @@ const Admin = () => {
                     />
                 </div>
 
+                <div className="mt-8 pt-3">
+                    <h3 className="mb-4 text-4xl font-bold text-zinc-100 mt-5">Компании</h3>
+                    <Table
+                        headers={[
+                            { key: "name", title: "Название" },
+                            { key: "modelPhone", title: "Имя" },
+                            { key: "colorPhone", title: "Фамилия" },
+                            { key: "quantity", title: "Смартфоны" },
+                            { key: "quantity", title: "Аксессуары" },
+                            { key: "isVerified", title: "Проверен" },
+                            { key: "createdAt", title: "Добавлен" }
+                        ]}
+                        data={accessories}
+                        onButtonClick={handleButtonAccessoryClick}
+                        handleChange={handleAccessoryChange}
+                        onDeleteButtonClick={onDeleteAccessoryButtonClick}
+                    />
+                </div>
+
                 {isDrawerOpen && (
                     <Drawer
                         isOpen={isDrawerOpen}
