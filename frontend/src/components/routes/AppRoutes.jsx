@@ -8,16 +8,20 @@ import Admin from "../../pages/Admin.jsx";
 import PrivateRoute from "./PrivateRoute";
 import AddNewProduct from "../../pages/AddProduct.jsx";
 import CompanyProduct from "../../pages/CompanyProducts.jsx";
+import FavoritesList from "../../pages/FavoriteProducts.jsx";
+import Cart from "../../pages/Cart.jsx";
 
 /** Массив роутов приложения */
 const routes = [
     { path: "/", element: <Home /> },
     { path: "smartphones", element: <SmartphonesCards /> },
     { path: "accessories", element: <AccessoriesCards /> },
-    { path: "product_detail/:endpoint/:id/", element: <ProductCardDetail /> },
-    { path: "admin_panel/", element: <PrivateRoute element={<Admin />} requiredRole="admin" /> },
-    { path: "add_new_product/", element: <PrivateRoute element={<AddNewProduct />} requiredRole="company" /> },
-    { path: "company_products/", element: <PrivateRoute element={<CompanyProduct />} requiredRole="company" /> }
+    { path: "favorites", element: <FavoritesList /> },
+    { path:"cart", element: <Cart /> },
+    { path: "product_detail/:endpoint/:id", element: <ProductCardDetail /> },
+    { path: "admin_panel", element: <PrivateRoute element={<Admin />} requiredRole="admin" /> },
+    { path: "add_new_product", element: <PrivateRoute element={<AddNewProduct />} requiredRole="company" /> },
+    { path: "company_products", element: <PrivateRoute element={<CompanyProduct />} requiredRole="company" /> }
 ];
 
 /**

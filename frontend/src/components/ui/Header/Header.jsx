@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import useForm from "../../../hooks/useForm";
 import useRegistrationForm from '../../../hooks/userRegistrationForm';
 import { Modal } from "../Modal/Modal";
@@ -12,6 +12,8 @@ import SmartphoneRoundedIcon from '@mui/icons-material/SmartphoneRounded';
 import HeadphonesBatteryRoundedIcon from '@mui/icons-material/HeadphonesBatteryRounded';
 import ExitToAppRoundedIcon from '@mui/icons-material/ExitToAppRounded';
 import PersonAddRoundedIcon from '@mui/icons-material/PersonAddRounded';
+import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded'; 
+import LocalMallRoundedIcon from '@mui/icons-material/LocalMallRounded';
 import {
     Dialog,
     DialogPanel,
@@ -93,6 +95,9 @@ const Header = () => {
         );
     };
 
+    // Хук для навигации (роутинга) по страницам
+    const navigate = useNavigate();
+
     // Обработка формы при регистрации
     const handleRegisterForm = (event) => {
         event.preventDefault();
@@ -121,6 +126,16 @@ const Header = () => {
     const closeLoginModalAndResetForm = () => {
         setShowLoginModal(false);
         resetForm(); // Сбрасываем форму
+    };
+
+    // Показ страницы с сохраненками
+    const handleToOpenFavorites = () => {
+        navigate(`/favorites`);
+    };
+
+    // Показ страницы корзина товаров
+    const handleToCartOpen = () => {
+        navigate(`/cart`);
     };
 
     return (
@@ -325,6 +340,27 @@ const Header = () => {
                     </div>
                 </PopoverGroup>
                 <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+                    <button
+                        type="button"
+                        className='relative bg-transparent p-1 mr-3 rounded-full text-gray-400 hover:text-gray-500'
+                        onClick={handleToOpenFavorites}
+                    >
+                        <FavoriteRoundedIcon />
+                        <span className="w-5 h-5 text-xs px-1 leading-5 text-white inline-flex items-center justify-center bg-violet-500 rounded-full absolute top-[-4px] right-[-4px]">
+                        5
+                        </span>
+                    </button>
+
+                    <button
+                        type="button"
+                        className='relative bg-transparent p-1 mr-3 rounded-full text-gray-400 hover:text-gray-500'
+                        onClick={handleToCartOpen}
+                    >
+                        <LocalMallRoundedIcon />
+                        <span className="w-5 h-5 text-xs px-1 leading-5 text-white inline-flex items-center justify-center bg-violet-500 rounded-full absolute top-[-4px] right-[-4px]">
+                            5
+                        </span>
+                    </button>
                     {!user ? (
                         <>
                             <button 
