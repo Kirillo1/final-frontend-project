@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Card } from "../components/ui/Card/Card";
 import useProductsStore from "../store/useProductsStore";
 
@@ -10,17 +10,35 @@ const FavoritesList = () => {
     const {
         smartphones,
         accessories,
-        fetchData,
+        getFavoriteProducts,
+        onToggleFavorite
     } = useProductsStore(state => ({
         smartphones: state.smartphones,
         accessories: state.accessories,
-        fetchData: state.fetchData,
+        getFavoriteProducts: state.getFavoriteProducts,
+        onToggleFavorite: state.onToggleFavorite
     }));
 
+    const [favorites, setFavorites] = useState(new Set()); // Инициализация как Set
+
     useEffect(() => {
-        fetchData("smartphones", "smartphones");
-        fetchData("accessories", "accessories");
-    }, [fetchData]);
+        const storedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
+        setFavorites(new Set(storedFavorites.filter(item => item.type === "smartphones").map(item => item.id)));
+    }, [smartphones]);
+
+    // Обработчик добавления товара в сохраненки 
+    const handleFavorite = (id) => {
+        onToggleFavorite(id, "smartphones");
+        setFavorites(prevFavorites => {
+            const updatedFavorites = new Set(prevFavorites);
+            if (updatedFavorites.has(id)) {
+                updatedFavorites.delete(id);
+            } else {
+                updatedFavorites.add(id);
+            }
+            return updatedFavorites;
+        });
+    };
 
     // Обработчик клика по карточке смартфона
     const handleSmartphoneCardClick = (name, id) => {
@@ -32,6 +50,9 @@ const FavoritesList = () => {
         navigate(`/accessory/${name}/${id}/`)
     }
 
+    const favoriteSmartphones = getFavoriteProducts()?.smartphones;
+    const favoriteAccessories = getFavoriteProducts()?.accessories;
+
     return (
         <section className="new-products">
             <div className="max-w-7xl mx-auto px-2 relative">
@@ -39,16 +60,17 @@ const FavoritesList = () => {
 
                 <section className="smartphones">
                     <div className="max-w-7xl mx-auto px-2">
-                        <h3 className="mb-4 text-4xl font-bold text-zinc-100">
-                            Смартфоны
-                        </h3>
                         <div className="flex flex-wrap gap-9">
-                            {!!smartphones &&
-                                smartphones.map((smartphone) => (
+                            {!!favoriteSmartphones &&
+                                favoriteSmartphones.map((smartphone) => (
                                     <Card
                                         key={smartphone?.id}
-                                        details={smartphone}
+                                        details={{
+                                            ...smartphone,
+                                            isFavorite: favorites.has(smartphone.id) // Проверяем наличие id в Set
+                                        }}                                      
                                         onCardClick={handleSmartphoneCardClick}
+                                        onHeartClick={handleFavorite}
                                     />
                                 ))}
                         </div>
@@ -57,12 +79,9 @@ const FavoritesList = () => {
 
                 <section className="accessories">
                     <div className="max-w-7xl mx-auto px-2">
-                        <h3 className="mb-4 text-4xl font-bold text-zinc-100">
-                            Аксессуары
-                        </h3>
                         <div className="flex flex-wrap gap-9">
-                            {!!accessories &&
-                                accessories.map((accessory) => (
+                            {!!favoriteAccessories &&
+                                favoriteAccessories.map((accessory) => (
                                     <Card
                                         key={accessory?.id}
                                         details={accessory}
