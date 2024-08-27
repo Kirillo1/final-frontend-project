@@ -12,7 +12,6 @@ import DeleteForeverTwoToneIcon from '@mui/icons-material/DeleteForeverTwoTone';
  * @returns {JSX.Element} Элемент JSX.
  */
 const TableRow = ({ rowData, onButtonClick, handleChange, onDeleteButtonClick }) => {
-
     const exclusionKeys = [
         "id",
         "processor",
@@ -25,7 +24,10 @@ const TableRow = ({ rowData, onButtonClick, handleChange, onDeleteButtonClick })
         "manufacturer_country",
         "description",
         "images",
-        "user_id"
+        "user_id",
+        "role",
+        "is_superuser",
+        "is_active"
     ];
 
     // Получает все ключи объекта rowData, кроме исключенных ключей
@@ -52,27 +54,56 @@ const TableRow = ({ rowData, onButtonClick, handleChange, onDeleteButtonClick })
         return { key, value };
     });
 
+    // Переопределяем ключи для компаний, если это необходимо
+    const companyHeaders = [
+        "company_name", "email", "first_name", "last_name", "phone_number",
+    ];
+
+    const companyTransformedData = companyHeaders.map(key => ({
+        key,
+        value: rowData[key] || ''
+    }));
+
     return (
         <div className="flex flex-row">
-            {transformedData.map(({ key, value }) => (
+            {(rowData.role === 'company' ? companyTransformedData : transformedData).map(({ key, value }) => (
                 <TextCell key={key} value={value} />
             ))}
-            <div className="flex justify-center border text-zinc-100 border-violet-700 flex-grow w-2">
-                <button onClick={() => onButtonClick(rowData)} className="px-4 py-2 text-white">
-                    ...
-                </button>
-            </div>
-            <div className="flex justify-center border text-zinc-100 border-violet-700 flex-grow w-2">
-                <Switch 
-                    defaultChecked={rowData?.is_verified ? true : undefined}
-                    onChange={() => handleChange(rowData)}
-                    color="secondary"
-                />
-            </div>
+            {rowData.role === 'company' ? (
+                <>
+                <div className="flex justify-center border text-zinc-100 border-violet-700 flex-grow w-2">
+                    <button onClick={() => onButtonClick(rowData)} className="px-4 py-2 text-white">
+                        ...
+                    </button>
+                </div>
+                <div className="flex justify-center border text-zinc-100 border-violet-700 flex-grow w-2">
+                        <Switch
+                            defaultChecked={rowData?.is_verified ? true : undefined}
+                            onChange={() => handleChange(rowData)}
+                            color="secondary"
+                        />
+                    </div>
+                </>
+            ) : (
+                <>
+                    <div className="flex justify-center border text-zinc-100 border-violet-700 flex-grow w-2">
+                        <button onClick={() => onButtonClick(rowData)} className="px-4 py-2 text-white">
+                            ...
+                        </button>
+                    </div>
+                    <div className="flex justify-center border text-zinc-100 border-violet-700 flex-grow w-2">
+                        <Switch
+                            defaultChecked={rowData?.is_verified ? true : undefined}
+                            onChange={() => handleChange(rowData)}
+                            color="secondary"
+                        />
+                    </div>
+                </>
+            )}
             <div className="flex justify-center border text-zinc-100 border-violet-700 flex-grow w-2">
                 <button onClick={() => onDeleteButtonClick(rowData.id)} className="px-4 py-2 text-red">
                     <DeleteForeverTwoToneIcon sx={{ color: "#c1121f" }} />
-                </button>            
+                </button>
             </div>
         </div>
     );

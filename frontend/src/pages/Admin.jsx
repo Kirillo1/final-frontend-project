@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import useProductsStore from "../store/useProductsStore";
+import useUsersStore from "../store/useUsersStore";
 import { Drawer } from "../components/ui/Drawer/Drawer";
 import Table from "../components/ui/Table/Table";
 import Box from '@mui/material/Box';
@@ -29,15 +30,27 @@ const Admin = () => {
         changeStatus: state.changeStatus,
     }));
 
+    const { 
+        users, 
+        fetchUsersData 
+    } = useUsersStore(state => ({
+        users: state.users,
+        fetchUsersData: state.fetchUsersData,
+    }));
+
     const [isDrawerOpen, setDrawerOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const [itemType, setItemType] = useState(null);
-
+    
     useEffect(() => {
         fetchData("smartphones", "smartphones");
         fetchData("accessories", "accessories");
     }, [fetchData]);
-
+    
+    useEffect(() => {
+        fetchUsersData();
+    }, [fetchUsersData]);
+    
     const handleButtonSmartphoneClick = (smartphone) => {
         setSelectedItem(smartphone);
         setItemType('smartphone');
@@ -50,6 +63,12 @@ const Admin = () => {
         setDrawerOpen(true);
     };
 
+    const handleButtonUserClick = (user) => {
+        setSelectedItem(user);
+        setItemType('user');
+        setDrawerOpen(true);    
+    };
+
     const handleSmartphoneChange = (smartphone) => {
         if (!smartphone?.id) return;
         const isVerified = !smartphone.is_verified;
@@ -58,8 +77,15 @@ const Admin = () => {
     };
 
     const handleAccessoryChange = (accessory) => {
-        // Логика изменения аксессуара, если необходима
-        console.log(accessory);
+        if (!accessory?.id) return;
+        const isVerified = !accessory.is_verified;
+        console.log(isVerified)
+
+        changeStatus(accessory.id, "accessories", isVerified);    
+    };
+
+    const handleUserChange = (user) => {
+        console.log(user)
     };
 
     const onDeleteSmartphoneButtonClick = (smartphoneID) => {
@@ -70,19 +96,22 @@ const Admin = () => {
         deleteDataById(accessoryID, "accessories", "accessories");
     };
 
+    const onDeleteUserButtonClick = (userID) => {
+        console.log(userID)
+    };
+
     const handleCloseDrawer = () => {
         setDrawerOpen(false);
         setSelectedItem(null);
         setItemType(null);
     };
 
+    const companyUsers = users.filter(user => user.role === 'company');
+
     return (
         <section className="admin">
             <div className="max-w-7xl mx-auto px-2">
                 <div className="mb-8 pb-3">
-                    <h2 className="mb-5 text-4xl font-bold text-zinc-100">
-                        Страница управления товарами
-                    </h2>
                     <h3 className="mb-4 text-4xl font-bold text-zinc-100 mt-5">Смартфоны</h3>
                     <Table
                         headers={[
@@ -122,18 +151,16 @@ const Admin = () => {
                     <h3 className="mb-4 text-4xl font-bold text-zinc-100 mt-5">Компании</h3>
                     <Table
                         headers={[
-                            { key: "name", title: "Название" },
-                            { key: "modelPhone", title: "Имя" },
-                            { key: "colorPhone", title: "Фамилия" },
-                            { key: "quantity", title: "Смартфоны" },
-                            { key: "quantity", title: "Аксессуары" },
-                            { key: "isVerified", title: "Проверен" },
-                            { key: "createdAt", title: "Добавлен" }
+                            { key: "company_name", title: "Компания" },
+                            { key: "email", title: "Почта" },
+                            { key: "first_name", title: "Имя" },
+                            { key: "last_name", title: "Фамилия" },
+                            { key: "phone_number", title: "Телефон" },
                         ]}
-                        data={accessories}
-                        onButtonClick={handleButtonAccessoryClick}
-                        handleChange={handleAccessoryChange}
-                        onDeleteButtonClick={onDeleteAccessoryButtonClick}
+                        data={companyUsers}
+                        onButtonClick={handleButtonUserClick}
+                        handleChange={handleUserChange}
+                        onDeleteButtonClick={onDeleteUserButtonClick}
                     />
                 </div>
 
@@ -224,6 +251,38 @@ const Admin = () => {
                                                             "☆".repeat(5 - Math.floor(selectedItem?.rating))}
                                                     </div>
                                                 )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            )}
+                            {selectedItem && itemType === 'user' && (
+                                <section className="card-details">
+                                    <div className="max-w-7xl mx-auto px-2">
+                                        <h3 className="mb-4 text-4xl font-bold text-zinc-300">
+                                            {selectedItem?.company_name}
+                                        </h3>
+                                        <div className="max-w-md rounded shadow-lg relative">
+                                            <div className="relative">
+                                                <div className="absolute inset-0 bg-black opacity-30 rounded"></div>
+                                            </div>
+                                            <Box sx={{ width: 450, height: 300, overflowY: 'scroll', display: 'flex' }}>
+                                                {/* <ImageList variant="masonry" cols={3} gap={8}>
+                                                    {selectedItem.images.map((image) => (
+                                                        <ImageListItem key={image}>
+                                                            <img
+                                                                srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                                                                src={`/assets/smartphones/${image}`}
+                                                                loading="lazy"
+                                                            />
+                                                        </ImageListItem>
+                                                    ))}
+                                                </ImageList> */}
+                                            </Box>
+                                            <div className="px-1 py-4">
+                                                <p className="text-zinc-300 text-sm mb-2">{selectedItem?.first_name}</p>
+                                                <p className="text-zinc-300 text-sm mb-2">{selectedItem?.last_name}</p>
+                                            
                                             </div>
                                         </div>
                                     </div>
