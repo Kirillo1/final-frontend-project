@@ -6,9 +6,11 @@ from sqlalchemy import delete
 
 from src.database import get_async_session
 
+from src.users.models import User
 from src.smartphone.models import Smartphone as SmartphoneModel
 from src.smartphone.schemas import (SmartphoneCreate, ResponseModel,
-                                    SingleSmartphoneResponseModel, SmartphoneUpdate)
+                                    SingleSmartphoneResponseModel, SmartphoneUpdate,
+                                    SmartphoneVerifyStatusUpdate)
 
 
 router = APIRouter()
@@ -60,14 +62,28 @@ async def get_smartphone(smartphone_id: int, db: AsyncSession = Depends(get_asyn
 @router.post("/add", response_model=SingleSmartphoneResponseModel, status_code=status.HTTP_201_CREATED)
 async def create_smartphone(smartphone: SmartphoneCreate, db: AsyncSession = Depends(get_async_session)):
     try:
+        user = await db.execute(select(User).where(User.id == smartphone.user_id))
+        user = user.scalar_one_or_none()
+        print(smartphone.user_id)
+        if user is None:
+            raise HTTPException(status_code=404, detail="User not found")
+
         db_smartphone = SmartphoneModel(
-            name=smartphone.name, phone_model=smartphone.phone_model,
-            color=smartphone.color, processor=smartphone.processor,
-            ram_capacity=smartphone.ram_capacity, memory_capacity=smartphone.memory_capacity,
-            battery_capacity=smartphone.battery_capacity, release_year=smartphone.release_year,
-            guarantee=smartphone.guarantee, manufacturer_country=smartphone.manufacturer_country,
-            description=smartphone.description, quantity=smartphone.quantity,
-            price=smartphone.price, images=smartphone.images
+            name=smartphone.name,
+            phone_model=smartphone.phone_model,
+            color=smartphone.color,
+            processor=smartphone.processor,
+            ram_capacity=smartphone.ram_capacity,
+            memory_capacity=smartphone.memory_capacity,
+            battery_capacity=smartphone.battery_capacity,
+            release_year=smartphone.release_year,
+            guarantee=smartphone.guarantee,
+            manufacturer_country=smartphone.manufacturer_country,
+            description=smartphone.description,
+            quantity=smartphone.quantity,
+            price=smartphone.price,
+            images=smartphone.images,
+            user_id=smartphone.user_id
         )
         db.add(db_smartphone)
         await db.commit()
@@ -138,6 +154,42 @@ async def update_smartphone(smartphone_id: int, updated_smartphone: SmartphoneUp
         for key, value in updated_data.items():
             if value not in [None, "", 0]:
                 setattr(smartphone, key, value)
+
+        await session.commit()
+        await session.refresh(smartphone)
+
+        return {
+            "status": "success",
+            "data": smartphone,
+            "details": None
+        }
+    except HTTPException as http_exc:
+        raise http_exc
+    except Exception as e:
+        raise HTTPException(status_code=500, detail={
+            "status": "error",
+            "data": None,
+            "details": str(e)
+        })
+
+
+@router.put("/{smartphone_id}/verify", response_model=SingleSmartphoneResponseModel)
+async def update_smartphone_verification_status(
+    smartphone_id: int,
+    update_data: SmartphoneVerifyStatusUpdate,
+    session: AsyncSession = Depends(get_async_session)
+):
+    try:
+        query = select(SmartphoneModel).where(
+            SmartphoneModel.id == smartphone_id)
+        result = await session.execute(query)
+        smartphone = result.scalar_one_or_none()
+
+        if smartphone is None:
+            raise HTTPException(status_code=404, detail="Smartphone not found")
+
+        # Обновление только статуса is_verified
+        smartphone.is_verified = update_data.is_verified
 
         await session.commit()
         await session.refresh(smartphone)

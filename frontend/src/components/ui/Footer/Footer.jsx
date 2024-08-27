@@ -63,64 +63,6 @@ const Footer = () => {
                             </a>
                         </div>
                     </div>
-
-                    <div className="lg:mx-auto text-center sm:text-left">
-                        <h4 className="text-lg text-zinc-300 font-medium mb-7">Pagedone</h4>
-                        <ul className="text-sm  transition-all duration-500">
-                            <li className="mb-6">
-                                <a
-                                    href="#"
-                                    className="text-zinc-300 hover:text-gray-900"
-                                >
-                                    Home
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div className="lg:mx-auto text-center sm:text-left">
-                        <h4 className="text-lg text-zinc-300 font-medium mb-7">Products</h4>
-                        <ul className="text-sm  transition-all duration-500">
-                            <li className="mb-6">
-                                <a
-                                    href="#"
-                                    className="text-zinc-300 hover:text-gray-900"
-                                >
-                                    Figma UI System
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div className="lg:mx-auto text-center sm:text-left">
-                        <h4 className="text-lg text-zinc-300 font-medium mb-7">
-                            Resources
-                        </h4>
-                        <ul className="text-sm  transition-all duration-500">
-                            <li className="mb-6">
-                                <a
-                                    href="#"
-                                    className="text-zinc-300 hover:text-gray-900"
-                                >
-                                    FAQs
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div className="lg:mx-auto text-center sm:text-left">
-                        <h4 className="text-lg text-zinc-300 font-medium mb-7">Blogs</h4>
-                        <ul className="text-sm  transition-all duration-500">
-                            <li className="mb-6">
-                                <a
-                                    href="#"
-                                    className="text-zinc-300 hover:text-gray-900"
-                                >
-                                    News
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
                 </div>
 
                 <div className="py-7 border-t border-violet-700">

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
+import useProductsStore from "../store/useProductsStore";
+import useUsersStore from "../store/useUsersStore";
 import { Drawer } from "../components/ui/Drawer/Drawer";
-import useSmartphonesStore from "../store/useSmartphonesStore";
-import useAccessoriesStore from "../store/useAccessoriesStore";
 import Table from "../components/ui/Table/Table";
 import Box from '@mui/material/Box';
 import ImageList from '@mui/material/ImageList';
@@ -16,71 +16,102 @@ import StorageTwoToneIcon from '@mui/icons-material/StorageTwoTone';
 import CurrencyRubleTwoToneIcon from '@mui/icons-material/CurrencyRubleTwoTone';
 
 const Admin = () => {
-    // Стор для работы с смартфонами
-    const { smartphones, getSmartphones, deleteSmartphoneById } = useSmartphonesStore();
+    const {
+        smartphones,
+        accessories,
+        fetchData,
+        deleteDataById,
+        changeStatus,
+    } = useProductsStore(state => ({
+        smartphones: state.smartphones,
+        accessories: state.accessories,
+        fetchData: state.fetchData,
+        deleteDataById: state.deleteDataById,
+        changeStatus: state.changeStatus,
+    }));
 
-    // Стор для работы с аксессуарами
-    const { accessories, getAccessories, deleteAccessoryById } = useAccessoriesStore();
+    const { 
+        users, 
+        fetchUsersData 
+    } = useUsersStore(state => ({
+        users: state.users,
+        fetchUsersData: state.fetchUsersData,
+    }));
 
-    // Стейт для скрытия/показа компонента Drawer
     const [isDrawerOpen, setDrawerOpen] = useState(false);
-
-    // Состояние для хранения выбранного элемента
     const [selectedItem, setSelectedItem] = useState(null);
     const [itemType, setItemType] = useState(null);
-
+    
     useEffect(() => {
-        getSmartphones();
-    }, [getSmartphones]);
-
+        fetchData("smartphones", "smartphones");
+        fetchData("accessories", "accessories");
+    }, [fetchData]);
+    
     useEffect(() => {
-        getAccessories();
-    }, [getAccessories]);
-
-    // Функция для обработки клика на кнопку просмотра смартфона
+        fetchUsersData();
+    }, [fetchUsersData]);
+    
     const handleButtonSmartphoneClick = (smartphone) => {
         setSelectedItem(smartphone);
         setItemType('smartphone');
         setDrawerOpen(true);
     };
 
-    // Функция для обработки клика на кнопку просмотра аксессуара
     const handleButtonAccessoryClick = (accessory) => {
         setSelectedItem(accessory);
         setItemType('accessory');
         setDrawerOpen(true);
     };
 
+    const handleButtonUserClick = (user) => {
+        setSelectedItem(user);
+        setItemType('user');
+        setDrawerOpen(true);    
+    };
+
     const handleSmartphoneChange = (smartphone) => {
-        console.log(smartphone);
+        if (!smartphone?.id) return;
+        const isVerified = !smartphone.is_verified;
+
+        changeStatus(smartphone.id, "smartphones", isVerified);
     };
 
     const handleAccessoryChange = (accessory) => {
-        console.log(accessory);
+        if (!accessory?.id) return;
+        const isVerified = !accessory.is_verified;
+        console.log(isVerified)
+
+        changeStatus(accessory.id, "accessories", isVerified);    
+    };
+
+    const handleUserChange = (user) => {
+        console.log(user)
     };
 
     const onDeleteSmartphoneButtonClick = (smartphoneID) => {
-        deleteSmartphoneById(smartphoneID);
+        deleteDataById(smartphoneID, "smartphones", "smartphones");
     };
 
     const onDeleteAccessoryButtonClick = (accessoryID) => {
-        deleteAccessoryById(accessoryID);
+        deleteDataById(accessoryID, "accessories", "accessories");
     };
 
-    // Функция для обработки закрытия Drawer и сбрасывания selectedItem и itemType
+    const onDeleteUserButtonClick = (userID) => {
+        console.log(userID)
+    };
+
     const handleCloseDrawer = () => {
         setDrawerOpen(false);
         setSelectedItem(null);
         setItemType(null);
     };
 
+    const companyUsers = users.filter(user => user.role === 'company');
+
     return (
         <section className="admin">
             <div className="max-w-7xl mx-auto px-2">
                 <div className="mb-8 pb-3">
-                    <h2 className="mb-5 text-4xl font-bold text-zinc-100">
-                        Страница управления товарами
-                    </h2>
                     <h3 className="mb-4 text-4xl font-bold text-zinc-100 mt-5">Смартфоны</h3>
                     <Table
                         headers={[
@@ -113,6 +144,23 @@ const Admin = () => {
                         onButtonClick={handleButtonAccessoryClick}
                         handleChange={handleAccessoryChange}
                         onDeleteButtonClick={onDeleteAccessoryButtonClick}
+                    />
+                </div>
+
+                <div className="mt-8 pt-3">
+                    <h3 className="mb-4 text-4xl font-bold text-zinc-100 mt-5">Компании</h3>
+                    <Table
+                        headers={[
+                            { key: "company_name", title: "Компания" },
+                            { key: "email", title: "Почта" },
+                            { key: "first_name", title: "Имя" },
+                            { key: "last_name", title: "Фамилия" },
+                            { key: "phone_number", title: "Телефон" },
+                        ]}
+                        data={companyUsers}
+                        onButtonClick={handleButtonUserClick}
+                        handleChange={handleUserChange}
+                        onDeleteButtonClick={onDeleteUserButtonClick}
                     />
                 </div>
 
@@ -203,6 +251,38 @@ const Admin = () => {
                                                             "☆".repeat(5 - Math.floor(selectedItem?.rating))}
                                                     </div>
                                                 )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            )}
+                            {selectedItem && itemType === 'user' && (
+                                <section className="card-details">
+                                    <div className="max-w-7xl mx-auto px-2">
+                                        <h3 className="mb-4 text-4xl font-bold text-zinc-300">
+                                            {selectedItem?.company_name}
+                                        </h3>
+                                        <div className="max-w-md rounded shadow-lg relative">
+                                            <div className="relative">
+                                                <div className="absolute inset-0 bg-black opacity-30 rounded"></div>
+                                            </div>
+                                            <Box sx={{ width: 450, height: 300, overflowY: 'scroll', display: 'flex' }}>
+                                                {/* <ImageList variant="masonry" cols={3} gap={8}>
+                                                    {selectedItem.images.map((image) => (
+                                                        <ImageListItem key={image}>
+                                                            <img
+                                                                srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                                                                src={`/assets/smartphones/${image}`}
+                                                                loading="lazy"
+                                                            />
+                                                        </ImageListItem>
+                                                    ))}
+                                                </ImageList> */}
+                                            </Box>
+                                            <div className="px-1 py-4">
+                                                <p className="text-zinc-300 text-sm mb-2">{selectedItem?.first_name}</p>
+                                                <p className="text-zinc-300 text-sm mb-2">{selectedItem?.last_name}</p>
+                                            
                                             </div>
                                         </div>
                                     </div>

@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import useForm from "../../../hooks/useForm";
 import useRegistrationForm from '../../../hooks/userRegistrationForm';
 import { Modal } from "../Modal/Modal";
 import Input from "../Input/Input";
 import { useAuth } from '../../../hooks/useAuth';
+import useProductsStore from '../../../store/useProductsStore';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
@@ -12,6 +13,8 @@ import SmartphoneRoundedIcon from '@mui/icons-material/SmartphoneRounded';
 import HeadphonesBatteryRoundedIcon from '@mui/icons-material/HeadphonesBatteryRounded';
 import ExitToAppRoundedIcon from '@mui/icons-material/ExitToAppRounded';
 import PersonAddRoundedIcon from '@mui/icons-material/PersonAddRounded';
+import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded'; 
+import LocalMallRoundedIcon from '@mui/icons-material/LocalMallRounded';
 import {
     Dialog,
     DialogPanel,
@@ -42,7 +45,8 @@ const products = [
 /** Массив пунктов меню */
 const navItems = [
     { name: "Главная", path: "/" },
-    { name: "Смартфоны", path: "/smartphones" },
+    { name: "Смартфоны", path: "products/smartphones" },
+    { name: "Аксессуары", path: "products/accessories" },
     { name : "Панель администратора", path: "/admin_panel" },
     { name: "Мои товары", path: "/company_products" }
 ];
@@ -52,6 +56,13 @@ const navItems = [
  * @returns {JSX.Element} Элемент header.
  */
 const Header = () => {
+    const {
+        getFavoriteProducts
+    } = useProductsStore(state => ({
+        getFavoriteProducts: state.getFavoriteProducts,
+    }));
+
+
     // Стейт для показа/скрытия модального окна (для регистрации).
     const [showRegisterModal, setShowRegisterModal] = useState(false);
 
@@ -80,6 +91,8 @@ const Header = () => {
 
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
+    const favoritesCount = getFavoriteProducts()?.accessories?.length + getFavoriteProducts()?.smartphones?.length;
+
     /**
      * Определяет, активна ли ссылка.
      * @param {string} path - Путь ссылки.
@@ -91,6 +104,9 @@ const Header = () => {
             (path === "/cards" && location?.pathname?.startsWith("/cards"))
         );
     };
+
+    // Хук для навигации (роутинга) по страницам
+    const navigate = useNavigate();
 
     // Обработка формы при регистрации
     const handleRegisterForm = (event) => {
@@ -120,6 +136,16 @@ const Header = () => {
     const closeLoginModalAndResetForm = () => {
         setShowLoginModal(false);
         resetForm(); // Сбрасываем форму
+    };
+
+    // Показ страницы с сохраненками
+    const handleToOpenFavorites = () => {
+        navigate(`/favorites`);
+    };
+
+    // Показ страницы корзина товаров
+    const handleToCartOpen = () => {
+        navigate(`/cart`);
     };
 
     return (
@@ -264,13 +290,15 @@ const Header = () => {
                                 if (
                                     item?.path === "/admin_panel" &&
                                     (!user || user?.role !== "admin")
-                                    ) {
+                                ) {
                                     return null;
-                                } else if (
-                                    item?.path === "/company_product" &&
+                                } 
+
+                                if (
+                                    item?.path === "/company_products" &&
                                     (!user || user?.role !== "company")
                                 ) {
-
+                                    return null;
                                 }
 
                                 return (
@@ -322,6 +350,29 @@ const Header = () => {
                     </div>
                 </PopoverGroup>
                 <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+                    <button
+                        type="button"
+                        className='relative bg-transparent p-1 mr-3 rounded-full text-gray-400 hover:text-gray-500'
+                        onClick={handleToOpenFavorites}
+                    >
+                        <FavoriteRoundedIcon />
+                        {!!favoritesCount && (
+                        <span className="w-5 h-5 text-xs px-1 leading-5 text-white inline-flex items-center justify-center bg-violet-500 rounded-full absolute top-[-4px] right-[-4px]">
+                            {favoritesCount}
+                        </span>
+                        )}
+                    </button>
+
+                    <button
+                        type="button"
+                        className='relative bg-transparent p-1 mr-3 rounded-full text-gray-400 hover:text-gray-500'
+                        onClick={handleToCartOpen}
+                    >
+                        <LocalMallRoundedIcon />
+                        <span className="w-5 h-5 text-xs px-1 leading-5 text-white inline-flex items-center justify-center bg-violet-500 rounded-full absolute top-[-4px] right-[-4px]">
+                            5
+                        </span>
+                    </button>
                     {!user ? (
                         <>
                             <button 

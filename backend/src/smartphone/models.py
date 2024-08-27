@@ -1,7 +1,10 @@
 from datetime import datetime
-from sqlalchemy import Table, Column, Integer, String, TIMESTAMP, MetaData, ARRAY, Boolean
+from sqlalchemy import Table, Column, Integer, String, TIMESTAMP, MetaData, ARRAY, Boolean, ForeignKey
 from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy.orm import relationship
 
+# Убедитесь, что импортируете модель User правильно
+from src.users.models import user
 from src.database import Base
 
 metadata = MetaData()
@@ -26,11 +29,13 @@ smartphone = Table(
     Column("images", ARRAY(String), nullable=False),
     Column("is_verified", Boolean, default=False),
     Column("created_at", TIMESTAMP, default=datetime.utcnow),
+    Column("user_id", Integer, ForeignKey(user.c.id)),
 )
 
 
 class Smartphone(Base):
     __tablename__ = "smartphone"
+
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)
     phone_model = Column(String, nullable=False)
@@ -48,3 +53,4 @@ class Smartphone(Base):
     price = Column(Integer, nullable=False)
     is_verified = Column(Boolean, default=False)
     created_at = Column(TIMESTAMP, default=datetime.utcnow)
+    user_id = Column(Integer, ForeignKey(user.c.id))

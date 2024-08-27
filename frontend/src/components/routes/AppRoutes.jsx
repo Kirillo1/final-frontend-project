@@ -1,23 +1,25 @@
 import { Routes, Route } from "react-router-dom";
 import MainLayout from "../../layouts/MainLayout.jsx";
 import Home from "../../pages/Home.jsx";
-import Cards from "../../pages/Cards.jsx";
-import SmartphoneCardDetail from "../../pages/SmartphoneCardDetail.jsx";
-import AccessoryCardDetail from "../../pages/AccessoryCardDetail.jsx";
+import ProductsCards from "../../pages/ProductsCards.jsx";
+import ProductCardDetail from "../../pages/ProductCardDetail.jsx";
 import Admin from "../../pages/Admin.jsx";
 import PrivateRoute from "./PrivateRoute";
 import AddNewProduct from "../../pages/AddProduct.jsx";
 import CompanyProduct from "../../pages/CompanyProducts.jsx";
+import FavoritesList from "../../pages/FavoriteProducts.jsx";
+import Cart from "../../pages/Cart.jsx";
 
 /** Массив роутов приложения */
 const routes = [
     { path: "/", element: <Home /> },
-    { path: "smartphones", element: <Cards /> },
-    { path: "smartphone/:name/:id/", element: <SmartphoneCardDetail /> },
-    { path: "accessory/:name/:id/", element: <AccessoryCardDetail /> },
-    { path: "admin_panel/", element: <PrivateRoute element={<Admin />} requiredRole="admin" /> },
-    { path: "add_new_product/", element: <PrivateRoute element={<AddNewProduct />} requiredRole="company" /> },
-    { path: "company_products/", element: <PrivateRoute element={<CompanyProduct />} requiredRole="company" /> }
+    { path: "products/:endpoint", element: <ProductsCards /> },
+    { path: "favorites", element: <FavoritesList /> },
+    { path:"cart", element: <Cart /> },
+    { path: "product_detail/:endpoint/:id", element: <ProductCardDetail /> },
+    { path: "admin_panel", element: <PrivateRoute element={<Admin />} requiredRole="admin" /> },
+    { path: "add_new_product", element: <PrivateRoute element={<AddNewProduct />} requiredRole="company" /> },
+    { path: "company_products", element: <PrivateRoute element={<CompanyProduct />} requiredRole="company" /> }
 ];
 
 /**

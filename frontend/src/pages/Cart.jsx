@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Card } from "../components/ui/Card/Card";
 import useProductsStore from "../store/useProductsStore";
+
 import { useNavigate } from "react-router-dom";
-import { useAuth } from '../hooks/useAuth';
 
+const Cart = () => {
 
-const Home = () => {
     const navigate = useNavigate(); // хук для роутинга
     const {
         smartphones,
@@ -22,16 +22,6 @@ const Home = () => {
         fetchData("accessories", "accessories");
     }, [fetchData]);
 
-    const { user } = useAuth();
-
-    const companySmartphones = smartphones.filter(
-        (smartphone) => smartphone.user_id === user.id
-    );
-
-    const companyAccessories = accessories.filter(
-        (accessory) => accessory.user_id === user.id
-    );
-
     // Обработчик клика по карточке смартфона
     const handleSmartphoneCardClick = (name, id) => {
         navigate(`/smartphone/${name}/${id}/`)
@@ -45,7 +35,7 @@ const Home = () => {
     return (
         <section className="new-products">
             <div className="max-w-7xl mx-auto px-2 relative">
-                <h1 className="mb-4 text-4xl font-bold text-zinc-100">Новинки 2024 года!</h1>
+                <h1 className="mb-4 text-4xl font-bold text-zinc-100">Корзина товаров</h1>
 
                 <section className="smartphones">
                     <div className="max-w-7xl mx-auto px-2">
@@ -53,8 +43,8 @@ const Home = () => {
                             Смартфоны
                         </h3>
                         <div className="flex flex-wrap gap-9">
-                            {!!companySmartphones &&
-                                companySmartphones.map((smartphone) => (
+                            {!!smartphones &&
+                                smartphones.map((smartphone) => (
                                     <Card
                                         key={smartphone?.id}
                                         details={smartphone}
@@ -71,8 +61,8 @@ const Home = () => {
                             Аксессуары
                         </h3>
                         <div className="flex flex-wrap gap-9">
-                            {!!companyAccessories &&
-                                companyAccessories.map((accessory) => (
+                            {!!accessories &&
+                                accessories.map((accessory) => (
                                     <Card
                                         key={accessory?.id}
                                         details={accessory}
@@ -87,4 +77,4 @@ const Home = () => {
     );
 };
 
-export default Home;
+export default Cart;

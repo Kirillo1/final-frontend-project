@@ -20,6 +20,10 @@ class AccessoryCreate(AccessoryBase):
     pass
 
 
+class AccessoryVerifyStatusUpdate(BaseModel):
+    is_verified: bool
+
+
 class AccessoryUpdate(BaseModel):
     name: str
     phone_model: str
@@ -31,7 +35,7 @@ class AccessoryUpdate(BaseModel):
     price: int
     is_verified: bool
     images: List[str]
-    
+
 
 class Accessory(AccessoryBase):
     id: int
