@@ -88,9 +88,9 @@ const useProductsStore = create((set, get) => ({
 
     clearDetail: (detailType) => set({ [`${detailType}Detail`]: null }),
 
-    onToggleFavorite: (id) => {
-        const { smartphones } = get(); // или аксессуары, в зависимости от типа продукта
-        const updatedProducts = smartphones.map((product) => {
+    onToggleFavorite: (id, type) => {
+        const { [type]: products } = get();
+        const updatedProducts = products.map(product => {
             if (product.id === id) {
                 product.isFavorite = !product.isFavorite;
             }
@@ -98,13 +98,37 @@ const useProductsStore = create((set, get) => ({
         });
 
         const updatedFavorites = updatedProducts
-            .filter((product) => product.isFavorite)
-            .map((product) => product.id);
+            .filter(product => product.isFavorite)
+            .map(product => ({ id: product.id, type }));
 
         localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
 
-        set({ smartphones: updatedProducts }); // или аксессуары, если нужно
+        set({ [type]: updatedProducts });
     },
+
+    getFavoriteProducts: () => {
+        // Извлекаем избранные продукты из localStorage
+        const storedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
+
+        // Получаем текущие продукты из store
+        const { smartphones, accessories } = get();
+
+        // Фильтруем текущие продукты по избранным
+        const favoriteSmartphones = smartphones.filter(smartphone =>
+            storedFavorites.some(fav => fav.id === smartphone.id && fav.type === "smartphones")
+        );
+
+        const favoriteAccessories = accessories.filter(accessory =>
+            storedFavorites.some(fav => fav.id === accessory.id && fav.type === "accessories")
+        );
+
+        // Возвращаем объекты с избранными продуктами
+        return {
+            smartphones: favoriteSmartphones,
+            accessories: favoriteAccessories
+        };
+    },
+
 }));
 
 export default useProductsStore;
