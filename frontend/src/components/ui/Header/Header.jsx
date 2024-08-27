@@ -45,8 +45,8 @@ const products = [
 /** Массив пунктов меню */
 const navItems = [
     { name: "Главная", path: "/" },
-    { name: "Смартфоны", path: "/smartphones" },
-    { name: "Аксессуары", path: "/accessories" },
+    { name: "Смартфоны", path: "products/smartphones" },
+    { name: "Аксессуары", path: "products/accessories" },
     { name : "Панель администратора", path: "/admin_panel" },
     { name: "Мои товары", path: "/company_products" }
 ];

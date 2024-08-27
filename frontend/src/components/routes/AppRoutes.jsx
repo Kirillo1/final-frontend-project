@@ -1,8 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import MainLayout from "../../layouts/MainLayout.jsx";
 import Home from "../../pages/Home.jsx";
-import SmartphonesCards from "../../pages/SmartphonesCards.jsx";
-import AccessoriesCards from "../../pages/AccessoriesCards.jsx";
+import ProductsCards from "../../pages/ProductsCards.jsx";
 import ProductCardDetail from "../../pages/ProductCardDetail.jsx";
 import Admin from "../../pages/Admin.jsx";
 import PrivateRoute from "./PrivateRoute";
@@ -14,8 +13,7 @@ import Cart from "../../pages/Cart.jsx";
 /** Массив роутов приложения */
 const routes = [
     { path: "/", element: <Home /> },
-    { path: "smartphones", element: <SmartphonesCards /> },
-    { path: "accessories", element: <AccessoriesCards /> },
+    { path: "products/:endpoint", element: <ProductsCards /> },
     { path: "favorites", element: <FavoritesList /> },
     { path:"cart", element: <Cart /> },
     { path: "product_detail/:endpoint/:id", element: <ProductCardDetail /> },
