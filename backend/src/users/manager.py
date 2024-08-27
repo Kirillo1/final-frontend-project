@@ -1,9 +1,12 @@
 from typing import Optional
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, IntegerIDMixin, exceptions, models, schemas
 from .models import User
 from .utils import get_user_db
+from typing import List
+from sqlalchemy.future import select
 
 from src.config import SECRET_AUTH
 
@@ -40,6 +43,9 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
 
         return created_user
 
+    async def get_all_users(self, session: AsyncSession) -> List[User]:
+        result = await session.execute(select(User))
+        return result.scalars().all()
 
 async def get_user_manager(user_db=Depends(get_user_db)):
     yield UserManager(user_db)

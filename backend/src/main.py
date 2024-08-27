@@ -5,6 +5,7 @@ from src.users.base_config import fastapi_users, auth_backend
 from src.users.schemas import UserRead, UserCreate, UserUpdate
 from src.smartphone.router import router as router_smartphone
 from src.accessory.router import router as router_accessory
+from src.users.router import router as router_users
 
 app = FastAPI(title="Mobile Guru")
 
@@ -49,4 +50,10 @@ app.include_router(
     router_accessory,
     prefix="/accessories",
     tags=["accessories"]
+)
+
+app.include_router(
+    router_users,
+    prefix="/users",
+    tags=["Users"]
 )
