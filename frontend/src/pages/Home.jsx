@@ -1,36 +1,52 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Card } from "../components/ui/Card/Card";
 import useProductsStore from "../store/useProductsStore";
 
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
-
-    const navigate = useNavigate(); // хук для роутинга
     const {
         smartphones,
         accessories,
         fetchData,
+        onToggleFavorite
     } = useProductsStore(state => ({
         smartphones: state.smartphones,
         accessories: state.accessories,
         fetchData: state.fetchData,
+        onToggleFavorite: state.onToggleFavorite
     }));
+
+    const [favorites, setFavorites] = useState(new Set()); // Инициализация как Set
+    const navigate = useNavigate(); // хук для роутинга
 
     useEffect(() => {
         fetchData("smartphones", "smartphones");
         fetchData("accessories", "accessories");
     }, [fetchData]);
 
-    // Обработчик клика по карточке смартфона
-    const handleSmartphoneCardClick = (name, id) => {
-        navigate(`/smartphone/${name}/${id}/`)
-    }
+    useEffect(() => {
+        const storedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
+        setFavorites(new Set(storedFavorites.filter(item => item.type === "smartphones").map(item => item.id)));
+    }, [smartphones]);
 
-    // Обработчик клика по карточке аксессуара
-    const handleAccessorCardClick = (name, id) => {
-        navigate(`/accessory/${name}/${id}/`)
-    }
+    // Обработчик добавления товара в сохраненки 
+    const handleFavorite = (id) => {
+        onToggleFavorite(id, "smartphones");
+        setFavorites(prevFavorites => {
+            const updatedFavorites = new Set(prevFavorites);
+            if (updatedFavorites.has(id)) {
+                updatedFavorites.delete(id);
+            } else {
+                updatedFavorites.add(id);
+            }
+            return updatedFavorites;
+        });
+    };
+
+    const handleCardClick = (endpoint, id) => {
+        navigate(`/product_detail/${endpoint}/${id}/`);
+    };
 
     return (
         <section className="new-products">
@@ -47,8 +63,12 @@ const Home = () => {
                                 smartphones.map((smartphone) => (
                                     <Card
                                         key={smartphone?.id}
-                                        details={smartphone}
-                                        onCardClick={handleSmartphoneCardClick}
+                                        details={{
+                                            ...smartphone,
+                                            isFavorite: favorites.has(smartphone.id) // Проверяем наличие id в Set
+                                        }}
+                                        onCardClick={handleCardClick}
+                                        onHeartClick={handleFavorite}
                                     />
                                 ))}
                         </div>
@@ -66,7 +86,7 @@ const Home = () => {
                                     <Card
                                         key={accessory?.id}
                                         details={accessory}
-                                        onCardClick={handleAccessorCardClick}
+                                        onCardClick={handleCardClick}
                                     />
                                 ))}
                         </div>

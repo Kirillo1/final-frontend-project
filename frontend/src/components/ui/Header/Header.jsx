@@ -5,6 +5,7 @@ import useRegistrationForm from '../../../hooks/userRegistrationForm';
 import { Modal } from "../Modal/Modal";
 import Input from "../Input/Input";
 import { useAuth } from '../../../hooks/useAuth';
+import useProductsStore from '../../../store/useProductsStore';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
@@ -55,6 +56,13 @@ const navItems = [
  * @returns {JSX.Element} Элемент header.
  */
 const Header = () => {
+    const {
+        getFavoriteProducts
+    } = useProductsStore(state => ({
+        getFavoriteProducts: state.getFavoriteProducts,
+    }));
+
+
     // Стейт для показа/скрытия модального окна (для регистрации).
     const [showRegisterModal, setShowRegisterModal] = useState(false);
 
@@ -82,6 +90,8 @@ const Header = () => {
     const location = useLocation();
 
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+    const favoritesCount = getFavoriteProducts()?.accessories?.length + getFavoriteProducts()?.smartphones?.length;
 
     /**
      * Определяет, активна ли ссылка.
@@ -346,9 +356,11 @@ const Header = () => {
                         onClick={handleToOpenFavorites}
                     >
                         <FavoriteRoundedIcon />
+                        {!!favoritesCount && (
                         <span className="w-5 h-5 text-xs px-1 leading-5 text-white inline-flex items-center justify-center bg-violet-500 rounded-full absolute top-[-4px] right-[-4px]">
-                        5
+                            {favoritesCount}
                         </span>
+                        )}
                     </button>
 
                     <button

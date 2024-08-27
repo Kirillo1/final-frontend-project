@@ -1,10 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Card } from "../components/ui/Card/Card";
 import useProductsStore from "../store/useProductsStore";
 import { useNavigate } from "react-router-dom";
 
 const SmartphonesCards = () => {
     const navigate = useNavigate(); // хук для роутинга
+    const [favorites, setFavorites] = useState(new Set()); // Инициализация как Set
 
     const {
         smartphones,
@@ -20,14 +21,26 @@ const SmartphonesCards = () => {
         fetchData("smartphones", "smartphones");
     }, [fetchData]);
 
-    // Обработчик клика по карточке
+    useEffect(() => {
+        const storedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
+        setFavorites(new Set(storedFavorites.filter(item => item.type === "smartphones").map(item => item.id)));
+    }, [smartphones]);
+
     const handleCardClick = (endpoint, id) => {
         navigate(`/product_detail/${endpoint}/${id}/`);
     };
 
-    // Обработчик добавления товара в сохраненки 
     const handleFavorite = (id) => {
-        onToggleFavorite(id); // вкл/выкл товара в сохраненки
+        onToggleFavorite(id, "smartphones");
+        setFavorites(prevFavorites => {
+            const updatedFavorites = new Set(prevFavorites);
+            if (updatedFavorites.has(id)) {
+                updatedFavorites.delete(id);
+            } else {
+                updatedFavorites.add(id);
+            }
+            return updatedFavorites;
+        });
     };
 
     return (
@@ -43,7 +56,7 @@ const SmartphonesCards = () => {
                                 key={smartphone.id}
                                 details={{
                                     ...smartphone,
-                                    isFavorite: smartphone.isFavorite
+                                    isFavorite: favorites.has(smartphone.id) // Проверяем наличие id в Set
                                 }}
                                 onCardClick={handleCardClick}
                                 onHeartClick={handleFavorite}

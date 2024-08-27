@@ -18,7 +18,6 @@ export const Card = (props) => {
     // Обработчик клика на иконку сердечка
     const handleFavorite = (event) => {
         event.stopPropagation(); // Предотвратить всплытие события
-        console.log(1)
         onHeartClick && onHeartClick(id);
     };
 
