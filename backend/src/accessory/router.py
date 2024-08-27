@@ -7,7 +7,7 @@ from sqlalchemy import delete
 from src.database import get_async_session
 
 from src.accessory.models import Accessory as AccessoryModel
-from src.accessory.schemas import (AccessoryCreate, ResponseModel,
+from src.accessory.schemas import (AccessoryCreate, ResponseModel, AccessoryVerifyStatusUpdate,
                                    SingleAccessoryResponseModel, AccessoryUpdate)
 
 
@@ -135,6 +135,42 @@ async def update_accessory(accessory_id: int, updated_accessory: AccessoryUpdate
         for key, value in updated_data.items():
             if value not in [None, "", 0]:
                 setattr(accessory, key, value)
+
+        await session.commit()
+        await session.refresh(accessory)
+
+        return {
+            "status": "success",
+            "data": accessory,
+            "details": None
+        }
+    except HTTPException as http_exc:
+        raise http_exc
+    except Exception as e:
+        raise HTTPException(status_code=500, detail={
+            "status": "error",
+            "data": None,
+            "details": str(e)
+        })
+
+
+@router.put("/{accessory_id}/verify", response_model=SingleAccessoryResponseModel)
+async def update_accessory_verification_status(
+    accessory_id: int,
+    update_data: AccessoryVerifyStatusUpdate,
+    session: AsyncSession = Depends(get_async_session)
+):
+    try:
+        query = select(AccessoryModel).where(
+            AccessoryModel.id == accessory_id)
+        result = await session.execute(query)
+        accessory = result.scalar_one_or_none()
+
+        if accessory is None:
+            raise HTTPException(status_code=404, detail="Accessory not found")
+
+        # Обновление только статуса is_verified
+        accessory.is_verified = update_data.is_verified
 
         await session.commit()
         await session.refresh(accessory)

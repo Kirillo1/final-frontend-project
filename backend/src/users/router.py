@@ -28,7 +28,7 @@ async def logout(token: str = Depends(oauth2_scheme)):
     return {"detail": "Successfully logged out"}
 
 
-@router.get("/all-users", response_model=List[UserRead])
+@router.get("/auth/all-users", response_model=List[UserRead])
 async def get_all_users(
     user_manager: UserManager = Depends(get_user_manager),
     session: AsyncSession = Depends(get_async_session)
