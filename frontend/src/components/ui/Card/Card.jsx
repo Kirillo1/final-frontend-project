@@ -1,3 +1,5 @@
+import { useLocation } from "react-router-dom";
+import { Stepper } from "../Stepper/Stepper";
 import Image from "../Image/Image";
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import LocalMallRoundedIcon from '@mui/icons-material/LocalMallRounded';
@@ -14,6 +16,7 @@ export const Card = (props) => {
     } = props.details;
 
     const { onCardClick, onHeartClick } = props;
+    const location = useLocation(); // Получаем текущий маршрут
 
     // Обработчик клика на иконку сердечка
     const handleFavorite = (event) => {
@@ -24,6 +27,14 @@ export const Card = (props) => {
     // Обработчик клика по карточке
     const handleCardClick = () => {
         onCardClick && onCardClick("smartphone", id);
+    };
+
+    // Определяем, находится ли текущая страница в корзине
+    const isCartPage = location.pathname.includes("/cart");
+
+    // Обработчик клика на Stepper
+    const handleStepperClick = (event) => {
+        event.stopPropagation(); // Предотвратить всплытие события
     };
 
     return (
@@ -44,12 +55,14 @@ export const Card = (props) => {
                 >
                     <LocalMallRoundedIcon />
                 </button>
-                <button
-                    onClick={handleFavorite}
-                    className={`absolute top-0 left-0 m-2 p-2 rounded-full z-0 ${isFavorite ? "text-indigo-500" : "text-white"}`}
-                >
-                    <FavoriteRoundedIcon />
-                </button>
+                {!isCartPage && ( // Показываем кнопку избранного только если не на странице корзины
+                    <button
+                        onClick={handleFavorite}
+                        className={`absolute top-0 left-0 m-2 p-2 rounded-full z-0 ${isFavorite ? "text-indigo-500" : "text-white"}`}
+                    >
+                        <FavoriteRoundedIcon />
+                    </button>
+                )}
             </div>
             <div className="p-4">
                 <h3 className="text-lg font-bold mb-2 text-zinc-200">{name}</h3>
@@ -60,6 +73,11 @@ export const Card = (props) => {
                 <div className="flex items-center justify-between">
                     <span className="font-extrabold text-md text-zinc-200">{price.toLocaleString('ru-RU')} ₽</span>
                 </div>
+                {isCartPage && ( // Показываем Stepper только если на странице корзины
+                    <div onClick={handleStepperClick}>
+                        <Stepper step={1} minValue={1} maxValue={10} />
+                    </div>
+                )}
             </div>
         </div>
     );
