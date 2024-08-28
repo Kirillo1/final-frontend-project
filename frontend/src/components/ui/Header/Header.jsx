@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import useForm from "../../../hooks/useForm";
 import useRegistrationForm from '../../../hooks/userRegistrationForm';
@@ -91,7 +91,12 @@ const Header = () => {
 
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-    const favoritesCount = getFavoriteProducts()?.accessories?.length + getFavoriteProducts()?.smartphones?.length;
+    const favoriteProducts = getFavoriteProducts();
+    const favoritesCount = useMemo(() => {
+        return (favoriteProducts?.accessories?.length || 0) + (favoriteProducts?.smartphones?.length || 0);
+    }, [favoriteProducts]);
+
+
 
     /**
      * Определяет, активна ли ссылка.

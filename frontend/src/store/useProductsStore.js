@@ -89,22 +89,25 @@ const useProductsStore = create((set, get) => ({
     clearDetail: (detailType) => set({ [`${detailType}Detail`]: null }),
 
     onToggleFavorite: (id, type) => {
-        const { [type]: products } = get();
-        const updatedProducts = products.map(product => {
-            if (product.id === id) {
-                product.isFavorite = !product.isFavorite;
-            }
-            return product;
-        });
+        const storedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
 
-        const updatedFavorites = updatedProducts
-            .filter(product => product.isFavorite)
-            .map(product => ({ id: product.id, type }));
+        // Проверка на существование элемента в избранных
+        const existingIndex = storedFavorites.findIndex(
+            favorite => favorite.id === id && favorite.type === type
+        );
 
-        localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+        if (existingIndex !== -1) {
+            // Если элемент существует, удаляем его
+            storedFavorites.splice(existingIndex, 1);
+        } else {
+            // Если элемента нет, добавляем его
+            storedFavorites.push({ id, type });
+        }
 
-        set({ [type]: updatedProducts });
+        // Сохраняем обновленный список избранных в localStorage
+        localStorage.setItem("favorites", JSON.stringify(storedFavorites));
     },
+
 
     getFavoriteProducts: () => {
         // Извлекаем избранные продукты из localStorage

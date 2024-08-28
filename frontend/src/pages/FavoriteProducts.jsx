@@ -23,19 +23,30 @@ const FavoritesList = () => {
 
     useEffect(() => {
         const storedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
-        setFavorites(new Set(storedFavorites.filter(item => item.type === "smartphones").map(item => item.id)));
-    }, [smartphones]);
+        console.log("Stored Favorites:", storedFavorites); // Вывод данных из localStorage
+        const favoritesSet = new Set(storedFavorites.map(item => `${item.type}-${item.id}`));
+        setFavorites(favoritesSet);
+        console.log("Favorites Set:", favoritesSet); // Вывод данных в Set
+    }, [smartphones, accessories]);
 
-    // Обработчик добавления товара в сохраненки 
-    const handleFavorite = (id) => {
-        onToggleFavorite(id, "smartphones");
+    const handleFavorite = (id, type) => {
+        onToggleFavorite(id, type);
+
         setFavorites(prevFavorites => {
             const updatedFavorites = new Set(prevFavorites);
-            if (updatedFavorites.has(id)) {
-                updatedFavorites.delete(id);
+            const key = `${type}-${id}`;
+
+            if (updatedFavorites.has(key)) {
+                updatedFavorites.delete(key);
             } else {
-                updatedFavorites.add(id);
+                updatedFavorites.add(key);
             }
+
+            const storedFavorites = Array.from(updatedFavorites).map(fav => {
+                const [favType, favId] = fav.split("-");
+                return { id: parseInt(favId, 10), type: favType };
+            });
+            localStorage.setItem("favorites", JSON.stringify(storedFavorites));
             return updatedFavorites;
         });
     };
@@ -53,6 +64,10 @@ const FavoritesList = () => {
     const favoriteSmartphones = getFavoriteProducts()?.smartphones;
     const favoriteAccessories = getFavoriteProducts()?.accessories;
 
+    const handleAddCartClick = () => {
+        console.log(123)
+    }
+
     return (
         <section className="new-products">
             <div className="max-w-7xl mx-auto px-2 relative">
@@ -67,10 +82,10 @@ const FavoritesList = () => {
                                         key={smartphone?.id}
                                         details={{
                                             ...smartphone,
-                                            isFavorite: favorites.has(smartphone.id) // Проверяем наличие id в Set
-                                        }}                                      
-                                        onCardClick={handleSmartphoneCardClick}
-                                        onHeartClick={handleFavorite}
+                                            isFavorite: favorites.has(`smartphones-${smartphone.id}`)
+                                        }}
+                                        onCardClick={() => handleSmartphoneCardClick("smartphones", smartphone.id)}
+                                        onHeartClick={() => handleFavorite(smartphone.id, "smartphones")}
                                     />
                                 ))}
                         </div>
@@ -84,11 +99,25 @@ const FavoritesList = () => {
                                 favoriteAccessories.map((accessory) => (
                                     <Card
                                         key={accessory?.id}
-                                        details={accessory}
-                                        onCardClick={handleAccessorCardClick}
+                                        details={{
+                                            ...accessory,
+                                            isFavorite: favorites.has(`accessories-${accessory.id}`)
+                                        }}
+                                        onCardClick={() => handleAccessorCardClick("accessories", accessory.id)}
+                                        onHeartClick={() => handleFavorite(accessory.id, "accessories")}
                                     />
                                 ))}
                         </div>
+                    </div>
+                </section>
+                <section>
+                    <div className="max-w-7xl mx-auto px-2">
+                        <button 
+                            className="bg-violet-500 hover:bg-violet-600 text-white font-bold py-2 px-4 rounded"
+                            onClick={handleAddCartClick}
+                        >
+                            Добавить в корзину
+                        </button>
                     </div>
                 </section>
             </div>
