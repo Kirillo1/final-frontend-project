@@ -108,6 +108,25 @@ const useProductsStore = create((set, get) => ({
         localStorage.setItem("favorites", JSON.stringify(storedFavorites));
     },
 
+    onToggleCartProducts: (id, type) => {
+        const storedCartProducts = JSON.parse(localStorage.getItem("cartProducts")) || [];
+
+        // Проверка на существование элемента в избранных
+        const existingIndex = storedCartProducts.findIndex(
+            cartProduct => cartProduct.id === id && cartProduct.type === type
+        );
+
+        if (existingIndex !== -1) {
+            // Если элемент существует, удаляем его
+            storedCartProducts.splice(existingIndex, 1);
+        } else {
+            // Если элемента нет, добавляем его
+            storedCartProducts.push({ id, type });
+        }
+
+        // Сохраняем обновленный список избранных в localStorage
+        localStorage.setItem("cartProducts", JSON.stringify(storedCartProducts));
+    },
 
     getFavoriteProducts: () => {
         // Извлекаем избранные продукты из localStorage
@@ -129,6 +148,29 @@ const useProductsStore = create((set, get) => ({
         return {
             smartphones: favoriteSmartphones,
             accessories: favoriteAccessories
+        };
+    },
+
+    getCartProducts: () => {
+        // Извлекаем избранные продукты из localStorage
+        const storedCartProducts = JSON.parse(localStorage.getItem("cartProducts")) || [];
+
+        // Получаем текущие продукты из store
+        const { smartphones, accessories } = get();
+
+        // Фильтруем текущие продукты по избранным
+        const cartProductsSmartphones = smartphones.filter(smartphone =>
+            storedCartProducts.some(fav => fav.id === smartphone.id && fav.type === "smartphones")
+        );
+
+        const cartProductsAccessories = accessories.filter(accessory =>
+            storedCartProducts.some(fav => fav.id === accessory.id && fav.type === "accessories")
+        );
+
+        // Возвращаем объекты с избранными продуктами
+        return {
+            smartphones: cartProductsSmartphones,
+            accessories: cartProductsAccessories
         };
     },
 

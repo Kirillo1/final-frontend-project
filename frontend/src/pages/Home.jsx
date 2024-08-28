@@ -8,15 +8,19 @@ const Home = () => {
         smartphones,
         accessories,
         fetchData,
-        onToggleFavorite
+        onToggleFavorite,
+        onToggleCartProducts
     } = useProductsStore(state => ({
         smartphones: state.smartphones,
         accessories: state.accessories,
         fetchData: state.fetchData,
-        onToggleFavorite: state.onToggleFavorite
+        onToggleFavorite: state.onToggleFavorite,
+        onToggleCartProducts: state.onToggleCartProducts
     }));
 
     const [favorites, setFavorites] = useState(new Set());
+    const [cartProducts, setCartProducts] = useState(new Set());
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -27,6 +31,11 @@ const Home = () => {
     useEffect(() => {
         const storedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
         setFavorites(new Set(storedFavorites.map(item => `${item.type}-${item.id}`))); // Используем уникальный ключ для каждого типа и ID
+    }, [smartphones, accessories]);
+
+    useEffect(() => {
+        const storedCartProducts = JSON.parse(localStorage.getItem("cartProducts")) || [];
+        setCartProducts(new Set(storedCartProducts.map(item => `${item.type}-${item.id}`))); // Используем уникальный ключ для каждого типа и ID
     }, [smartphones, accessories]);
 
     const handleFavorite = (id, type) => {
@@ -53,6 +62,30 @@ const Home = () => {
         });
     };
 
+    const handleCart = (id, type) => {
+        onToggleCartProducts(id, type);
+
+        setCartProducts(prevCartProducts => {
+            const updatedCartProducts = new Set(prevCartProducts);
+            const key = `${type}-${id}`;
+
+            if (updatedCartProducts.has(key)) {
+                updatedCartProducts.delete(key);
+            } else {
+                updatedCartProducts.add(key);
+            }
+
+            // Обновляем `localStorage` с учетом обоих типов
+            const storedCartProducts = Array.from(updatedCartProducts).map(fav => {
+                const [favType, favId] = fav.split("-");
+                return { id: parseInt(favId, 10), type: favType };
+            });
+            localStorage.setItem("cartProducts", JSON.stringify(storedCartProducts));
+
+            return updatedCartProducts;
+        });
+    };
+
     const handleCardClick = (endpoint, id) => {
         navigate(`/product_detail/${endpoint}/${id}/`);
     };
@@ -74,10 +107,12 @@ const Home = () => {
                                         key={smartphone?.id}
                                         details={{
                                             ...smartphone,
-                                            isFavorite: favorites.has(`smartphones-${smartphone.id}`)
+                                            isFavorite: favorites.has(`smartphones-${smartphone.id}`),
+                                            isCartProduct: cartProducts.has(`smartphones-${smartphone.id}`)
                                         }}
                                         onCardClick={() => handleCardClick("smartphones", smartphone.id)}
                                         onHeartClick={() => handleFavorite(smartphone.id, "smartphones")}
+                                        onCartClick={() => handleCart(smartphone.id, "smartphones")}
                                     />
                                 ))}
                         </div>
@@ -96,10 +131,12 @@ const Home = () => {
                                         key={accessory?.id}
                                         details={{
                                             ...accessory,
-                                            isFavorite: favorites.has(`accessories-${accessory.id}`)
+                                            isFavorite: favorites.has(`accessories-${accessory.id}`),
+                                            isCartProduct: cartProducts.has(`accessories-${accessory.id}`)
                                         }}
                                         onCardClick={() => handleCardClick("accessories", accessory.id)}
                                         onHeartClick={() => handleFavorite(accessory.id, "accessories")}
+                                        onCartClick={() => handleCart(accessory.id, "accessories")}
                                     />
                                 ))}
                         </div>

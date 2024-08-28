@@ -21,10 +21,9 @@ const FavoritesList = () => {
 
     useEffect(() => {
         const storedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
-        console.log("Stored Favorites:", storedFavorites);
         const favoritesSet = new Set(storedFavorites.map(item => `${item.type}-${item.id}`));
+
         setFavorites(favoritesSet);
-        console.log("Favorites Set:", favoritesSet);
     }, [smartphones, accessories]);
 
     const handleFavorite = (id, type) => {

@@ -12,11 +12,18 @@ export const Card = (props) => {
         price,
         color,
         images,
-        isFavorite // Добавлено
+        isFavorite,
+        isCartProduct
     } = props.details;
 
-    const { onCardClick, onHeartClick } = props;
+    const { onCardClick, onHeartClick, onCartClick } = props;
     const location = useLocation(); // Получаем текущий маршрут
+
+    // Обработчик клика на иконку корзины
+    const handleCartProduct = (event) => {
+        event.stopPropagation(); // Предотвратить всплытие события
+        onCartClick && onCartClick(id);
+    };
 
     // Обработчик клика на иконку сердечка
     const handleFavorite = (event) => {
@@ -51,14 +58,15 @@ export const Card = (props) => {
                 />
                 <div className="absolute top-0 left-0 w-full h-full bg-black opacity-30 transition-opacity duration-300 hover:opacity-40"></div>
                 <button
-                    className="absolute top-0 right-0 bg-violet-600 text-white px-2 py-1 m-2 rounded-md text-sm font-normal"
+                    className={`absolute top-0 m-2 p-2 right-0 rounded-full z-0 ${isCartProduct ? "text-violet-600" : "text-white"}`}
+                    onClick={handleCartProduct}
                 >
                     <LocalMallRoundedIcon />
                 </button>
                 {!isCartPage && ( // Показываем кнопку избранного только если не на странице корзины
                     <button
                         onClick={handleFavorite}
-                        className={`absolute top-0 left-0 m-2 p-2 rounded-full z-0 ${isFavorite ? "text-indigo-500" : "text-white"}`}
+                        className={`absolute top-0 left-0 m-2 p-2 rounded-full z-0 ${isFavorite ? "text-violet-500" : "text-white"}`}
                     >
                         <FavoriteRoundedIcon />
                     </button>

@@ -7,6 +7,7 @@ const ProductsCards = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const [favorites, setFavorites] = useState(new Set());
+    const [cartProducts, setCartProducts] = useState(new Set());
 
     // Определяем тип продукта на основе URL
     const isSmartphones = location.pathname.includes("smartphone");
@@ -19,10 +20,12 @@ const ProductsCards = () => {
         [type]: products,
         fetchData,
         onToggleFavorite,
+        onToggleCartProducts
     } = useProductsStore(state => ({
         [type]: state[type],
         fetchData: state.fetchData,
         onToggleFavorite: state.onToggleFavorite,
+        onToggleCartProducts: state.onToggleCartProducts
     }));
 
     useEffect(() => {
@@ -40,6 +43,20 @@ const ProductsCards = () => {
         if (isAccessories) {
             const storedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
             setFavorites(new Set(storedFavorites.filter(item => item.type === "accessories").map(item => item.id)));
+        }
+    }, [products, isAccessories]);
+
+    useEffect(() => {
+        if (isSmartphones) {
+            const storedSmartphoneCartProducts = JSON.parse(localStorage.getItem("cartProducts")) || [];
+            setCartProducts(new Set(storedSmartphoneCartProducts.filter(item => item.type === "smartphones").map(item => item.id)));
+        }
+    }, [products, isSmartphones]);
+
+    useEffect(() => {
+        if (isAccessories) {
+            const storedAccessoriesCartProducts = JSON.parse(localStorage.getItem("cartProducts")) || [];
+            setCartProducts(new Set(storedAccessoriesCartProducts.filter(item => item.type === "accessories").map(item => item.id)));
         }
     }, [products, isAccessories]);
 
@@ -75,6 +92,34 @@ const ProductsCards = () => {
         }
     };
 
+    const handleCart = (id, type) => {
+        if (isSmartphones && type === "smartphone") {
+            onToggleCartProducts(id, "smartphones");
+
+            setCartProducts(prevCartProducts => {
+                const updatedCartProducts = new Set(prevCartProducts);
+                if (updatedCartProducts.has(id)) {
+                    updatedCartProducts.delete(id);
+                } else {
+                    updatedCartProducts.add(id);
+                }
+                return updatedCartProducts;
+            });
+        } else if (isAccessories && type === "accessory") {
+            onToggleCartProducts(id, "accessories");
+
+            setCartProducts(prevCartProducts => {
+                const updatedCartProducts = new Set(prevCartProducts);
+                if (updatedCartProducts.has(id)) {
+                    updatedCartProducts.delete(id);
+                } else {
+                    updatedCartProducts.add(id);
+                }
+                return updatedCartProducts;
+            });
+        }
+    };
+
 
     return (
         <section className="products">
@@ -91,11 +136,15 @@ const ProductsCards = () => {
                                     ...product,
                                     ...(isSmartphones && { isFavorite: favorites.has(product.id) }),
                                     ...(isAccessories && { isFavorite: favorites.has(product.id) }),
+                                    ...(isSmartphones && { isCartProduct: cartProducts.has(product.id) }),
+                                    ...(isAccessories && { isCartProduct: cartProducts.has(product.id) }),
+
                                 }}
                                 onCardClick={() => handleCardClick(product.id)}
                                 {...(isSmartphones && { onHeartClick: () => handleFavorite(product.id, "smartphone") })}
                                 {...(isAccessories && { onHeartClick: () => handleFavorite(product.id, "accessory") })}
-
+                                {...(isSmartphones && { onCartClick: () => handleCart(product.id, "smartphone") })}
+                                {...(isAccessories && { onCartClick: () => handleCart(product.id, "accessory") })}
                             />
                         ))}
                 </div>

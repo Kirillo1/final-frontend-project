@@ -12,14 +12,29 @@ const Cart = () => {
 
     const navigate = useNavigate(); // хук для роутинга
     const {
-        getFavoriteProducts,
-        fetchData
+        smartphones,
+        accessories,
+        getCartProducts,
+        fetchData,
+        onToggleCartProducts
     } = useProductsStore(state => ({
-        getFavoriteProducts: state.getFavoriteProducts,
-        fetchData: state.fetchData
+        smartphones: state.smartphones,
+        accessories: state.accessories,
+        getCartProducts: state.getCartProducts,
+        fetchData: state.fetchData,
+        onToggleCartProducts: state.onToggleCartProducts
     }));
 
     const [showOrderModal, setShowOrderModal] = useState(false);
+
+    const [cartProducts, setCartProducts] = useState(new Set());
+
+    useEffect(() => {
+        const storedCartProducts = JSON.parse(localStorage.getItem("cartProducts")) || [];
+        const cartProductsSet = new Set(storedCartProducts.map(item => `${item.type}-${item.id}`));
+
+        setCartProducts(cartProductsSet);
+    }, [smartphones, accessories]);
 
     // Использование кастомного хука для обработки данных регистрации
     const { orderFormValues, orderHandleInput, orderResetForm } = useOrderForm({
@@ -53,15 +68,39 @@ const Cart = () => {
         orderResetForm(); // Сбрасываем форму
     };
 
-    const favoriteSmartphones = getFavoriteProducts()?.smartphones || [];
-    const favoriteAccessories = getFavoriteProducts()?.accessories || [];
+    const cartProductsSmartphones = getCartProducts()?.smartphones || [];
+    const cartProductsAccessories = getCartProducts()?.accessories || [];
 
     // Объединение массивов
-    const combinedFavorites = [...favoriteSmartphones.map(item => ({ ...item, type: "smartphones" })),
-    ...favoriteAccessories.map(item => ({ ...item, type: "accessories" }))];
+    const combinedCartProducts = [...cartProductsSmartphones.map(item => ({ ...item, type: "smartphones" })),
+    ...cartProductsAccessories.map(item => ({ ...item, type: "accessories" }))];
 
     // Рассчитать сумму товаров
-    const totalSum = combinedFavorites.reduce((total, item) => total + item.price, 0);
+    const totalSum = combinedCartProducts.reduce((total, item) => total + item.price, 0);
+
+    const handleCart = (id, type) => {
+        onToggleCartProducts(id, type);
+
+        setCartProducts(prevCartProducts => {
+            const updatedCartProducts = new Set(prevCartProducts);
+            const key = `${type}-${id}`;
+
+            if (updatedCartProducts.has(key)) {
+                updatedCartProducts.delete(key);
+            } else {
+                updatedCartProducts.add(key);
+            }
+
+            // Обновляем `localStorage` с учетом обоих типов
+            const storedCartProducts = Array.from(updatedCartProducts).map(fav => {
+                const [favType, favId] = fav.split("-");
+                return { id: parseInt(favId, 10), type: favType };
+            });
+            localStorage.setItem("cartProducts", JSON.stringify(storedCartProducts));
+
+            return updatedCartProducts;
+        });
+    };
 
 
     return (
@@ -71,13 +110,15 @@ const Cart = () => {
 
                 <div className="max-w-7xl mx-auto px-2">
                     <div className="flex flex-wrap gap-9">
-                        {combinedFavorites.map((item) => (
+                        {combinedCartProducts.map((item) => (
                             <Card
                                 key={item?.id}
                                 details={{
                                     ...item,
+                                    isCartProduct: cartProducts.has(`${item.type}-${item.id}`)
                                 }}
                                 onCardClick={() => handleCardClick(item.type, item.type, item.id)}
+                                onCartClick={() => handleCart(item.id, item.type)}
                             />
                         ))}
                     </div>
