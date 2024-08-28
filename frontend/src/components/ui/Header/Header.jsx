@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import useForm from "../../../hooks/useForm";
 import useRegistrationForm from '../../../hooks/userRegistrationForm';
@@ -91,7 +91,12 @@ const Header = () => {
 
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-    const favoritesCount = getFavoriteProducts()?.accessories?.length + getFavoriteProducts()?.smartphones?.length;
+    const favoriteProducts = getFavoriteProducts();
+    const favoritesCount = useMemo(() => {
+        return (favoriteProducts?.accessories?.length || 0) + (favoriteProducts?.smartphones?.length || 0);
+    }, [favoriteProducts]);
+
+
 
     /**
      * Определяет, активна ли ссылка.
@@ -368,10 +373,7 @@ const Header = () => {
                         className='relative bg-transparent p-1 mr-3 rounded-full text-gray-400 hover:text-gray-500'
                         onClick={handleToCartOpen}
                     >
-                        <LocalMallRoundedIcon />
-                        <span className="w-5 h-5 text-xs px-1 leading-5 text-white inline-flex items-center justify-center bg-violet-500 rounded-full absolute top-[-4px] right-[-4px]">
-                            5
-                        </span>
+                        <LocalMallRoundedIcon sx={{ color: "red" }} />
                     </button>
                     {!user ? (
                         <>
