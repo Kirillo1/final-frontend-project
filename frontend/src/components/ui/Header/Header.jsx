@@ -33,12 +33,14 @@ const products = [
     { 
         name: 'Смартфон', 
         description: 'Добавить смартфон', 
-        href: 'add_new_product', icon: SmartphoneRoundedIcon 
+        href: 'add_new_product/smartphones', 
+        icon: SmartphoneRoundedIcon 
     },
     { 
         name: 'Аксессуар', 
         description: 'Добавить аксессуар', 
-        href: '#', icon: HeadphonesBatteryRoundedIcon 
+        href: 'add_new_product/accessories', 
+        icon: HeadphonesBatteryRoundedIcon 
     },
 ]
 
@@ -78,7 +80,7 @@ const Header = () => {
     });
 
     // Использование кастомного хука для обработки данных регистрации
-    const { registrationFormValues, registrationHandleInput, registrationResetForm } = useRegistrationForm({
+    const { registrationFormValues, registrationFormErrors, registrationHandleInput, registrationResetForm } = useRegistrationForm({
         login: "",
         password: "",
         first_name: "",
@@ -86,7 +88,7 @@ const Header = () => {
         phone_number:"",
         company_name: ""
     });
-
+    console.log(registrationFormErrors)
     const { user, onRegister, onLogin, onLogout } = useAuth();
 
     const location = useLocation();
@@ -112,14 +114,19 @@ const Header = () => {
 
     // Хук для навигации (роутинга) по страницам
     const navigate = useNavigate();
+    
+    const allErrorsAreNull = Object.values(registrationFormErrors).every(value => value === null);
 
     // Обработка формы при регистрации
     const handleRegisterForm = (event) => {
-        event.preventDefault();
 
-        onRegister(registrationFormValues);
-        setShowRegisterModal(false); // Закрываем Modal
-        registrationResetForm(); // Сбрасываем форму
+        if (allErrorsAreNull) {
+            event.preventDefault();
+    
+            onRegister(registrationFormValues);
+            setShowRegisterModal(false); // Закрываем Modal
+            registrationResetForm(); // Сбрасываем форму
+        }
     };
 
     // Обработка формы при входе в систему
@@ -188,7 +195,7 @@ const Header = () => {
                                 value={registrationFormValues?.first_name}
                                 onInput={registrationHandleInput}
                                 placeholder="Введите ваше имя"
-                                // error={formErrors?.login}
+                                error={registrationFormErrors?.first_name}
                                 required
                             />
                             <Input
@@ -198,7 +205,7 @@ const Header = () => {
                                 value={registrationFormValues?.last_name}
                                 onInput={registrationHandleInput}
                                 placeholder="Введите вашу фамилию"
-                                // error={formErrors?.login}
+                                error={registrationFormErrors?.last_name}
                                 required
                             />
                             <Input
@@ -208,7 +215,7 @@ const Header = () => {
                                 value={registrationFormValues?.password}
                                 onInput={registrationHandleInput}
                                 placeholder="Введите пароль"
-                                // error={formErrors?.password}
+                                error={registrationFormErrors?.password}
                                 required
                             />
                             <Input
@@ -218,7 +225,7 @@ const Header = () => {
                                 value={registrationFormValues?.email}
                                 onInput={registrationHandleInput}
                                 placeholder="Введите вашу почту"
-                                // error={formErrors?.login}
+                                error={registrationFormErrors?.email}
                                 required
                             />
                             <Input
@@ -228,7 +235,7 @@ const Header = () => {
                                 value={registrationFormValues?.company_name}
                                 onInput={registrationHandleInput}
                                 placeholder="Введите ваше имя"
-                                // error={formErrors?.login}
+                                error={registrationFormErrors?.company_name}
                                 required
                             />
                             <Input
@@ -238,13 +245,14 @@ const Header = () => {
                                 value={registrationFormValues?.phone_number}
                                 onInput={registrationHandleInput}
                                 placeholder="Введите ваше имя"
-                                // error={formErrors?.login}
+                                error={registrationFormErrors?.phone_number}
                                 required
                             />
 
                             <button
                                 className="bg-violet-500 text-white font-medium py-2 px-4 rounded"
                                 type="submit"
+                                disabled={!allErrorsAreNull} 
                             >
                                 Зарегистрироваться
                             </button>
