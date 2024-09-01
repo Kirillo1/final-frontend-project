@@ -49,7 +49,7 @@ const validators = {
 
 export function validateForm(formData) {
     const validationErrors = {};
-    console.log(formData)
+
     Object.entries(formData).forEach(([key, value]) => {
         switch (key) {
             case 'name':

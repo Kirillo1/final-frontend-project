@@ -27,6 +27,33 @@ const useProductsStore = create((set, get) => ({
         }
     },
 
+    addProduct: async (endpoint, productData) => {
+        try {
+            const response = await fetch(`http://localhost:8080/${endpoint}/add`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(productData),
+            });
+            if (!response.ok) {
+                throw new Error(`Failed to add product`);
+            }
+            const result = await response.json();
+            if (result.status === "success") {
+                // Обновите состояние с добавленным продуктом
+                set(state => ({
+                    [endpoint]: [...state[endpoint], result.data],
+                }));
+            } else {
+                throw new Error("Unexpected server response");
+            }
+        } catch (error) {
+            console.error(`Error adding product: ${error.message}`);
+            set({ error: error.message });
+        }
+    },
+
     deleteDataById: async (id, endpoint, type) => {
         try {
             const response = await fetch(`http://localhost:8080/${endpoint}/${id}`, {

@@ -88,7 +88,7 @@ const Header = () => {
         phone_number:"",
         company_name: ""
     });
-    console.log(registrationFormErrors)
+
     const { user, onRegister, onLogin, onLogout } = useAuth();
 
     const location = useLocation();
