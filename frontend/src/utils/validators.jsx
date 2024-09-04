@@ -21,7 +21,7 @@ const validators = {
         return null;
     },
     phone: (value) => {
-        console.log(value)
+
         if (!value) return "Заполните поле";
 
         if (!/^\+?[0-9-]+$/.test(value)) return "Некорректный номер телефона";

@@ -40,7 +40,7 @@ const Input = ({
     className,
 }) => {
     const inputClasses = classNames(
-        "max-w-96 w-full outline-none border-4 border-violet-800 p-2 rounded-md focus:border-violet-500 mb-1",
+        "outline-none border-4 border-violet-800 p-2 rounded-md focus:border-violet-500 mb-1",
         disabled ? "opacity-50 cursor-not-allowed" : "",
         required && error ? "border-rose-500" : "",
         className || ""
@@ -98,7 +98,7 @@ const Input = ({
 
     return (
         <div className="mb-4">
-            <label className="block text-gray-600 text-sm mb-1" htmlFor={name}>
+            <label className="block text-gray-200 text-sm mb-1" htmlFor={name}>
                 {label}
                 {required && !isUserTyping && <span className="text-rose-500">*</span>}
             </label>
@@ -118,7 +118,10 @@ const Input = ({
                 onFocus={handleFocus}
                 className={inputClasses}
             />
+            <div>
             {error && <span className="text-rose-500 text-sm">{error}</span>}
+
+            </div>
         </div>
     );
 };

@@ -187,14 +187,16 @@ const Header = () => {
                         isOpen={showRegisterModal}
                         onClose={closeRegisterModalAndResetForm}
                     >
-                        <form onSubmit={handleRegisterForm}>
+                        <form onSubmit={handleRegisterForm}
+                            className="text-center"
+                        >
                             <Input
                                 label="Ваше имя"
                                 name="first_name"
                                 type="text"
                                 value={registrationFormValues?.first_name}
                                 onInput={registrationHandleInput}
-                                placeholder="Введите ваше имя"
+                                placeholder="Имя"
                                 error={registrationFormErrors?.first_name}
                                 required
                             />
@@ -204,7 +206,7 @@ const Header = () => {
                                 type="text"
                                 value={registrationFormValues?.last_name}
                                 onInput={registrationHandleInput}
-                                placeholder="Введите вашу фамилию"
+                                placeholder="Фамилия"
                                 error={registrationFormErrors?.last_name}
                                 required
                             />
@@ -214,7 +216,7 @@ const Header = () => {
                                 name="password"
                                 value={registrationFormValues?.password}
                                 onInput={registrationHandleInput}
-                                placeholder="Введите пароль"
+                                placeholder="Пароль"
                                 error={registrationFormErrors?.password}
                                 required
                             />
@@ -224,7 +226,7 @@ const Header = () => {
                                 type="email"
                                 value={registrationFormValues?.email}
                                 onInput={registrationHandleInput}
-                                placeholder="Введите вашу почту"
+                                placeholder="Почта"
                                 error={registrationFormErrors?.email}
                                 required
                             />
@@ -234,7 +236,7 @@ const Header = () => {
                                 type="text"
                                 value={registrationFormValues?.company_name}
                                 onInput={registrationHandleInput}
-                                placeholder="Введите ваше имя"
+                                placeholder="Название компании"
                                 error={registrationFormErrors?.company_name}
                                 required
                             />
@@ -244,7 +246,7 @@ const Header = () => {
                                 type="text"
                                 value={registrationFormValues?.phone_number}
                                 onInput={registrationHandleInput}
-                                placeholder="Введите ваше имя"
+                                placeholder="Номер телефона"
                                 error={registrationFormErrors?.phone_number}
                                 required
                             />
@@ -265,7 +267,9 @@ const Header = () => {
                         isOpen={showLoginModal}
                         onClose={closeLoginModalAndResetForm}
                     >
-                        <form onSubmit={handleLoginForm}>
+                        <form onSubmit={handleLoginForm}
+                            className="text-center"
+                        >
                             <Input
                                 label="Ваша почта"
                                 name="login"
@@ -286,7 +290,6 @@ const Header = () => {
                                 error={formErrors?.password}
                                 required
                             />
-
                             <button
                                 className="bg-violet-500 text-white font-medium py-2 px-4 rounded"
                                 type="submit"

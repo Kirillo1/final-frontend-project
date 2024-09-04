@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import useProductsStore from "../../../store/useProductsStore";
 import useForm from "../../../hooks/useForm";
 import Input from "../Input/Input";
@@ -34,6 +35,8 @@ const Form = (props) => {
 
     const { user } = useAuth();
 
+    const navigate = useNavigate();
+
     const addProduct = useProductsStore(state => state.addProduct);
 
 
@@ -52,6 +55,7 @@ const Form = (props) => {
 
         try {
             await addProduct(isSmartphone ? 'smartphones' : 'accessories', productData);
+            navigate(`/`);
         } catch (error) {
             console.error("Error submitting form:", error);
         }
@@ -73,7 +77,7 @@ const Form = (props) => {
         { label: "Название", name: "name", type: "text" },
         { label: "Модель", name: "phone_model", type: "text" },
         { label: "Цвет", name: "color", type: "text" },
-        { label: "Страна производства", name: "manufacturer_country", type: "text" }
+        { label: "Страна производства", name: "manufacturer_country", type: "text" },
     ];
 
     // Выберите поля в зависимости от типа продукта
@@ -100,20 +104,20 @@ const Form = (props) => {
                     </div>
                 ))}
 
-                <div className="">
-                    <label htmlFor="description" className="text-gray-700 font-bold mb-2">Описание</label>
                     <div className="flex justify-center mb-5 ">
-                        <textarea
-                            id="description"
-                            name="description"
-                            value={formValues.description}
-                            onInput={handleInput}
-                            error={formErrors.description}
-                            required
-                            className="w-96 outline-none border-4 border-violet-800 p-2 rounded-md focus:border-violet-500 mb-1"
-                        />
+                        <div>
+                            <label htmlFor="description" className="text-gray-200 font-bold mb-2">Описание</label><br></br>
+                            <textarea
+                                id="description"
+                                name="description"
+                                value={formValues.description}
+                                onInput={handleInput}
+                                error={formErrors.description}
+                                required
+                                className="w-96 outline-none border-4 border-violet-800 p-2 rounded-md focus:border-violet-500 mb-1"
+                            />
+                        </div>
                     </div>
-                </div>
 
                 <div className="flex justify-between mb-5">
                     <Input
@@ -145,17 +149,20 @@ const Form = (props) => {
                     />
                 </div>
 
-                <div className="mb-4">
-                    <label htmlFor="images" className="block text-gray-700 font-bold mb-2">Изображения</label>
-                    <input
-                        id="images"
-                        name="images"
-                        type="file"
-                        accept="image/*"
-                        multiple
-                        onChange={handleFileChange}
-                        className="max-w-96 w-full border border-gray-300 p-2 rounded-md focus:outline-none mb-1"
-                    />
+                <div className="flex justify-center">
+                    <div>
+                        <label htmlFor="images" className="block text-gray-200 font-bold mb-2">Изображения</label>
+                        <input
+                            id="images"
+                            name="images"
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={handleFileChange}
+                            className=" border border-indigo-500 p-2 rounded-md focus:outline-none mb-1"
+                        />
+
+                    </div>
                 </div>
 
                 <button className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded">
