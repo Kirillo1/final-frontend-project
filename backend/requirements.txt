@@ -5,3 +5,4 @@ SQLAlchemy==2.0.30
 alembic==1.13.1
 asyncpg==0.29.0
 fastapi_users==13.0.0
+fastapi_users_db_sqlalchemy==6.0.1
