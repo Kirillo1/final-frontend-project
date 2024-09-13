@@ -9,12 +9,14 @@ const FavoritesList = () => {
         smartphones,
         accessories,
         getFavoriteProducts,
-        onToggleFavorite
+        onToggleFavorite,
+        onToggleCartProducts
     } = useProductsStore(state => ({
         smartphones: state.smartphones,
         accessories: state.accessories,
         getFavoriteProducts: state.getFavoriteProducts,
-        onToggleFavorite: state.onToggleFavorite
+        onToggleFavorite: state.onToggleFavorite,
+        onToggleCartProducts: state.onToggleCartProducts
     }));
 
     const [favorites, setFavorites] = useState(new Set());
@@ -60,16 +62,23 @@ const FavoritesList = () => {
     const combinedFavorites = [...favoriteSmartphones.map(item => ({ ...item, type: "smartphones" })),
     ...favoriteAccessories.map(item => ({ ...item, type: "accessories" }))];
 
+
     const handleAddCartClick = () => {
-        console.log(123)
-    }
+        combinedFavorites
+            .map(combinedFavorite => ({
+                id: combinedFavorite.id,
+                type: combinedFavorite?.ram_capacity ? "smartphones" : "accessories"
+            }))
+            .forEach(({ id, type }) => onToggleCartProducts(id, type));
+    };
+    
 
     return (
         <section className="new-products">
             <div className="max-w-7xl mx-auto px-2 relative">
                 <h1 className="mb-4 text-4xl font-bold text-zinc-100">Понравившиеся товары</h1>
 
-                <div className="max-w-7xl mx-auto px-2">
+                <div className="max-w-7xl mx-auto">
                     <div className="flex flex-wrap gap-9">
                         {combinedFavorites.map((item) => (
                             <Card
@@ -85,7 +94,7 @@ const FavoritesList = () => {
                     </div>
                 </div>
 
-                <div className="max-w-7xl mx-auto px-2">
+                <div className="max-w-7xl mx-auto py-3">
                     <button
                         className="bg-violet-500 hover:bg-violet-600 text-white font-bold py-2 px-4 rounded"
                         onClick={handleAddCartClick}
