@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { Card } from "../components/ui/Card/Card";
-import useProductsStore from "../store/useProductsStore";
 import { useNavigate } from "react-router-dom";
+import { Card } from "../components/ui/Card/Card";
+import Alert from "../components/ui/Alert/Alert";
+import useProductsStore from "../store/useProductsStore";
 
 const FavoritesList = () => {
     const navigate = useNavigate();
@@ -20,6 +21,17 @@ const FavoritesList = () => {
     }));
 
     const [favorites, setFavorites] = useState(new Set());
+
+     // Стейт для скрытия/показа и передачи сообщения в Alert
+     const [alertState, setAlertState] = useState({
+        isOpen: false,
+        message: "",
+    });
+
+    // // Обработчик закрытия компонента Alert
+    const handleCloseAlert = () => {
+        setAlertState({ ...alertState, isOpen: false });
+    };
 
     useEffect(() => {
         const storedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
@@ -70,10 +82,17 @@ const FavoritesList = () => {
                 type: combinedFavorite?.ram_capacity ? "smartphones" : "accessories"
             }))
             .forEach(({ id, type }) => onToggleCartProducts(id, type));
+
+        setAlertState({
+            isOpen: true,
+            variant: "success",
+            message: "Товар добавлен в корзину",
+        });
     };
-    
+
 
     return (
+        <>
         <section className="new-products">
             <div className="max-w-7xl mx-auto px-2 relative">
                 <h1 className="mb-4 text-4xl font-bold text-zinc-100">Понравившиеся товары</h1>
@@ -104,6 +123,14 @@ const FavoritesList = () => {
                 </div>
             </div>
         </section>
+        <Alert
+            title=""
+            subtitle={alertState?.message}
+            variant={alertState?.variant}
+            isOpen={alertState?.isOpen}
+            onClose={handleCloseAlert}
+        />
+        </>
     );
 };
 
