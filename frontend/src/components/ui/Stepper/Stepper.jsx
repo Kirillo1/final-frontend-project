@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-// import useProductsStore from "../../../store/useProductsStore";
 
 /**
  * Компонент увеличения/уменьшения количества товара.
@@ -14,22 +13,6 @@ import { useState, useEffect } from "react";
 export const Stepper = ({ minValue = 1, maxValue = 10, step = 1, id }) => {
     // Стейт для увеличения/уменьшения значения в компоненте.
     const [value, setValue] = useState(minValue);
-
-    // Получаем данные о корзине и функцию для обновления количества товара из стора.
-    // const { cart, updateCartQuantity } = useProductsStore();
-
-    // useEffect(() => {
-    //     // Находим элемент с соответствующим id
-    //     const cartItem = cart.find((item) => item?.id === id);
-
-    //     // Если элемент найден, устанавливаем значение количества
-    //     // Иначе устанавливаем минимальное значение
-    //     if (cartItem) {
-    //         setValue(cartItem?.quantity);
-    //     } else {
-    //         setValue(minValue);
-    //     }
-    // }, [cart, minValue, id]);
 
     /**
      * Обработчик увеличения значения
@@ -49,12 +32,11 @@ export const Stepper = ({ minValue = 1, maxValue = 10, step = 1, id }) => {
         if (value - step >= minValue) {
             const newValue = value - step;
             setValue(newValue);
-            // updateCartQuantity(newValue, id);
         }
     };
 
     return (
-        <div className="py-2 px-3 inline-block bg-white border border-gray-200 rounded dark:bg-neutral-900 dark:border-neutral-700">
+        <div className="py-2 px-3 inline-block bg-gray-500 border border-violet-600 rounded dark:bg-neutral-900 dark:border-neutral-700">
             <div className="flex items-center gap-x-1.5">
                 <button
                     disabled={value === 1}
@@ -94,7 +76,7 @@ export const Stepper = ({ minValue = 1, maxValue = 10, step = 1, id }) => {
                     onClick={handleBtnIncrement}
                     disabled={value === 10}
                     type="button"
-                    className="size-8 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800"
+                    className="size-8 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded border border-violet-200 bg-violet-600 text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800"
                     tabIndex="-1"
                 >
                     <svg

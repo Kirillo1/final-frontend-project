@@ -82,7 +82,10 @@ export const Card = (props) => {
                     <span className="font-extrabold text-md text-zinc-200">{price.toLocaleString('ru-RU')} ₽</span>
                 </div>
                 {isCartPage && ( // Показываем Stepper только если на странице корзины
-                    <div onClick={handleStepperClick}>
+                    <div
+                        onClick={handleStepperClick}
+                        className="flex justify-center"
+                    >
                         <Stepper step={1} minValue={1} maxValue={10} />
                     </div>
                 )}
