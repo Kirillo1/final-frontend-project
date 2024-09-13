@@ -3,6 +3,7 @@ import { Card } from "../components/ui/Card/Card";
 import { Modal } from "../components/ui/Modal/Modal";
 import useProductsStore from "../store/useProductsStore";
 import Input from "../components/ui/Input/Input";
+import Alert from "../components/ui/Alert/Alert";
 import { useOrderForm } from "../hooks/useOrderForm";
 import useForm from "../hooks/useForm";
 
@@ -43,6 +44,17 @@ const Cart = () => {
         phone_number: "",
         email: "",
     });
+
+    // Стейт для скрытия/показа и передачи сообщения в Alert
+    const [alertState, setAlertState] = useState({
+        isOpen: false,
+        message: "",
+    });
+
+    // // Обработчик закрытия компонента Alert
+    const handleCloseAlert = () => {
+        setAlertState({ ...alertState, isOpen: false });
+    };
 
     // Обработка формы при регистрации
     const handleOrderForm = (event) => {
@@ -102,8 +114,20 @@ const Cart = () => {
         });
     };
 
+    const handleOrderClick = () => {
+        closeOrderModalAndResetForm();
+        
+        setAlertState({
+            isOpen: true,
+            variant: "success",
+            message: "Заказ оформлен",
+        });
+
+    };
+
 
     return (
+        <>
         <section className="new-products">
             <div className="max-w-7xl mx-auto px-2 relative">
                 <h1 className="mb-4 text-4xl font-bold text-zinc-100">Корзина</h1>
@@ -140,7 +164,10 @@ const Cart = () => {
                         isOpen={showOrderModal}
                         onClose={closeOrderModalAndResetForm}
                     >
-                        <form onSubmit={handleOrderForm}>
+                        <form 
+                            onSubmit={handleOrderForm}
+                            className="text-center"
+                        >
                             <Input
                                 label="Ваше имя"
                                 name="first_name"
@@ -184,6 +211,7 @@ const Cart = () => {
                             <button
                                 className="bg-violet-500 text-white font-medium py-2 px-4 rounded"
                                 type="submit"
+                                onClick={handleOrderClick}
                             >
                                 Оформить
                             </button>
@@ -192,6 +220,14 @@ const Cart = () => {
                 )}
             </div>
         </section>
+        <Alert
+            title=""
+            subtitle={alertState?.message}
+            variant={alertState?.variant}
+            isOpen={alertState?.isOpen}
+            onClose={handleCloseAlert}
+        />
+        </>
     );
 };
 
