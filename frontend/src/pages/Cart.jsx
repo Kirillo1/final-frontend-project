@@ -5,7 +5,6 @@ import useProductsStore from "../store/useProductsStore";
 import Input from "../components/ui/Input/Input";
 import Alert from "../components/ui/Alert/Alert";
 import { useOrderForm } from "../hooks/useOrderForm";
-import useForm from "../hooks/useForm";
 
 import { useNavigate } from "react-router-dom";
 
@@ -15,20 +14,16 @@ const Cart = () => {
     const {
         smartphones,
         accessories,
-        getCartProducts,
         fetchData,
-        onToggleCartProducts
     } = useProductsStore(state => ({
         smartphones: state.smartphones,
         accessories: state.accessories,
-        getCartProducts: state.getCartProducts,
         fetchData: state.fetchData,
-        onToggleCartProducts: state.onToggleCartProducts
     }));
 
     const [showOrderModal, setShowOrderModal] = useState(false);
 
-    const [cartProducts, setCartProducts] = useState(new Set());
+    // const [cartProducts, setCartProducts] = useState(new Set());
 
     
     useEffect(() => {
@@ -55,7 +50,7 @@ const Cart = () => {
         message: "",
     });
 
-    // // Обработчик закрытия компонента Alert
+    // Обработчик закрытия компонента Alert
     const handleCloseAlert = () => {
         setAlertState({ ...alertState, isOpen: false });
     };
@@ -84,39 +79,15 @@ const Cart = () => {
         orderResetForm(); // Сбрасываем форму
     };
 
-    const cartProductsSmartphones = getCartProducts()?.smartphones || [];
-    const cartProductsAccessories = getCartProducts()?.accessories || [];
+    // const cartProductsSmartphones = getCartProducts()?.smartphones || [];
+    // const cartProductsAccessories = getCartProducts()?.accessories || [];
 
     // Объединение массивов
-    const combinedCartProducts = [...cartProductsSmartphones.map(item => ({ ...item, type: "smartphones" })),
-    ...cartProductsAccessories.map(item => ({ ...item, type: "accessories" }))];
+    // const combinedCartProducts = [...cartProductsSmartphones.map(item => ({ ...item, type: "smartphones" })),
+    // ...cartProductsAccessories.map(item => ({ ...item, type: "accessories" }))];
 
-    // Рассчитать сумму товаров
-    const totalSum = combinedCartProducts.reduce((total, item) => total + item.price, 0);
-
-    const handleCart = (id, type) => {
-        onToggleCartProducts(id, type);
-
-        setCartProducts(prevCartProducts => {
-            const updatedCartProducts = new Set(prevCartProducts);
-            const key = `${type}-${id}`;
-
-            if (updatedCartProducts.has(key)) {
-                updatedCartProducts.delete(key);
-            } else {
-                updatedCartProducts.add(key);
-            }
-
-            // Обновляем `localStorage` с учетом обоих типов
-            const storedCartProducts = Array.from(updatedCartProducts).map(fav => {
-                const [favType, favId] = fav.split("-");
-                return { id: parseInt(favId, 10), type: favType };
-            });
-            localStorage.setItem("cartProducts", JSON.stringify(storedCartProducts));
-
-            return updatedCartProducts;
-        });
-    };
+    // // Рассчитать сумму товаров
+    // const totalSum = combinedCartProducts.reduce((total, item) => total + item.price, 0);
 
     const handleOrderClick = () => {
         if (allErrorsAreNull) {
@@ -140,7 +111,7 @@ const Cart = () => {
 
                 <div className="max-w-7xl mx-auto px-2">
                     <div className="flex flex-wrap gap-9">
-                        {combinedCartProducts.map((item) => (
+                        {/* {combinedCartProducts.map((item) => (
                             <Card
                                 key={item?.id}
                                 details={{
@@ -148,13 +119,12 @@ const Cart = () => {
                                     isCartProduct: cartProducts.has(`${item.type}-${item.id}`)
                                 }}
                                 onCardClick={() => handleCardClick(item.type, item.type, item.id)}
-                                onCartClick={() => handleCart(item.id, item.type)}
                             />
-                        ))}
+                        ))} */}
                     </div>
                 </div>
                 <div className="max-w-7xl mx-auto px-2">
-                    <h4 className="mt-4 mb-4 text-4xl font-bold text-zinc-100">Сумма: {totalSum.toLocaleString('ru-RU')} ₽</h4>
+                    {/* <h4 className="mt-4 mb-4 text-4xl font-bold text-zinc-100">Сумма: {totalSum.toLocaleString('ru-RU')} ₽</h4> */}
                 </div>
                 <div className="max-w-7xl mx-auto px-2">
                     <button

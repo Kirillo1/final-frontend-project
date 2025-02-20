@@ -12,7 +12,6 @@ import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import SmartphoneRoundedIcon from '@mui/icons-material/SmartphoneRounded';
 import HeadphonesBatteryRoundedIcon from '@mui/icons-material/HeadphonesBatteryRounded';
 import ExitToAppRoundedIcon from '@mui/icons-material/ExitToAppRounded';
-import PersonAddRoundedIcon from '@mui/icons-material/PersonAddRounded';
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded'; 
 import LocalMallRoundedIcon from '@mui/icons-material/LocalMallRounded';
 import {
@@ -26,6 +25,8 @@ import {
     PopoverGroup,
     PopoverPanel,
 } from '@headlessui/react'
+import { useFavorites } from '../../../context/FavoriteContext';
+import { useCartProducts } from '../../../context/CartContext';
 
 
 /** Массив подпунктов меню добавления */
@@ -46,7 +47,6 @@ const products = [
 
 /** Массив пунктов меню */
 const navItems = [
-    { name: "Главная", path: "/" },
     { name: "Смартфоны", path: "products/smartphones" },
     { name: "Аксессуары", path: "products/accessories" },
     { name : "Панель администратора", path: "/admin_panel" },
@@ -58,15 +58,6 @@ const navItems = [
  * @returns {JSX.Element} Элемент header.
  */
 const Header = () => {
-    const {
-        getFavoriteProducts,
-        getCartProducts
-    } = useProductsStore(state => ({
-        getFavoriteProducts: state.getFavoriteProducts,
-        getCartProducts: state.getCartProducts
-    }));
-
-
     // Стейт для показа/скрытия модального окна (для регистрации).
     const [showRegisterModal, setShowRegisterModal] = useState(false);
 
@@ -95,10 +86,12 @@ const Header = () => {
 
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-    const favoriteProducts = getFavoriteProducts();
-    const favoritesCount = (favoriteProducts?.accessories?.length || 0) + (favoriteProducts?.smartphones?.length || 0);
 
-    const cartProducts = getCartProducts(); 
+    const { favorites } = useFavorites();
+    const favoritesCount = favorites.smartphones.length + favorites.accessories.length;
+
+    const { cartProducts } = useCartProducts();
+    const cartProductsCount = cartProducts.smartphones.length + cartProducts.accessories.length;
 
     /**
      * Определяет, активна ли ссылка.
@@ -164,11 +157,6 @@ const Header = () => {
         <header className="bg-black shadow-lg shadow-violet-700">
             <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
                 <NavLink to="/" className="text-white text-xl flex-shrink-0 flex items-center">
-                    <img
-                        className="block lg:hidden h-8 w-auto"
-                        src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
-                        alt="Workflow"
-                    />
                     MobileGuru
                 </NavLink>
                 <div className="flex lg:hidden">
@@ -368,28 +356,31 @@ const Header = () => {
                 <div className="hidden lg:flex lg:flex-1 lg:justify-end">
                     <button
                         type="button"
-                        className='relative bg-transparent p-1 mr-3 rounded-full text-gray-400 hover:text-gray-500'
+                        className="relative bg-transparent p-1 mr-3 rounded-full text-gray-400 hover:text-gray-500"
                         onClick={handleToOpenFavorites}
                     >
                         <FavoriteRoundedIcon />
                         {!!favoritesCount && (
-                            <span className="w-5 h-5 text-xs px-1 leading-5 text-white inline-flex items-center justify-center bg-violet-500 rounded-full absolute top-[-4px] right-[-4px]">
+                            <span
+                                className="w-5 h-5 text-xs px-1 leading-5 text-white inline-flex items-center justify-center bg-violet-500 rounded-full absolute top-[-4px] right-[-4px]"
+                            >
                                 {favoritesCount}
                             </span>
                         )}
                     </button>
-
                     <button
                         type="button"
                         className='relative bg-transparent p-1 mr-3 rounded-full text-gray-400 hover:text-gray-500'
                         onClick={handleToCartOpen}
                     >
-                        <LocalMallRoundedIcon sx={
-                            { color: 
-                                cartProducts?.accessories.length || cartProducts?.smartphones.length > 0 ? '#5b22b6' : 'white'
-                            }
-                        } 
-                        />
+                        <LocalMallRoundedIcon/>
+                        {!!cartProductsCount && (
+                            <span
+                                className="w-5 h-5 text-xs px-1 leading-5 text-white inline-flex items-center justify-center bg-violet-500 rounded-full absolute top-[-4px] right-[-4px]"
+                            >
+                                {cartProductsCount}
+                            </span>
+                        )}
                     </button>
                     {!user ? (
                         <>
@@ -398,7 +389,7 @@ const Header = () => {
                                 onClick={() => setShowLoginModal(true)}
                                 className="text-white inline-flex items-center px-2 pt-1 text-sm hover:text-violet-500e"
                             >
-                                Войти <span className='ms-1' aria-hidden="true">&rarr;</span>
+                                Войти
                             </button>
         
                             <button
@@ -406,7 +397,7 @@ const Header = () => {
                                 onClick={() => setShowRegisterModal(true)}
                                 className="text-white inline-flex items-center px-2 pt-1 text-sm hover:text-violet-500e"
                             >
-                                Регистрация <span className='ms-1'><PersonAddRoundedIcon sx={{ fontSize: 23 }} /></span>
+                                Регистрация <span className='ms-1'></span>
                             </button>
                         </>
 

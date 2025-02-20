@@ -4,147 +4,100 @@ import useProductsStore from "../store/useProductsStore";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
-    const {
-        smartphones,
-        accessories,
-        fetchData,
-        onToggleFavorite,
-        onToggleCartProducts
-    } = useProductsStore(state => ({
-        smartphones: state.smartphones,
-        accessories: state.accessories,
-        fetchData: state.fetchData,
-        onToggleFavorite: state.onToggleFavorite,
-        onToggleCartProducts: state.onToggleCartProducts
-    }));
+  const { smartphones, accessories, fetchData } = useProductsStore((state) => ({
+    smartphones: state.smartphones,
+    accessories: state.accessories,
+    fetchData: state.fetchData,
+  }));
 
-    const [favorites, setFavorites] = useState(new Set());
-    const [cartProducts, setCartProducts] = useState(new Set());
+  const [favorites, setFavorites] = useState(new Set());
+  const [cartProducts, setCartProducts] = useState(new Set());
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        fetchData("smartphones", "smartphones");
-        fetchData("accessories", "accessories");
-    }, [fetchData]);
+  useEffect(() => {
+    fetchData("smartphones", "smartphones");
+    fetchData("accessories", "accessories");
+  }, [fetchData]);
 
-    useEffect(() => {
-        const storedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
-        setFavorites(new Set(storedFavorites.map(item => `${item.type}-${item.id}`))); // Используем уникальный ключ для каждого типа и ID
-    }, [smartphones, accessories]);
+  useEffect(() => {
+    const storedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
+    setFavorites(
+      new Set(storedFavorites.map((item) => `${item.type}-${item.id}`))
+    ); // Используем уникальный ключ для каждого типа и ID
+  }, [smartphones, accessories]);
 
-    useEffect(() => {
-        const storedCartProducts = JSON.parse(localStorage.getItem("cartProducts")) || [];
-        setCartProducts(new Set(storedCartProducts.map(item => `${item.type}-${item.id}`))); // Используем уникальный ключ для каждого типа и ID
-    }, [smartphones, accessories]);
+  useEffect(() => {
+    const storedCartProducts =
+      JSON.parse(localStorage.getItem("cartProducts")) || [];
+    setCartProducts(
+      new Set(storedCartProducts.map((item) => `${item.type}-${item.id}`))
+    ); // Используем уникальный ключ для каждого типа и ID
+  }, [smartphones, accessories]);
 
-    const handleFavorite = (id, type) => {
-        onToggleFavorite(id, type);
+  const handleCardClick = (endpoint, id) => {
+    navigate(`/product_detail/${endpoint}/${id}/`);
+  };
 
-        setFavorites(prevFavorites => {
-            const updatedFavorites = new Set(prevFavorites);
-            const key = `${type}-${id}`;
+  return (
+    <section className="new-products">
+      <div className="max-w-7xl mx-auto px-2 relative">
+        <h1 className="mb-4 text-4xl font-bold text-zinc-100">
+          Новинки 2025 года!
+        </h1>
 
-            if (updatedFavorites.has(key)) {
-                updatedFavorites.delete(key);
-            } else {
-                updatedFavorites.add(key);
-            }
-
-            // Обновляем `localStorage` с учетом обоих типов
-            const storedFavorites = Array.from(updatedFavorites).map(fav => {
-                const [favType, favId] = fav.split("-");
-                return { id: parseInt(favId, 10), type: favType };
-            });
-            localStorage.setItem("favorites", JSON.stringify(storedFavorites));
-
-            return updatedFavorites;
-        });
-    };
-
-    const handleCart = (id, type) => {
-        onToggleCartProducts(id, type);
-
-        setCartProducts(prevCartProducts => {
-            const updatedCartProducts = new Set(prevCartProducts);
-            const key = `${type}-${id}`;
-
-            if (updatedCartProducts.has(key)) {
-                updatedCartProducts.delete(key);
-            } else {
-                updatedCartProducts.add(key);
-            }
-
-            // Обновляем `localStorage` с учетом обоих типов
-            const storedCartProducts = Array.from(updatedCartProducts).map(fav => {
-                const [favType, favId] = fav.split("-");
-                return { id: parseInt(favId, 10), type: favType };
-            });
-            localStorage.setItem("cartProducts", JSON.stringify(storedCartProducts));
-
-            return updatedCartProducts;
-        });
-    };
-
-    const handleCardClick = (endpoint, id) => {
-        navigate(`/product_detail/${endpoint}/${id}/`);
-    };
-
-    return (
-        <section className="new-products">
-            <div className="max-w-7xl mx-auto px-2 relative">
-                <h1 className="mb-4 text-4xl font-bold text-zinc-100">Новинки 2024 года!</h1>
-
-                <section className="smartphones">
-                    <div className="max-w-7xl mx-auto px-2">
-                        <h3 className="mb-4 text-4xl font-bold text-zinc-100">
-                            Смартфоны
-                        </h3>
-                        <div className="flex flex-wrap gap-9">
-                            {!!smartphones &&
-                                smartphones.map((smartphone) => (
-                                    <Card
-                                        key={smartphone?.id}
-                                        details={{
-                                            ...smartphone,
-                                            isFavorite: favorites.has(`smartphones-${smartphone.id}`),
-                                            isCartProduct: cartProducts.has(`smartphones-${smartphone.id}`)
-                                        }}
-                                        onCardClick={() => handleCardClick("smartphones", smartphone.id)}
-                                        onHeartClick={() => handleFavorite(smartphone.id, "smartphones")}
-                                        onCartClick={() => handleCart(smartphone.id, "smartphones")}
-                                    />
-                                ))}
-                        </div>
-                    </div>
-                </section>
-
-                <section className="accessories">
-                    <div className="max-w-7xl mx-auto px-2">
-                        <h3 className="mb-4 text-4xl font-bold text-zinc-100">
-                            Аксессуары
-                        </h3>
-                        <div className="flex flex-wrap gap-9">
-                            {!!accessories &&
-                                accessories.map((accessory) => (
-                                    <Card
-                                        key={accessory?.id}
-                                        details={{
-                                            ...accessory,
-                                            isFavorite: favorites.has(`accessories-${accessory.id}`),
-                                            isCartProduct: cartProducts.has(`accessories-${accessory.id}`)
-                                        }}
-                                        onCardClick={() => handleCardClick("accessories", accessory.id)}
-                                        onHeartClick={() => handleFavorite(accessory.id, "accessories")}
-                                        onCartClick={() => handleCart(accessory.id, "accessories")}
-                                    />
-                                ))}
-                        </div>
-                    </div>
-                </section>
+        <section className="smartphones">
+          <div className="max-w-7xl mx-auto px-2">
+            <h3 className="mb-4 text-4xl font-bold text-zinc-100">Смартфоны</h3>
+            <div className="flex flex-wrap gap-9">
+              {!!smartphones &&
+                smartphones.map((smartphone) => (
+                  <Card
+                    key={smartphone?.id}
+                    details={{
+                      ...smartphone,
+                      isFavorite: favorites.has(`smartphones-${smartphone.id}`),
+                      isCartProduct: cartProducts.has(
+                        `smartphones-${smartphone.id}`
+                      ),
+                    }}
+                    onCardClick={() =>
+                      handleCardClick("smartphones", smartphone.id)
+                    }
+                  />
+                ))}
             </div>
+          </div>
         </section>
-    );
+
+        <section className="accessories">
+          <div className="max-w-7xl mx-auto px-2">
+            <h3 className="mb-4 text-4xl font-bold text-zinc-100">
+              Аксессуары
+            </h3>
+            <div className="flex flex-wrap gap-9">
+              {!!accessories &&
+                accessories.map((accessory) => (
+                  <Card
+                    key={accessory?.id}
+                    details={{
+                      ...accessory,
+                      isFavorite: favorites.has(`accessories-${accessory.id}`),
+                      isCartProduct: cartProducts.has(
+                        `accessories-${accessory.id}`
+                      ),
+                    }}
+                    onCardClick={() =>
+                      handleCardClick("accessories", accessory.id)
+                    }
+                  />
+                ))}
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+  );
 };
 
 export default Home;

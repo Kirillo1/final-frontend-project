@@ -68,7 +68,7 @@ const Footer = () => {
                 <div className="py-7 border-t border-violet-700">
                     <div className="flex items-center justify-center flex-col lg:justify-between lg:flex-row">
                         <span className="text-sm text-zinc-300">
-                            ©MobileGuru 2024, Все права защищены.
+                            ©MobileGuru 2025, Все права защищены.
                         </span>
                     </div>
                 </div>
