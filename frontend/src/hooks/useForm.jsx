@@ -29,14 +29,13 @@ export function useForm(initialValues) {
         setFormValues(updatedFormState);
 
         // Валидируем текущее поле по атрибуту type
-        const validationErrors = {
-            ...formErrors,
-            [name]: validateForm({ [type]: value })[type] || null,
-        };
-
-        // Обновляем состояние ошибок
-        setFormErrors(validationErrors);
+        const validationErrors = validateForm({ [name]: value });
+        setFormErrors((prevErrors) => ({
+            ...prevErrors,
+            ...validationErrors
+        }));
     };
+
 
     /**
      * Обработчик изменения значения файлов.

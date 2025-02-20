@@ -18,7 +18,7 @@ const routes = [
     { path:"cart", element: <Cart /> },
     { path: "product_detail/:endpoint/:id", element: <ProductCardDetail /> },
     { path: "admin_panel", element: <PrivateRoute element={<Admin />} requiredRole="admin" /> },
-    { path: "add_new_product", element: <PrivateRoute element={<AddNewProduct />} requiredRole="company" /> },
+    { path: "add_new_product/:endpoint", element: <PrivateRoute element={<AddNewProduct />} requiredRole="company" /> },
     { path: "company_products", element: <PrivateRoute element={<CompanyProduct />} requiredRole="company" /> }
 ];
 

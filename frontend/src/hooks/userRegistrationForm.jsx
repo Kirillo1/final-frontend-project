@@ -1,4 +1,4 @@
-import { validateForm } from "../utils/validators";
+import { validateForm as validators } from "../utils/validators";
 import { useState } from "react";
 
 /**
@@ -10,12 +10,25 @@ import { useState } from "react";
  * @returns {resetForm} - Функция сброса состояния формы.
  */
 export function useRegistrationForm(initialValues) {
-
     // Состояние формы, хранит значения полей регистрации
     const [registrationFormValues, setRegistrationFormValues] = useState(initialValues);
 
     // Состояние для отслеживания ошибок валидации
-    const [formErrors, setFormErrors] = useState({});
+    const [registrationFormErrors, setFormErrors] = useState({});
+
+    /**
+     * Функция для валидации полей формы и обновления состояния ошибок.
+     *
+     * @param {string} name - Название поля.
+     * @param {any} value - Значение поля.
+     */
+    const validateField = (name, value) => {
+        const validationErrors = {
+            ...registrationFormErrors,
+            [name]: validators({ [name]: value })[name] || null,
+        };
+        setFormErrors(validationErrors);
+    };
 
     /**
      * Обработчик изменения значения полей формы.
@@ -23,20 +36,14 @@ export function useRegistrationForm(initialValues) {
      * @param {Object} e - Событие изменения.
      */
     const registrationHandleInput = (e) => {
-        const { name, value, type } = e.target;
-        
+        const { name, value } = e.target;
+
         // Обновляем состояние формы для текущего поля
         const updatedFormState = { ...registrationFormValues, [name]: value };
         setRegistrationFormValues(updatedFormState);
 
-        // Валидируем текущее поле по атрибуту type
-        // const validationErrors = {
-        //     ...formErrors,
-        //     [name]: validateForm({ [type]: value })[type] || null,
-        // };
-
-        // Обновляем состояние ошибок
-        // setFormErrors(validationErrors);
+        // Валидируем текущее поле
+        validateField(name, value);
     }
 
     /**
@@ -48,16 +55,11 @@ export function useRegistrationForm(initialValues) {
         const { name, files } = e.target;
 
         // Обновляем состояние формы для текущего поля
-        const updatedFormState = { ...formValues, [name]: files };
-        setFormValues(updatedFormState);
+        const updatedFormState = { ...registrationFormValues, [name]: files };
+        setRegistrationFormValues(updatedFormState);
 
-        // Обновляем состояние ошибок, если нужно
-        // const validationErrors = {
-        //     ...formErrors,
-        //     [name]: validateForm({ files })[type] || null,
-        // };
-
-        // setFormErrors(validationErrors);
+        // Валидируем файлы (если необходимо)
+        validateField(name, files);
     };
 
     // Функция для сброса состояния формы и состояния ошибок
@@ -68,7 +70,7 @@ export function useRegistrationForm(initialValues) {
 
     return {
         registrationFormValues,
-        formErrors,
+        registrationFormErrors,
         registrationHandleInput,
         handleFileChange,
         registrationResetForm

@@ -1,4 +1,4 @@
-import { validateForm } from "../utils/validators";
+import { validateForm as validators } from "../utils/validators";
 import { useState } from "react";
 
 /**
@@ -15,7 +15,22 @@ export function useOrderForm(initialValues) {
     const [orderFormValues, setOrderFormValues] = useState(initialValues);
 
     // Состояние для отслеживания ошибок валидации
-    const [formErrors, setFormErrors] = useState({});
+    const [orderFormErrors, setFormErrors] = useState({});
+
+        /**
+     * Функция для валидации полей формы и обновления состояния ошибок.
+     *
+     * @param {string} name - Название поля.
+     * @param {any} value - Значение поля.
+     */
+        const validateField = (name, value) => {
+            console.log(name, value)
+            const validationErrors = {
+                ...orderFormErrors,
+                [name]: validators({ [name]: value })[name] || null,
+            };
+            setFormErrors(validationErrors);
+        };
 
     /**
      * Обработчик изменения значения полей формы.
@@ -29,14 +44,8 @@ export function useOrderForm(initialValues) {
         const updatedFormState = { ...orderFormValues, [name]: value };
         setOrderFormValues(updatedFormState);
 
-        // Валидируем текущее поле по атрибуту type
-        // const validationErrors = {
-        //     ...formErrors,
-        //     [name]: validateForm({ [type]: value })[type] || null,
-        // };
-
-        // Обновляем состояние ошибок
-        // setFormErrors(validationErrors);
+        // Валидируем текущее поле
+        validateField(name, value);
     }
 
     /**
@@ -49,15 +58,11 @@ export function useOrderForm(initialValues) {
 
         // Обновляем состояние формы для текущего поля
         const updatedFormState = { ...formValues, [name]: files };
-        setFormValues(updatedFormState);
+        setOrderFormValues(updatedFormState);
 
-        // Обновляем состояние ошибок, если нужно
-        // const validationErrors = {
-        //     ...formErrors,
-        //     [name]: validateForm({ files })[type] || null,
-        // };
+        // Валидируем файлы (если необходимо)
+        validateField(name, files);
 
-        // setFormErrors(validationErrors);
     };
 
     // Функция для сброса состояния формы и состояния ошибок
@@ -68,7 +73,7 @@ export function useOrderForm(initialValues) {
 
     return {
         orderFormValues,
-        formErrors,
+        orderFormErrors,
         orderHandleInput,
         handleFileChange,
         orderResetForm

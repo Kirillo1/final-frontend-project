@@ -3,6 +3,9 @@ import { Stepper } from "../Stepper/Stepper";
 import Image from "../Image/Image";
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import LocalMallRoundedIcon from '@mui/icons-material/LocalMallRounded';
+import { useFavorites } from '../../../context/FavoriteContext';
+import { useCartProducts } from '../../../context/CartContext';
+
 
 export const Card = (props) => {
     const {
@@ -12,23 +15,28 @@ export const Card = (props) => {
         price,
         color,
         images,
-        isFavorite,
-        isCartProduct
     } = props.details;
 
-    const { onCardClick, onHeartClick, onCartClick } = props;
+    const { onCardClick } = props;
     const location = useLocation(); // Получаем текущий маршрут
+
+    const { favorites, toggleFavorite } = useFavorites();
+    const isFavorite = favorites.smartphones.includes(id); // Проверяем, в избранном ли товар
+
+
+    const { cartProducts, toggleCartProduct } = useCartProducts();
+    const isCartProduct = cartProducts.smartphones.includes(id);
 
     // Обработчик клика на иконку корзины
     const handleCartProduct = (event) => {
         event.stopPropagation(); // Предотвратить всплытие события
-        onCartClick && onCartClick(id);
+        toggleCartProduct("smartphones", id);
     };
 
     // Обработчик клика на иконку сердечка
     const handleFavorite = (event) => {
-        event.stopPropagation(); // Предотвратить всплытие события
-        onHeartClick && onHeartClick(id);
+        event.stopPropagation();
+        toggleFavorite("smartphones", id);
     };
 
     // Обработчик клика по карточке
@@ -82,7 +90,10 @@ export const Card = (props) => {
                     <span className="font-extrabold text-md text-zinc-200">{price.toLocaleString('ru-RU')} ₽</span>
                 </div>
                 {isCartPage && ( // Показываем Stepper только если на странице корзины
-                    <div onClick={handleStepperClick}>
+                    <div
+                        onClick={handleStepperClick}
+                        className="flex justify-center"
+                    >
                         <Stepper step={1} minValue={1} maxValue={10} />
                     </div>
                 )}

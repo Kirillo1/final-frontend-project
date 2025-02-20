@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import useForm from "../../../hooks/useForm";
 import useRegistrationForm from '../../../hooks/userRegistrationForm';
@@ -12,7 +12,6 @@ import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import SmartphoneRoundedIcon from '@mui/icons-material/SmartphoneRounded';
 import HeadphonesBatteryRoundedIcon from '@mui/icons-material/HeadphonesBatteryRounded';
 import ExitToAppRoundedIcon from '@mui/icons-material/ExitToAppRounded';
-import PersonAddRoundedIcon from '@mui/icons-material/PersonAddRounded';
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded'; 
 import LocalMallRoundedIcon from '@mui/icons-material/LocalMallRounded';
 import {
@@ -26,6 +25,8 @@ import {
     PopoverGroup,
     PopoverPanel,
 } from '@headlessui/react'
+import { useFavorites } from '../../../context/FavoriteContext';
+import { useCartProducts } from '../../../context/CartContext';
 
 
 /** Массив подпунктов меню добавления */
@@ -33,18 +34,19 @@ const products = [
     { 
         name: 'Смартфон', 
         description: 'Добавить смартфон', 
-        href: 'add_new_product', icon: SmartphoneRoundedIcon 
+        href: 'add_new_product/smartphones', 
+        icon: SmartphoneRoundedIcon 
     },
     { 
         name: 'Аксессуар', 
         description: 'Добавить аксессуар', 
-        href: '#', icon: HeadphonesBatteryRoundedIcon 
+        href: 'add_new_product/accessories', 
+        icon: HeadphonesBatteryRoundedIcon 
     },
 ]
 
 /** Массив пунктов меню */
 const navItems = [
-    { name: "Главная", path: "/" },
     { name: "Смартфоны", path: "products/smartphones" },
     { name: "Аксессуары", path: "products/accessories" },
     { name : "Панель администратора", path: "/admin_panel" },
@@ -56,13 +58,6 @@ const navItems = [
  * @returns {JSX.Element} Элемент header.
  */
 const Header = () => {
-    const {
-        getFavoriteProducts
-    } = useProductsStore(state => ({
-        getFavoriteProducts: state.getFavoriteProducts,
-    }));
-
-
     // Стейт для показа/скрытия модального окна (для регистрации).
     const [showRegisterModal, setShowRegisterModal] = useState(false);
 
@@ -76,7 +71,7 @@ const Header = () => {
     });
 
     // Использование кастомного хука для обработки данных регистрации
-    const { registrationFormValues, registrationHandleInput, registrationResetForm } = useRegistrationForm({
+    const { registrationFormValues, registrationFormErrors, registrationHandleInput, registrationResetForm } = useRegistrationForm({
         login: "",
         password: "",
         first_name: "",
@@ -91,12 +86,12 @@ const Header = () => {
 
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-    const favoriteProducts = getFavoriteProducts();
-    const favoritesCount = useMemo(() => {
-        return (favoriteProducts?.accessories?.length || 0) + (favoriteProducts?.smartphones?.length || 0);
-    }, [favoriteProducts]);
 
+    const { favorites } = useFavorites();
+    const favoritesCount = favorites.smartphones.length + favorites.accessories.length;
 
+    const { cartProducts } = useCartProducts();
+    const cartProductsCount = cartProducts.smartphones.length + cartProducts.accessories.length;
 
     /**
      * Определяет, активна ли ссылка.
@@ -112,14 +107,19 @@ const Header = () => {
 
     // Хук для навигации (роутинга) по страницам
     const navigate = useNavigate();
+    
+    const allErrorsAreNull = Object.values(registrationFormErrors).every(value => value === null);
 
     // Обработка формы при регистрации
     const handleRegisterForm = (event) => {
-        event.preventDefault();
 
-        onRegister(registrationFormValues);
-        setShowRegisterModal(false); // Закрываем Modal
-        registrationResetForm(); // Сбрасываем форму
+        if (allErrorsAreNull) {
+            event.preventDefault();
+    
+            onRegister(registrationFormValues);
+            setShowRegisterModal(false); // Закрываем Modal
+            registrationResetForm(); // Сбрасываем форму
+        }
     };
 
     // Обработка формы при входе в систему
@@ -157,11 +157,6 @@ const Header = () => {
         <header className="bg-black shadow-lg shadow-violet-700">
             <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
                 <NavLink to="/" className="text-white text-xl flex-shrink-0 flex items-center">
-                    <img
-                        className="block lg:hidden h-8 w-auto"
-                        src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
-                        alt="Workflow"
-                    />
                     MobileGuru
                 </NavLink>
                 <div className="flex lg:hidden">
@@ -180,15 +175,17 @@ const Header = () => {
                         isOpen={showRegisterModal}
                         onClose={closeRegisterModalAndResetForm}
                     >
-                        <form onSubmit={handleRegisterForm}>
+                        <form onSubmit={handleRegisterForm}
+                            className="text-center"
+                        >
                             <Input
                                 label="Ваше имя"
                                 name="first_name"
                                 type="text"
                                 value={registrationFormValues?.first_name}
                                 onInput={registrationHandleInput}
-                                placeholder="Введите ваше имя"
-                                // error={formErrors?.login}
+                                placeholder="Имя"
+                                error={registrationFormErrors?.first_name}
                                 required
                             />
                             <Input
@@ -197,8 +194,8 @@ const Header = () => {
                                 type="text"
                                 value={registrationFormValues?.last_name}
                                 onInput={registrationHandleInput}
-                                placeholder="Введите вашу фамилию"
-                                // error={formErrors?.login}
+                                placeholder="Фамилия"
+                                error={registrationFormErrors?.last_name}
                                 required
                             />
                             <Input
@@ -207,8 +204,8 @@ const Header = () => {
                                 name="password"
                                 value={registrationFormValues?.password}
                                 onInput={registrationHandleInput}
-                                placeholder="Введите пароль"
-                                // error={formErrors?.password}
+                                placeholder="Пароль"
+                                error={registrationFormErrors?.password}
                                 required
                             />
                             <Input
@@ -217,8 +214,8 @@ const Header = () => {
                                 type="email"
                                 value={registrationFormValues?.email}
                                 onInput={registrationHandleInput}
-                                placeholder="Введите вашу почту"
-                                // error={formErrors?.login}
+                                placeholder="Почта"
+                                error={registrationFormErrors?.email}
                                 required
                             />
                             <Input
@@ -227,8 +224,8 @@ const Header = () => {
                                 type="text"
                                 value={registrationFormValues?.company_name}
                                 onInput={registrationHandleInput}
-                                placeholder="Введите ваше имя"
-                                // error={formErrors?.login}
+                                placeholder="Название компании"
+                                error={registrationFormErrors?.company_name}
                                 required
                             />
                             <Input
@@ -237,14 +234,15 @@ const Header = () => {
                                 type="text"
                                 value={registrationFormValues?.phone_number}
                                 onInput={registrationHandleInput}
-                                placeholder="Введите ваше имя"
-                                // error={formErrors?.login}
+                                placeholder="Номер телефона"
+                                error={registrationFormErrors?.phone_number}
                                 required
                             />
 
                             <button
                                 className="bg-violet-500 text-white font-medium py-2 px-4 rounded"
                                 type="submit"
+                                disabled={!allErrorsAreNull} 
                             >
                                 Зарегистрироваться
                             </button>
@@ -257,7 +255,9 @@ const Header = () => {
                         isOpen={showLoginModal}
                         onClose={closeLoginModalAndResetForm}
                     >
-                        <form onSubmit={handleLoginForm}>
+                        <form onSubmit={handleLoginForm}
+                            className="text-center"
+                        >
                             <Input
                                 label="Ваша почта"
                                 name="login"
@@ -278,7 +278,6 @@ const Header = () => {
                                 error={formErrors?.password}
                                 required
                             />
-
                             <button
                                 className="bg-violet-500 text-white font-medium py-2 px-4 rounded"
                                 type="submit"
@@ -357,23 +356,31 @@ const Header = () => {
                 <div className="hidden lg:flex lg:flex-1 lg:justify-end">
                     <button
                         type="button"
-                        className='relative bg-transparent p-1 mr-3 rounded-full text-gray-400 hover:text-gray-500'
+                        className="relative bg-transparent p-1 mr-3 rounded-full text-gray-400 hover:text-gray-500"
                         onClick={handleToOpenFavorites}
                     >
                         <FavoriteRoundedIcon />
                         {!!favoritesCount && (
-                        <span className="w-5 h-5 text-xs px-1 leading-5 text-white inline-flex items-center justify-center bg-violet-500 rounded-full absolute top-[-4px] right-[-4px]">
-                            {favoritesCount}
-                        </span>
+                            <span
+                                className="w-5 h-5 text-xs px-1 leading-5 text-white inline-flex items-center justify-center bg-violet-500 rounded-full absolute top-[-4px] right-[-4px]"
+                            >
+                                {favoritesCount}
+                            </span>
                         )}
                     </button>
-
                     <button
                         type="button"
                         className='relative bg-transparent p-1 mr-3 rounded-full text-gray-400 hover:text-gray-500'
                         onClick={handleToCartOpen}
                     >
-                        <LocalMallRoundedIcon sx={{ color: "red" }} />
+                        <LocalMallRoundedIcon/>
+                        {!!cartProductsCount && (
+                            <span
+                                className="w-5 h-5 text-xs px-1 leading-5 text-white inline-flex items-center justify-center bg-violet-500 rounded-full absolute top-[-4px] right-[-4px]"
+                            >
+                                {cartProductsCount}
+                            </span>
+                        )}
                     </button>
                     {!user ? (
                         <>
@@ -382,7 +389,7 @@ const Header = () => {
                                 onClick={() => setShowLoginModal(true)}
                                 className="text-white inline-flex items-center px-2 pt-1 text-sm hover:text-violet-500e"
                             >
-                                Войти <span className='ms-1' aria-hidden="true">&rarr;</span>
+                                Войти
                             </button>
         
                             <button
@@ -390,7 +397,7 @@ const Header = () => {
                                 onClick={() => setShowRegisterModal(true)}
                                 className="text-white inline-flex items-center px-2 pt-1 text-sm hover:text-violet-500e"
                             >
-                                Регистрация <span className='ms-1'><PersonAddRoundedIcon sx={{ fontSize: 23 }} /></span>
+                                Регистрация <span className='ms-1'></span>
                             </button>
                         </>
 
