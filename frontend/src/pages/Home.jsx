@@ -21,19 +21,48 @@ const Home = () => {
   }, [fetchData]);
 
   useEffect(() => {
-    const storedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
+    const storedFavorites = localStorage.getItem("favorites");
+
+    const favorites = storedFavorites
+      ? JSON.parse(storedFavorites)
+      : { smartphones: [], accessories: [] };
+
+    const validFavorites =
+      favorites &&
+      Array.isArray(favorites.smartphones) &&
+      Array.isArray(favorites.accessories)
+        ? favorites
+        : { smartphones: [], accessories: [] };
+
     setFavorites(
-      new Set(storedFavorites.map((item) => `${item.type}-${item.id}`))
-    ); // Используем уникальный ключ для каждого типа и ID
-  }, [smartphones, accessories]);
+      new Set([
+        ...validFavorites.smartphones.map((id) => `smartphones-${id}`),
+        ...validFavorites.accessories.map((id) => `accessories-${id}`),
+      ])
+    );
+  }, []);
 
   useEffect(() => {
-    const storedCartProducts =
-      JSON.parse(localStorage.getItem("cartProducts")) || [];
+    const storedCartProducts = localStorage.getItem("cartProducts");
+
+    const cartProducts = storedCartProducts
+      ? JSON.parse(storedCartProducts)
+      : { smartphones: [], accessories: [] };
+
+    const validCartProducts =
+      cartProducts &&
+      Array.isArray(cartProducts.smartphones) &&
+      Array.isArray(cartProducts.accessories)
+        ? cartProducts
+        : { smartphones: [], accessories: [] };
+
     setCartProducts(
-      new Set(storedCartProducts.map((item) => `${item.type}-${item.id}`))
-    ); // Используем уникальный ключ для каждого типа и ID
-  }, [smartphones, accessories]);
+      new Set([
+        ...validCartProducts.smartphones.map((id) => `smartphones-${id}`),
+        ...validCartProducts.accessories.map((id) => `accessories-${id}`),
+      ])
+    );
+  }, []);
 
   const handleCardClick = (endpoint, id) => {
     navigate(`/product_detail/${endpoint}/${id}/`);

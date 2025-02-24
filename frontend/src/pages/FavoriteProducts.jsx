@@ -6,16 +6,16 @@ import useProductsStore from "../store/useProductsStore";
 
 const FavoritesList = () => {
   const navigate = useNavigate();
-  const { smartphones, accessories, getFavoriteProducts } = useProductsStore(
-    (state) => ({
-      smartphones: state.smartphones,
-      accessories: state.accessories,
-      getFavoriteProducts: state.getFavoriteProducts,
-      onToggleCartProducts: state.onToggleCartProducts,
-    })
-  );
+  const { smartphones, accessories } = useProductsStore((state) => ({
+    smartphones: state.smartphones,
+    accessories: state.accessories,
+    onToggleCartProducts: state.onToggleCartProducts,
+  }));
 
-  const [favorites, setFavorites] = useState(new Set());
+  const [favorites, setFavorites] = useState({
+    smartphones: [],
+    accessories: [],
+  });
 
   // Стейт для скрытия/показа и передачи сообщения в Alert
   const [alertState, setAlertState] = useState({
@@ -28,31 +28,49 @@ const FavoritesList = () => {
     setAlertState({ ...alertState, isOpen: false });
   };
 
-  useEffect(() => {
-    const storedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
-    const favoritesSet = new Set(
-      storedFavorites.map((item) => `${item.type}-${item.id}`)
-    );
+  const loadFavorites = () => {
+    const storedFavorites = localStorage.getItem("favorites");
+    let storedData = storedFavorites ? JSON.parse(storedFavorites) : null;
 
-    setFavorites(favoritesSet);
-  }, [smartphones, accessories]);
+    if (
+      !storedData ||
+      typeof storedData !== "object" ||
+      !Array.isArray(storedData.smartphones) ||
+      !Array.isArray(storedData.accessories)
+    ) {
+      storedData = { smartphones: [], accessories: [] };
+    }
 
-  const handleCardClick = (type, name, id) => {
-    const route =
-      type === "smartphones"
-        ? `/smartphone/${name}/${id}/`
-        : `/accessory/${name}/${id}/`;
-    navigate(route);
+    setFavorites({
+      smartphones: storedData.smartphones || [],
+      accessories: storedData.accessories || [],
+    });
   };
 
-  const favoriteSmartphones = getFavoriteProducts()?.smartphones || [];
-  const favoriteAccessories = getFavoriteProducts()?.accessories || [];
+  useEffect(() => {
+    loadFavorites();
+  }, []);
 
-  // Объединение массивов
-  const combinedFavorites = [
-    ...favoriteSmartphones.map((item) => ({ ...item, type: "smartphones" })),
-    ...favoriteAccessories.map((item) => ({ ...item, type: "accessories" })),
-  ];
+  useEffect(() => {
+    const handleStorageChange = (event) => {
+      if (event.key === "favorites") {
+        loadFavorites();
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
+
+  const handleCardClick = (type, id) => {
+    const route =
+      type === "smartphones"
+        ? `/product_detail/smartphones/${id}/`
+        : `/product_detail/accessories/${id}/`;
+    navigate(route);
+  };
 
   return (
     <>
@@ -64,18 +82,34 @@ const FavoritesList = () => {
 
           <div className="max-w-7xl mx-auto">
             <div className="flex flex-wrap gap-9">
-              {combinedFavorites.map((item) => (
-                <Card
-                  key={item?.id}
-                  details={{
-                    ...item,
-                    isFavorite: favorites.has(`${item.type}-${item.id}`),
-                  }}
-                  onCardClick={() =>
-                    handleCardClick(item.type, item.type, item.id)
-                  }
-                />
-              ))}
+              {smartphones
+                .filter((item) => favorites.smartphones.includes(item.id))
+                .map((item) => (
+                  <Card
+                    key={item?.id}
+                    details={{
+                      ...item,
+                      isFavorite: true,
+                    }}
+                    onCardClick={() =>
+                      handleCardClick("smartphones", item.id)
+                    }
+                  />
+                ))}
+              {accessories
+                .filter((item) => favorites.accessories.includes(item.id))
+                .map((item) => (
+                  <Card
+                    key={item?.id}
+                    details={{
+                      ...item,
+                      isFavorite: true,
+                    }}
+                    onCardClick={() =>
+                      handleCardClick("accessories", item.id)
+                    }
+                  />
+                ))}
             </div>
           </div>
 
