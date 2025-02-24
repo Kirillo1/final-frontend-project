@@ -28,13 +28,9 @@ const ProductsCards = () => {
   useEffect(() => {
     if (isSmartphones) {
       const storedFavorites =
-        JSON.parse(localStorage.getItem("favorites")) || [];
+        JSON.parse(localStorage.getItem("favorites")) || {};
       setFavorites(
-        new Set(
-          storedFavorites
-            .filter((item) => item.type === "smartphones")
-            .map((item) => item.id)
-        )
+        new Set((storedFavorites.smartphones ?? []).map((item) => item.id))
       );
     }
   }, [products, isSmartphones]);
@@ -42,41 +38,29 @@ const ProductsCards = () => {
   useEffect(() => {
     if (isAccessories) {
       const storedFavorites =
-        JSON.parse(localStorage.getItem("favorites")) || [];
+        JSON.parse(localStorage.getItem("favorites")) || {};
       setFavorites(
-        new Set(
-          storedFavorites
-            .filter((item) => item.type === "accessories")
-            .map((item) => item.id)
-        )
+        new Set((storedFavorites.accessories ?? []).map((item) => item.id))
       );
     }
   }, [products, isAccessories]);
 
   useEffect(() => {
     if (isSmartphones) {
-      const storedSmartphoneCartProducts =
-        JSON.parse(localStorage.getItem("cartProducts")) || [];
-      setCartProducts(
-        new Set(
-          storedSmartphoneCartProducts
-            .filter((item) => item.type === "smartphones")
-            .map((item) => item.id)
-        )
+      const storedCartProducts =
+        JSON.parse(localStorage.getItem("cartProducts")) || {};
+      setFavorites(
+        new Set((storedCartProducts.smartphones ?? []).map((item) => item.id))
       );
     }
   }, [products, isSmartphones]);
 
   useEffect(() => {
     if (isAccessories) {
-      const storedAccessoriesCartProducts =
-        JSON.parse(localStorage.getItem("cartProducts")) || [];
-      setCartProducts(
-        new Set(
-          storedAccessoriesCartProducts
-            .filter((item) => item.type === "accessories")
-            .map((item) => item.id)
-        )
+      const storedCartProducts =
+        JSON.parse(localStorage.getItem("cartProducts")) || {};
+      setFavorites(
+        new Set((storedCartProducts.accessories ?? []).map((item) => item.id))
       );
     }
   }, [products, isAccessories]);
