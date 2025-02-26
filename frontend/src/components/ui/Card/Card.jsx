@@ -5,23 +5,44 @@ import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 import LocalMallRoundedIcon from "@mui/icons-material/LocalMallRounded";
 import { useFavorites } from "../../../context/FavoriteContext";
 import { useCartProducts } from "../../../context/CartContext";
+import { useMemo } from "react";
 
 export const Card = (props) => {
-  const { id, name, phone_model, price, color, images } = props.details;
-
+  const { id, name, phone_model, price, color, images, productType } =
+    props.details;
   const { onCardClick } = props;
-  const location = useLocation(); // Получаем текущий маршрут
 
   const { favorites, toggleFavorite } = useFavorites();
+  const { cartProducts, toggleCartProduct } = useCartProducts();
+  const location = useLocation();
+
+  const isCartProduct =
+    cartProducts?.smartphones?.some((item) => item.id === id) ||
+    cartProducts?.accessories?.some((item) => item.id === id) ||
+    false;
+
   const isFavorite = favorites?.smartphones?.includes(id) || false;
 
-  const { cartProducts, toggleCartProduct } = useCartProducts();
-  const isCartProduct = cartProducts?.smartphones?.includes(id) || false;
+  const isCartPage = location.pathname.includes("/cart");
+
+  const stepperValue = useMemo(() => {
+    if (!isCartPage) return 1;
+
+    const storedCartProducts = localStorage.getItem("cartProducts");
+    const storedData = storedCartProducts
+      ? JSON.parse(storedCartProducts)
+      : null;
+
+    if (!storedData) return 1;
+
+    const product = storedData[productType]?.find((item) => item.id === id);
+    return product ? product.quantity : 1;
+  }, [isCartPage, productType, id]);
 
   // Обработчик клика на иконку корзины
   const handleCartProduct = (event) => {
     event.stopPropagation(); // Предотвратить всплытие события
-    toggleCartProduct("smartphones", id);
+    toggleCartProduct("smartphones", id, price);
   };
 
   // Обработчик клика на иконку сердечка
@@ -35,12 +56,10 @@ export const Card = (props) => {
     onCardClick && onCardClick("smartphone", id);
   };
 
-  // Определяем, находится ли текущая страница в корзине
-  const isCartPage = location.pathname.includes("/cart");
-
-  // Обработчик клика на Stepper
-  const handleStepperClick = (event) => {
-    event.stopPropagation(); // Предотвратить всплытие события
+  const handleQuantityChange = (value) => {
+    if (props.onQuantityChange) {
+      props.onQuantityChange(value);
+    }
   };
 
   return (
@@ -86,9 +105,15 @@ export const Card = (props) => {
             {price.toLocaleString("ru-RU")} ₽
           </span>
         </div>
-        {isCartPage && ( // Показываем Stepper только если на странице корзины
-          <div onClick={handleStepperClick} className="flex justify-center">
-            <Stepper step={1} minValue={1} maxValue={10} />
+        {isCartPage && (
+          <div className="flex justify-center">
+            <Stepper
+              step={1}
+              minValue={1}
+              maxValue={10}
+              defaultValue={stepperValue}
+              onQuantityChange={handleQuantityChange}
+            />
           </div>
         )}
       </div>

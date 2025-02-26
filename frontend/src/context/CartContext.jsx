@@ -24,17 +24,24 @@ export const CartProvider = ({ children }) => {
     localStorage.setItem("cartProducts", JSON.stringify(cartProducts));
   }, [cartProducts]);
 
-  const toggleCartProduct = (category, id) => {
+  const toggleCartProduct = (category, id, price) => {
     setCartProducts((prev) => {
-      const categoryCartProducts = prev[category] || [];
-      const isAlreadyCartProducts = categoryCartProducts.includes(id);
+      const categoryProducts = prev[category] || [];
+      const productIndex = categoryProducts.findIndex((item) => item.id === id);
 
-      const updatedCartProducts = {
-        ...prev,
-        [category]: isAlreadyCartProducts
-          ? categoryCartProducts.filter((item) => item !== id)
-          : [...categoryCartProducts, id],
-      };
+      let updatedCartProducts;
+
+      if (productIndex === -1) {
+        updatedCartProducts = {
+          ...prev,
+          [category]: [...categoryProducts, { id, quantity: 1, price: price }],
+        };
+      } else {
+        const updatedCategory = categoryProducts.filter(
+          (item) => item.id !== id
+        );
+        updatedCartProducts = { ...prev, [category]: updatedCategory };
+      }
 
       localStorage.setItem("cartProducts", JSON.stringify(updatedCartProducts));
 

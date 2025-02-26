@@ -15,12 +15,28 @@ const Cart = () => {
     fetchData: state.fetchData,
   }));
 
+  useEffect(() => {
+    loadCartProducts();
+  }, []);
+
+  const [totalProductsSum, setTotalProductsSum] = useState(
+    smartphones.reduce((total, item) => total + item.price, 0) +
+      accessories.reduce((total, item) => total + item.price, 0)
+  );
+
   const [showOrderModal, setShowOrderModal] = useState(false);
 
   const [cartProducts, setCartProducts] = useState({
     smartphones: [],
     accessories: [],
   });
+
+  // Стейт для скрытия/показа и передачи сообщения в Alert
+  const [alertState, setAlertState] = useState({
+    isOpen: false,
+    message: "",
+  });
+
   const loadCartProducts = () => {
     const storedCartProducts = localStorage.getItem("cartProducts");
     let storedData = storedCartProducts ? JSON.parse(storedCartProducts) : null;
@@ -33,28 +49,57 @@ const Cart = () => {
       storedData = { smartphones: [], accessories: [] };
     }
 
+    const validateProducts = (products) =>
+      Array.isArray(products) ? products.filter((item) => item?.id) : [];
+
     setCartProducts({
-      smartphones: storedData.smartphones || [],
-      accessories: storedData.accessories || [],
+      smartphones: validateProducts(storedData.smartphones),
+      accessories: validateProducts(storedData.accessories),
     });
   };
 
-  useEffect(() => {
-    loadCartProducts();
-  }, []);
+  const updateProductQuantity = (type, id, newQuantity) => {
+    setCartProducts((prevCart) => {
+      const updatedCategory = prevCart[type].map((item) =>
+        item.id === id ? { ...item, quantity: newQuantity } : item
+      );
 
-  useEffect(() => {
-    const handleStorageChange = (event) => {
-      if (event.key === "cartProducts") {
-        loadCartProducts();
-      }
+      const updatedCart = {
+        ...prevCart,
+        [type]: updatedCategory,
+      };
+
+      localStorage.setItem("cartProducts", JSON.stringify(updatedCart));
+      calculateTotalPrice(updatedCart);
+
+      return updatedCart;
+    });
+  };
+
+  const calculateTotalPrice = (updatedCart) => {
+    // Функция для безопасного извлечения числового значения или 0
+    const safeNumber = (value) => {
+      const num = parseFloat(value);
+      return isNaN(num) ? 0 : num;
     };
 
-    window.addEventListener("storage", handleStorageChange);
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, []);
+    // Пересчитываем цену для смартфонов
+    const totalSmartphonesPrice = updatedCart.smartphones.reduce(
+      (total, item) =>
+        total + safeNumber(item.price) * safeNumber(item.quantity),
+      0
+    );
+
+    // Пересчитываем цену для аксессуаров
+    const totalAccessoriesPrice = updatedCart.accessories.reduce(
+      (total, item) =>
+        total + safeNumber(item.price) * safeNumber(item.quantity),
+      0
+    );
+
+    // Устанавливаем общую сумму
+    setTotalProductsSum(totalSmartphonesPrice + totalAccessoriesPrice);
+  };
 
   // Использование кастомного хука для обработки данных регистрации
   const { orderFormValues, orderHandleInput, orderFormErrors, orderResetForm } =
@@ -69,12 +114,6 @@ const Cart = () => {
   const allErrorsAreNull = Object.values(orderFormErrors).every(
     (value) => value === null
   );
-
-  // Стейт для скрытия/показа и передачи сообщения в Alert
-  const [alertState, setAlertState] = useState({
-    isOpen: false,
-    message: "",
-  });
 
   // Обработчик закрытия компонента Alert
   const handleCloseAlert = () => {
@@ -107,10 +146,6 @@ const Cart = () => {
     orderResetForm(); // Сбрасываем форму
   };
 
-  const totalProductsSum =
-    smartphones.reduce((total, item) => total + item.price, 0) +
-    accessories.reduce((total, item) => total + item.price, 0);
-
   const handleOrderClick = () => {
     if (allErrorsAreNull) {
       closeOrderModalAndResetForm();
@@ -128,29 +163,37 @@ const Cart = () => {
       <section className="new-products">
         <div className="max-w-7xl mx-auto px-2 relative">
           <h1 className="mb-4 text-4xl font-bold text-zinc-100">Корзина</h1>
-
           <div className="max-w-7xl mx-auto">
             <div className="flex flex-wrap gap-9">
               {smartphones
-                .filter((item) => cartProducts.smartphones.includes(item.id))
+                .filter((item) =>
+                  cartProducts.smartphones.some((p) => p.id === item.id)
+                )
                 .map((item) => (
                   <Card
                     key={item?.id}
                     details={{
                       ...item,
                       isFavorite: true,
+                      productType: "smartphones",
                     }}
                     onCardClick={() => handleCardClick("smartphones", item.id)}
+                    onQuantityChange={(newQuantity) =>
+                      updateProductQuantity("smartphones", item.id, newQuantity)
+                    }
                   />
                 ))}
               {accessories
-                .filter((item) => cartProducts.accessories.includes(item.id))
+                .filter((item) =>
+                  cartProducts.accessories.some((p) => p.id === item.id)
+                )
                 .map((item) => (
                   <Card
                     key={item?.id}
                     details={{
                       ...item,
                       isFavorite: true,
+                      productType: "accessories",
                     }}
                     onCardClick={() => handleCardClick("accessories", item.id)}
                   />
