@@ -59,9 +59,35 @@ const Cart = () => {
       };
 
       localStorage.setItem("cartProducts", JSON.stringify(updatedCart));
+      calculateTotalPrice(updatedCart);
 
       return updatedCart;
     });
+  };
+
+  const calculateTotalPrice = (updatedCart) => {
+    // Функция для безопасного извлечения числового значения или 0
+    const safeNumber = (value) => {
+      const num = parseFloat(value);
+      return isNaN(num) ? 0 : num;
+    };
+
+    // Пересчитываем цену для смартфонов
+    const totalSmartphonesPrice = updatedCart.smartphones.reduce(
+      (total, item) =>
+        total + safeNumber(item.price) * safeNumber(item.quantity),
+      0
+    );
+
+    // Пересчитываем цену для аксессуаров
+    const totalAccessoriesPrice = updatedCart.accessories.reduce(
+      (total, item) =>
+        total + safeNumber(item.price) * safeNumber(item.quantity),
+      0
+    );
+    console.log(totalSmartphonesPrice + totalAccessoriesPrice);
+    // Устанавливаем общую сумму
+    setTotalProductsSum(totalSmartphonesPrice + totalAccessoriesPrice);
   };
 
   useEffect(() => {

@@ -24,7 +24,7 @@ export const CartProvider = ({ children }) => {
     localStorage.setItem("cartProducts", JSON.stringify(cartProducts));
   }, [cartProducts]);
 
-  const toggleCartProduct = (category, id) => {
+  const toggleCartProduct = (category, id, price) => {
     setCartProducts((prev) => {
       const categoryProducts = prev[category] || [];
       const productIndex = categoryProducts.findIndex((item) => item.id === id);
@@ -34,7 +34,7 @@ export const CartProvider = ({ children }) => {
       if (productIndex === -1) {
         updatedCartProducts = {
           ...prev,
-          [category]: [...categoryProducts, { id, quantity: 1 }],
+          [category]: [...categoryProducts, { id, quantity: 1, price: price }],
         };
       } else {
         const updatedCategory = categoryProducts.filter(
@@ -44,6 +44,7 @@ export const CartProvider = ({ children }) => {
       }
 
       localStorage.setItem("cartProducts", JSON.stringify(updatedCartProducts));
+
       return updatedCartProducts;
     });
   };

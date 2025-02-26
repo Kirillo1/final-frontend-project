@@ -26,7 +26,7 @@ export const Card = (props) => {
   // Обработчик клика на иконку корзины
   const handleCartProduct = (event) => {
     event.stopPropagation(); // Предотвратить всплытие события
-    toggleCartProduct("smartphones", id);
+    toggleCartProduct("smartphones", id, price);
   };
 
   // Обработчик клика на иконку сердечка
@@ -110,8 +110,9 @@ export const Card = (props) => {
           <div className="flex justify-center">
             <Stepper
               step={1}
-              minValue={stepperValue}
+              minValue={1}
               maxValue={10}
+              defaultValue={stepperValue}
               onQuantityChange={handleQuantityChange}
             />
           </div>

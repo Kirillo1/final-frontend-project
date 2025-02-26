@@ -14,10 +14,11 @@ export const Stepper = ({
   minValue = 1,
   maxValue = 10,
   step = 1,
+  defaultValue,
   onQuantityChange,
 }) => {
   // Стейт для увеличения/уменьшения значения в компоненте.
-  const [value, setValue] = useState(minValue);
+  const [value, setValue] = useState(defaultValue);
 
   /**
    * Обработчик увеличения значения
