@@ -14,6 +14,11 @@ const Cart = () => {
     accessories: state.accessories,
     fetchData: state.fetchData,
   }));
+
+  useEffect(() => {
+    loadCartProducts();
+  }, []);
+
   const [totalProductsSum, setTotalProductsSum] = useState(
     smartphones.reduce((total, item) => total + item.price, 0) +
       accessories.reduce((total, item) => total + item.price, 0)
@@ -24,6 +29,12 @@ const Cart = () => {
   const [cartProducts, setCartProducts] = useState({
     smartphones: [],
     accessories: [],
+  });
+
+  // Стейт для скрытия/показа и передачи сообщения в Alert
+  const [alertState, setAlertState] = useState({
+    isOpen: false,
+    message: "",
   });
 
   const loadCartProducts = () => {
@@ -85,27 +96,10 @@ const Cart = () => {
         total + safeNumber(item.price) * safeNumber(item.quantity),
       0
     );
-    console.log(totalSmartphonesPrice + totalAccessoriesPrice);
+
     // Устанавливаем общую сумму
     setTotalProductsSum(totalSmartphonesPrice + totalAccessoriesPrice);
   };
-
-  useEffect(() => {
-    loadCartProducts();
-  }, []);
-
-  useEffect(() => {
-    const handleStorageChange = (event) => {
-      if (event.key === "cartProducts") {
-        loadCartProducts();
-      }
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, []);
 
   // Использование кастомного хука для обработки данных регистрации
   const { orderFormValues, orderHandleInput, orderFormErrors, orderResetForm } =
@@ -120,12 +114,6 @@ const Cart = () => {
   const allErrorsAreNull = Object.values(orderFormErrors).every(
     (value) => value === null
   );
-
-  // Стейт для скрытия/показа и передачи сообщения в Alert
-  const [alertState, setAlertState] = useState({
-    isOpen: false,
-    message: "",
-  });
 
   // Обработчик закрытия компонента Alert
   const handleCloseAlert = () => {
@@ -175,7 +163,6 @@ const Cart = () => {
       <section className="new-products">
         <div className="max-w-7xl mx-auto px-2 relative">
           <h1 className="mb-4 text-4xl font-bold text-zinc-100">Корзина</h1>
-
           <div className="max-w-7xl mx-auto">
             <div className="flex flex-wrap gap-9">
               {smartphones

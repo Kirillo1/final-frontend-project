@@ -48,7 +48,6 @@ export const Stepper = ({
     <div className="py-2 px-3 inline-block bg-gray-500 border border-violet-600 rounded dark:bg-neutral-900 dark:border-neutral-700">
       <div className="flex items-center gap-x-1.5">
         <button
-          disabled={value === 1}
           onClick={handleBtnDecrement}
           type="button"
           className="size-8 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800"
@@ -83,7 +82,6 @@ export const Stepper = ({
 
         <button
           onClick={handleBtnIncrement}
-          disabled={value === 10}
           type="button"
           className="size-8 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded border border-violet-200 bg-violet-600 text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800"
           tabIndex="-1"
