@@ -14,6 +14,10 @@ const Cart = () => {
     accessories: state.accessories,
     fetchData: state.fetchData,
   }));
+  const [totalProductsSum, setTotalProductsSum] = useState(
+    smartphones.reduce((total, item) => total + item.price, 0) +
+      accessories.reduce((total, item) => total + item.price, 0)
+  );
 
   const [showOrderModal, setShowOrderModal] = useState(false);
 
@@ -21,6 +25,7 @@ const Cart = () => {
     smartphones: [],
     accessories: [],
   });
+
   const loadCartProducts = () => {
     const storedCartProducts = localStorage.getItem("cartProducts");
     let storedData = storedCartProducts ? JSON.parse(storedCartProducts) : null;
@@ -33,9 +38,29 @@ const Cart = () => {
       storedData = { smartphones: [], accessories: [] };
     }
 
+    const validateProducts = (products) =>
+      Array.isArray(products) ? products.filter((item) => item?.id) : [];
+
     setCartProducts({
-      smartphones: storedData.smartphones || [],
-      accessories: storedData.accessories || [],
+      smartphones: validateProducts(storedData.smartphones),
+      accessories: validateProducts(storedData.accessories),
+    });
+  };
+
+  const updateProductQuantity = (type, id, newQuantity) => {
+    setCartProducts((prevCart) => {
+      const updatedCategory = prevCart[type].map((item) =>
+        item.id === id ? { ...item, quantity: newQuantity } : item
+      );
+
+      const updatedCart = {
+        ...prevCart,
+        [type]: updatedCategory,
+      };
+
+      localStorage.setItem("cartProducts", JSON.stringify(updatedCart));
+
+      return updatedCart;
     });
   };
 
@@ -107,10 +132,6 @@ const Cart = () => {
     orderResetForm(); // Сбрасываем форму
   };
 
-  const totalProductsSum =
-    smartphones.reduce((total, item) => total + item.price, 0) +
-    accessories.reduce((total, item) => total + item.price, 0);
-
   const handleOrderClick = () => {
     if (allErrorsAreNull) {
       closeOrderModalAndResetForm();
@@ -132,25 +153,34 @@ const Cart = () => {
           <div className="max-w-7xl mx-auto">
             <div className="flex flex-wrap gap-9">
               {smartphones
-                .filter((item) => cartProducts.smartphones.includes(item.id))
+                .filter((item) =>
+                  cartProducts.smartphones.some((p) => p.id === item.id)
+                )
                 .map((item) => (
                   <Card
                     key={item?.id}
                     details={{
                       ...item,
                       isFavorite: true,
+                      productType: "smartphones",
                     }}
                     onCardClick={() => handleCardClick("smartphones", item.id)}
+                    onQuantityChange={(newQuantity) =>
+                      updateProductQuantity("smartphones", item.id, newQuantity)
+                    }
                   />
                 ))}
               {accessories
-                .filter((item) => cartProducts.accessories.includes(item.id))
+                .filter((item) =>
+                  cartProducts.accessories.some((p) => p.id === item.id)
+                )
                 .map((item) => (
                   <Card
                     key={item?.id}
                     details={{
                       ...item,
                       isFavorite: true,
+                      productType: "accessories",
                     }}
                     onCardClick={() => handleCardClick("accessories", item.id)}
                   />
