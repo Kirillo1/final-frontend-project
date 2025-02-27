@@ -1,11 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import useForm from "../../../hooks/useForm";
 import useRegistrationForm from "../../../hooks/userRegistrationForm";
 import { Modal } from "../Modal/Modal";
 import Input from "../Input/Input";
 import { useAuth } from "../../../hooks/useAuth";
-import useProductsStore from "../../../store/useProductsStore";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
@@ -84,7 +83,7 @@ const Header = () => {
     company_name: "",
   });
 
-  const { user, onRegister, onLogin, onLogout } = useAuth();
+  const { user, onRegister, onLogin, onLogout, error } = useAuth();
 
   const location = useLocation();
 
@@ -130,12 +129,17 @@ const Header = () => {
   };
 
   // Обработка формы при входе в систему
-  const handleLoginForm = (event) => {
+  const handleLoginForm = async (event) => {
     event.preventDefault();
 
-    onLogin(formValues);
-    setShowLoginModal(false); // Закрываем Modal
-    resetForm(); // Сбрасываем форму
+    try {
+      const success = await onLogin(formValues); // Дожидаемся завершения логина
+
+      if (success) {
+        setShowLoginModal(false);
+        resetForm();
+      }
+    } catch (error) {}
   };
 
   // Обработчик закрытия модального окна (регистрация)
@@ -274,7 +278,6 @@ const Header = () => {
                 value={formValues?.email}
                 onInput={handleInput}
                 placeholder="Введите вашу почту"
-                // error={formErrors?.login}
                 required
               />
               <Input
@@ -287,6 +290,11 @@ const Header = () => {
                 error={formErrors?.password}
                 required
               />
+              {error && (
+                <div style={{ height: "20px" }} className="text-rose-500 mb-3">
+                  Неправильно указан логин или пароль
+                </div>
+              )}
               <button
                 className="bg-violet-500 text-white font-medium py-2 px-4 rounded"
                 type="submit"
