@@ -1,8 +1,11 @@
+import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Stepper } from "../Stepper/Stepper";
 import Image from "../Image/Image";
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 import LocalMallRoundedIcon from "@mui/icons-material/LocalMallRounded";
+import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { useFavorites } from "../../../context/FavoriteContext";
 import { useCartProducts } from "../../../context/CartContext";
 import { useMemo } from "react";
@@ -15,6 +18,8 @@ export const Card = (props) => {
   const { favorites, toggleFavorite } = useFavorites();
   const { cartProducts, toggleCartProduct } = useCartProducts();
   const location = useLocation();
+
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const isCartProduct =
     cartProducts?.smartphones?.some((item) => item.id === id) ||
@@ -39,19 +44,32 @@ export const Card = (props) => {
     return product ? product.quantity : 1;
   }, [isCartPage, productType, id]);
 
-  // Обработчик клика на иконку корзины
+  // Переключение изображения вперёд
+  const nextImage = (event) => {
+    event.stopPropagation();
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === images.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
+  // Переключение изображения назад
+  const prevImage = (event) => {
+    event.stopPropagation();
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === 0 ? images.length - 1 : prevIndex - 1
+    );
+  };
+
   const handleCartProduct = (event) => {
-    event.stopPropagation(); // Предотвратить всплытие события
+    event.stopPropagation();
     toggleCartProduct("smartphones", id, price);
   };
 
-  // Обработчик клика на иконку сердечка
   const handleFavorite = (event) => {
     event.stopPropagation();
     toggleFavorite("smartphones", id);
   };
 
-  // Обработчик клика по карточке
   const handleCardClick = () => {
     onCardClick && onCardClick("smartphone", id);
   };
@@ -71,22 +89,48 @@ export const Card = (props) => {
         <Image
           className="w-full max-h-60"
           isCritical={true}
-          src={`../assets/smartphones/${images[0]}`}
+          src={`../assets/smartphones/${images[currentImageIndex]}`}
           alt={name}
         />
-        <div className="absolute top-0 left-0 w-full h-full bg-black opacity-30 transition-opacity duration-300 hover:opacity-40"></div>
+
+        {/* Кнопки для переключения изображений */}
+        {images.length > 1 && (
+          <>
+            <button
+              className="absolute top-1/2 left-2 transform -translate-y-1/2 
+    text-violet-600 w-8 h-8 rounded-full 
+      flex items-center justify-center transition-transform 
+                 duration-200 hover:scale-150"
+              onClick={prevImage}
+            >
+              <NavigateBeforeIcon />
+            </button>
+            <button
+              className="absolute top-1/2 right-2 transform -translate-y-1/2 
+       text-violet-600 w-8 h-8 rounded-full 
+       transition-transform 
+                 duration-200 hover:scale-150"
+              onClick={nextImage}
+            >
+              <span>
+                <NavigateNextIcon />
+              </span>
+            </button>
+          </>
+        )}
+
         <button
-          className={`absolute top-0 m-2 p-2 right-0 rounded-full z-0 ${
+          className={`absolute top-0 m-2 p-2 right-0 bg-black bg-opacity-30 rounded-full flex items-center justify-center z-0 ${
             isCartProduct ? "text-violet-600" : "text-white"
           }`}
           onClick={handleCartProduct}
         >
           <LocalMallRoundedIcon />
         </button>
-        {!isCartPage && ( // Показываем кнопку избранного только если не на странице корзины
+        {!isCartPage && (
           <button
             onClick={handleFavorite}
-            className={`absolute top-0 left-0 m-2 p-2 rounded-full z-0 ${
+            className={`absolute top-0 left-0 m-2 p-2 bg-black bg-opacity-30 rounded-full flex items-center justify-center z-0 ${
               isFavorite ? "text-violet-500" : "text-white"
             }`}
           >

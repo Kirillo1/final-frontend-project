@@ -1,36 +1,99 @@
-<div>
-  <h1>First React App</h1>
-</div>
+# Frontend - React (Vite)
 
-## Instructions 📋
+## 📌 Требования
 
-# Running backend server
-- Run uvicorn src.main:app --port 8080 --reload for server running
-- Make init migration alembic init migrations
-- Make revision migration alembic revision --autogenerate -m "Database creation"
-- Make upgrade migration alembic upgrade "hash revision"
-- Open page http://127.0.0.1:8080/docs in browser
+Перед запуском клиентской части убедитесь, что у вас установлены:
 
-# Running frontend server
-- Download application
-- Download [`NodeJS`](https://nodejs.org/en)
-- Run terminal inside this folder
-- Run npm install for install dependencies
-- After that, run `npm run dev` for running the project
+- [Node.js (рекомендуемая версия LTS)](https://nodejs.org/)  
+  Проверить установленную версию можно командой:
 
-Open [http://localhost:5173](http://localhost:5173) with your browser to see the result.
+  ```bash
+  node -v
+  ```
 
-## Technologies used
+- [npm](https://www.npmjs.com/) или [yarn](https://yarnpkg.com/)  
+  Проверить установленную версию можно командой:
 
-This project follows a custom structure that combines the following:
+  ```bash
+  npm -v
+  # или
+  yarn -v
+  ```
 
-- HTML5
-- CSS3
-- Taiwind
-- JavaScript (ES6)
-- React
-- React Router
-- Zustand
-- Swiper
-- Custom fetch wrapper for HTTP-methods
-- Vite
+## 🚀 Установка и запуск
+
+1. **Перейдите в папку с клиентской частью:**
+
+   ```bash
+   cd frontend
+   ```
+
+2. **Установите зависимости:**
+
+   - Если используете npm:
+     ```bash
+     npm install
+     ```
+   - Если используете yarn:
+     ```bash
+     yarn install
+     ```
+
+3. **Запустите сервер разработки:**
+
+   - Для npm:
+     ```bash
+     npm run dev
+     ```
+   - Для yarn:
+     ```bash
+     yarn dev
+     ```
+
+   После запуска проект будет доступен по адресу:  
+   [http://localhost:5173](http://localhost:5173) (по умолчанию для Vite).
+
+## 📦 Сборка проекта
+
+Для сборки оптимизированной версии фронтенда используйте команду:
+
+```bash
+npm run build
+```
+
+или
+
+```bash
+yarn build
+```
+
+Собранные файлы будут находиться в папке `dist/`.
+
+## 📂 Структура проекта
+
+Примерная структура проекта:
+
+```
+frontend/
+├── public/            # Статические файлы
+├── src/               # Исходный код
+│   ├── components/    # Переиспользуемые компоненты
+│   ├── pages/         # Страницы приложения
+│   ├── hooks/         # Пользовательские хуки
+│   ├── store/         # Состояние (если используется Redux/Zustand)
+│   ├── styles/        # Стили (CSS, SCSS, Tailwind)
+│   ├── App.jsx        # Главный компонент
+│   ├── main.jsx       # Точка входа
+└── ...
+```
+
+## ❓ Полезные команды
+
+| Команда           | Описание                                      |
+| ----------------- | --------------------------------------------- |
+| `npm run dev`     | Запуск режима разработки                      |
+| `npm run build`   | Сборка проекта                                |
+| `npm run preview` | Локальный предпросмотр собранного проекта     |
+| `npm run lint`    | Проверка кода линтером (если настроен ESLint) |
+
+---

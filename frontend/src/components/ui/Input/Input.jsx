@@ -22,108 +22,107 @@ import { useState, useEffect } from "react";
  * @param {string} props.className - Дополнительные классы для стилизации компонента.
  */
 const Input = ({
-    value,
-    name,
-    required,
-    label,
-    error,
-    disabled,
-    autoComplete = "off",
-    readOnly,
-    placeholder,
-    type,
-    onClick,
-    onChange,
-    onInput,
-    onBlur,
-    onFocus,
-    className,
+  value,
+  name,
+  required,
+  label,
+  error,
+  disabled,
+  autoComplete = "off",
+  readOnly,
+  placeholder,
+  type,
+  onClick,
+  onChange,
+  onInput,
+  onBlur,
+  onFocus,
+  className,
 }) => {
-    const inputClasses = classNames(
-        "outline-none border-4 border-violet-800 p-2 rounded-md focus:border-violet-500 mb-1",
-        disabled ? "opacity-50 cursor-not-allowed" : "",
-        required && error ? "border-rose-500" : "",
-        className || ""
-    );
+  const inputClasses = classNames(
+    "outline-none border-4 border-violet-800 p-2 rounded-md focus:border-violet-500 mb-1",
+    disabled ? "opacity-50 cursor-not-allowed" : "",
+    required && error ? "border-rose-500" : "",
+    className || ""
+  );
 
-    // Состояние для скрытия/показа пропса required (обязательность заполнения поля)
-    const [isUserTyping, setIsUserTyping] = useState(false);
+  // Состояние для скрытия/показа пропса required (обязательность заполнения поля)
+  const [isUserTyping, setIsUserTyping] = useState(false);
 
-    useEffect(() => {
-        // Обновление состояния при изменении значения
-        setIsUserTyping(value?.length > 0);
-    }, [value]);
+  useEffect(() => {
+    // Обновление состояния при изменении значения
+    setIsUserTyping(value?.length > 0);
+  }, [value]);
 
-    /**
-     * Обработчик события для поля ввода формы при изменении значения.
-     *
-     * @param {React.ChangeEvent<HTMLInputElement>} event - Событие срабатывает при изменении поля формы.
-     * @returns {void}
-     */
-    const handleChange = (event) => {
-        onChange && onChange(event);
-    };
+  /**
+   * Обработчик события для поля ввода формы при изменении значения.
+   *
+   * @param {React.ChangeEvent<HTMLInputElement>} event - Событие срабатывает при изменении поля формы.
+   * @returns {void}
+   */
+  const handleChange = (event) => {
+    onChange && onChange(event);
+  };
 
-    /**
-     * Обработчик события для поля ввода формы по окончании изменения значения элемента.
-     *
-     * @param {React.FormEvent<HTMLInputElement>} event - Событие срабатывает по окончании изменения значения элемента формы.
-     * @returns {void}
-     */
-    const handleInput = (event) => {
-        onInput && onInput(event);
-    };
+  /**
+   * Обработчик события для поля ввода формы по окончании изменения значения элемента.
+   *
+   * @param {React.FormEvent<HTMLInputElement>} event - Событие срабатывает по окончании изменения значения элемента формы.
+   * @returns {void}
+   */
+  const handleInput = (event) => {
+    onInput && onInput(event);
+  };
 
-    /**
-     * Обработчик события получения фокуса вводом.
-     *
-     * @function
-     * @param {React.FocusEvent<HTMLInputElement>} event - Событие получения фокуса.
-     * @returns {void}
-     */
-    const handleFocus = (event) => {
-        onFocus && onFocus(event);
-    };
+  /**
+   * Обработчик события получения фокуса вводом.
+   *
+   * @function
+   * @param {React.FocusEvent<HTMLInputElement>} event - Событие получения фокуса.
+   * @returns {void}
+   */
+  const handleFocus = (event) => {
+    onFocus && onFocus(event);
+  };
 
-    /**
-     * Обработчик события потери фокуса вводом.
-     *
-     * @function
-     * @param {React.FocusEvent<HTMLInputElement>} event - Событие потери фокуса.
-     * @returns {void}
-     */
-    const handleBlur = (event) => {
-        onBlur && onBlur(event);
-    };
+  /**
+   * Обработчик события потери фокуса вводом.
+   *
+   * @function
+   * @param {React.FocusEvent<HTMLInputElement>} event - Событие потери фокуса.
+   * @returns {void}
+   */
+  const handleBlur = (event) => {
+    onBlur && onBlur(event);
+  };
 
-    return (
-        <div className="mb-4">
-            <label className="block text-gray-200 text-sm mb-1" htmlFor={name}>
-                {label}
-                {required && !isUserTyping && <span className="text-rose-500">*</span>}
-            </label>
-            <input
-                type={type || "text"}
-                name={name}
-                required={required}
-                autoComplete={autoComplete}
-                value={value}
-                disabled={disabled}
-                readOnly={readOnly}
-                placeholder={placeholder}
-                onClick={onClick}
-                onChange={handleChange}
-                onInput={handleInput}
-                onBlur={handleBlur}
-                onFocus={handleFocus}
-                className={inputClasses}
-            />
-            <div>
-            {error && <span className="text-rose-500 text-sm">{error}</span>}
-
-            </div>
-        </div>
-    );
+  return (
+    <div className="mb-4">
+      <label className="block text-gray-200 text-sm mb-1" htmlFor={name}>
+        {label}
+        {required && !isUserTyping && <span className="text-rose-500">*</span>}
+      </label>
+      <input
+        type={type || "text"}
+        name={name}
+        required={required}
+        autoComplete={autoComplete}
+        value={value}
+        disabled={disabled}
+        readOnly={readOnly}
+        placeholder={placeholder}
+        onClick={onClick}
+        onChange={handleChange}
+        onInput={handleInput}
+        onBlur={handleBlur}
+        onFocus={handleFocus}
+        className={inputClasses}
+      />
+      <div>
+        {error && <span className="text-rose-500 text-sm">{error}</span>}
+      </div>
+    </div>
+  );
 };
 
 export default Input;
